@@ -78,17 +78,17 @@ public class UserServiceImple implements UserService {
     @Override
     public Users forGotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         try{
-            Optional<Users> checkUser= userRepository.findById(forgotPasswordRequest.id());
-            if(checkUser.isPresent()){
+            Users checkUser= userRepository.findUserByEmail(forgotPasswordRequest.email());
+            if(checkUser!=null){
                 String newPassword= hashingService.hashWithSHA256(forgotPasswordRequest.newPassword());
-                Users userDetail= userRepository.findById(forgotPasswordRequest.id()).orElse(null);
+                Users userDetail= userRepository.findUserByEmail(forgotPasswordRequest.email());
                 userDetail.setPassword(newPassword);
                 return userRepository.save(userDetail);
             }else {
                 return null;
             }
         }catch (Exception e){}
-
+        return null;
     }
 
     @Override
