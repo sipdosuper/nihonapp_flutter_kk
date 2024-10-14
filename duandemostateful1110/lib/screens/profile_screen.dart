@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart'; // Đảm bảo đường dẫn đúng
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

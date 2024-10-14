@@ -6,23 +6,26 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String email = '';
+  final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Hàm xử lý logic khôi phục mật khẩu (sau này có thể gọi API để xử lý)
-  void _resetPassword() {
+  void _sendResetLink() {
     if (_formKey.currentState!.validate()) {
-      // Xử lý logic khôi phục mật khẩu sau khi tích hợp API
+      // Gửi email reset mật khẩu (đoạn này sẽ được thay bằng API thực tế)
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đã gửi liên kết khôi phục mật khẩu tới email!')),
+        SnackBar(content: Text('Đã gửi liên kết đặt lại mật khẩu đến ${_emailController.text}')),
       );
+      // Quay lại màn hình đăng nhập
+      Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Quên mật khẩu')),
+      appBar: AppBar(
+        title: Text('Quên Mật Khẩu'),
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -30,22 +33,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Nhập địa chỉ email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập email';
+                    return 'Vui lòng nhập địa chỉ email';
                   }
                   return null;
-                },
-                onChanged: (value) {
-                  email = value;
                 },
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _resetPassword,
-                child: Text('Khôi phục mật khẩu'),
+                onPressed: _sendResetLink,
+                child: Text('Gửi liên kết đặt lại'),
               ),
             ],
           ),

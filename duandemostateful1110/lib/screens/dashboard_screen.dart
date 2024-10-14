@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'learning_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   final List<Map<String, dynamic>> topics;
   final int index;
 
   DashboardScreen({required this.topics, required this.index});
 
   @override
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
   Widget build(BuildContext context) {
-    final lessons = topics[index]['lessons'] as List<Map<String, dynamic>>;
+    final lessons = widget.topics[widget.index]['lessons'] as List<Map<String, dynamic>>;
 
     return Scaffold(
       appBar: AppBar(

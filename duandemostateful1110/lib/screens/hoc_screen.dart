@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dashboard_screen.dart';
 
-class HocScreen extends StatelessWidget {
+class HocScreen extends StatefulWidget {
   final String level;
 
   HocScreen({required this.level});
 
+  @override
+  _HocScreenState createState() => _HocScreenState();
+}
+
+class _HocScreenState extends State<HocScreen> {
   @override
   Widget build(BuildContext context) {
     // Giả định đây là dữ liệu topics
@@ -36,7 +41,7 @@ class HocScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Học $level'),
+        title: Text('Học ${widget.level}'),
       ),
       body: ListView.builder(
         itemCount: topics.length,

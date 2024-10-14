@@ -1,52 +1,57 @@
 import 'package:flutter/material.dart';
-import 'main_screen.dart';
+import 'main_screen.dart'; // Đừng quên import MainScreen
 
-class LevelSelectionScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> levels = [
-    {'label': 'N5', 'value': 5},
-    {'label': 'N4', 'value': 4},
-    {'label': 'N3', 'value': 3},
-    {'label': 'N2', 'value': 2},
-    {'label': 'N1', 'value': 1},
-  ];
+class LevelSelectionScreen extends StatefulWidget {
+  @override
+  _LevelSelectionScreenState createState() => _LevelSelectionScreenState();
+}
+
+class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
+
+  void _navigateToMainScreen(int level) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen(level: level)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chọn Level'),
+        title: Text('Chọn Cấp Độ'),
       ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
           crossAxisCount: 2,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 1.0,
+          childAspectRatio: 1,
+          children: [
+            _buildLevelCard('N5', 5),
+            _buildLevelCard('N4', 4),
+            _buildLevelCard('N3', 3),
+            _buildLevelCard('N2', 2),
+            _buildLevelCard('N1', 1),
+          ],
         ),
-        padding: EdgeInsets.all(16.0),
-        itemCount: levels.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              // Chuyển tới MainScreen với level tương ứng
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainScreen(level: levels[index]['value']),
-                ),
-              );
-            },
-            child: Card(
-              elevation: 5,
-              child: Center(
-                child: Text(
-                  levels[index]['label'],
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          );
-        },
+      ),
+    );
+  }
+
+  Widget _buildLevelCard(String title, int level) {
+    return GestureDetector(
+      onTap: () {
+        _navigateToMainScreen(level);
+      },
+      child: Card(
+        elevation: 4,
+        margin: EdgeInsets.all(8.0),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
     );
   }

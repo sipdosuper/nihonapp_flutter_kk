@@ -11,14 +11,48 @@ class LearningScreen extends StatefulWidget {
 }
 
 class _LearningScreenState extends State<LearningScreen> {
-  int currentSentenceIndex = 0;
-  String userAnswer = '';
-  String feedbackMessage = ''; // Biến để chứa thông báo phản hồi
-  bool isCorrect = false;
+  int _currentSentenceIndex = 0;
+  String _userAnswer = '';
+  String _feedback = '';
+  bool _showCard = false;
+
+  void _checkAnswer() {
+    final currentSentence = widget.sentences[_currentSentenceIndex];
+    if (_userAnswer == currentSentence['missingWord']) {
+      setState(() {
+        _feedback = 'Đúng rồi!';
+        _showCard = true; // Hiển thị card thông tin khi đúng
+      });
+    } else {
+      setState(() {
+        _feedback = 'Sai rồi! Vui lòng nhập lại.';
+        _showCard = false; // Không hiển thị card thông tin khi sai
+      });
+    }
+  }
+
+  void _nextSentence() {
+    if (_currentSentenceIndex < widget.sentences.length - 1) {
+      setState(() {
+        _currentSentenceIndex++;
+        _userAnswer = ''; // Xóa dữ liệu cũ khi chuyển câu
+        _feedback = '';
+        _showCard = false; // Ẩn card thông tin khi chuyển câu
+      });
+    }
+  }
+
+  void _completeLesson() {
+    // Quay lại TopicScreen
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final sentence = widget.sentences[currentSentenceIndex];
+    final currentSentence = widget.sentences[_currentSentenceIndex];
+
+    // Hiển thị câu với từ thiếu được thay thế bằng khoảng trắng
+    String displaySentence = currentSentence['japanese']!.replaceAll(currentSentence['missingWord']!, '_____');
 
     return Scaffold(
       appBar: AppBar(
@@ -27,83 +61,67 @@ class _LearningScreenState extends State<LearningScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Card hiển thị câu tiếng Nhật và ô nhập từ thiếu
-            Card(
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      sentence['japanese']!.replaceAll(sentence['missingWord']!, '____'), // Hiển thị câu với từ bị thiếu
-                      style: TextStyle(fontSize: 24),
-                    ),
-                    SizedBox(height: 10),
-                    Text('Nghĩa: ${sentence['vietnamese']}'),
-                    SizedBox(height: 20),
-                    TextField(
-                      decoration: InputDecoration(labelText: 'Nhập từ thiếu'),
-                      onChanged: (value) {
-                        userAnswer = value;
-                      },
-                      controller: TextEditingController(text: userAnswer),
-                    ),
-                  ],
-                ),
+            Text(
+              'Câu: $displaySentence',
+              style: TextStyle(fontSize: 24),
+            ),
+            // Hiển thị nghĩa của câu
+            Text(
+              currentSentence['meaning']!,
+              style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+            ),
+            TextField(
+              onChanged: (value) {
+                _userAnswer = value; // Cập nhật giá trị người dùng nhập
+              },
+              decoration: InputDecoration(
+                hintText: 'Nhập từ còn thiếu...',
               ),
+              controller: TextEditingController(text: _userAnswer), // Cập nhật ô nhập liệu
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isCorrect = userAnswer == sentence['missingWord'];
-                  // Cập nhật thông báo phản hồi
-                  feedbackMessage = isCorrect ? 'Đúng rồi!' : 'Bạn đã nhập sai, vui lòng nhập lại!';
-                });
-              },
+              onPressed: _checkAnswer,
               child: Text('Kiểm tra'),
             ),
-            if (feedbackMessage.isNotEmpty) ...[
-              Text(feedbackMessage, style: TextStyle(color: isCorrect ? Colors.green : Colors.red)),
-              SizedBox(height: 20),
-            ],
-            if (isCorrect) ...[
-              // Card hiển thị từ vựng và ngữ pháp
+            SizedBox(height: 20),
+            Text(
+              _feedback,
+              style: TextStyle(color: _feedback == 'Đúng rồi!' ? Colors.green : Colors.red),
+            ),
+            if (_showCard) ...[
               Card(
                 elevation: 4,
+                margin: EdgeInsets.all(8.0),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Từ vựng: ${sentence['vocabulary']}', style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 8),
-                      Text('Ngữ pháp: ${sentence['grammar']}', style: TextStyle(fontSize: 16)),
+                      Text(
+                        'Từ vựng: ${currentSentence['vocabulary']}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Ngữ pháp: ${currentSentence['grammar']}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      // Hiển thị nút hoàn thành hoặc câu tiếp theo
+                      if (_currentSentenceIndex < widget.sentences.length - 1)
+                        ElevatedButton(
+                          onPressed: _nextSentence,
+                          child: Text('Câu tiếp theo'),
+                        )
+                      else
+                        ElevatedButton(
+                          onPressed: _completeLesson,
+                          child: Text('Hoàn thành'),
+                        ),
                     ],
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (currentSentenceIndex < widget.sentences.length - 1) {
-                    // Nếu còn câu, chuyển sang câu tiếp theo
-                    setState(() {
-                      currentSentenceIndex++;
-                      userAnswer = ''; // Reset câu trả lời
-                      feedbackMessage = ''; // Reset thông báo phản hồi
-                      isCorrect = false; // Reset trạng thái
-                    });
-                  } else {
-                    // Nếu đã hết câu, quay lại màn hình "Học"
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text(
-                  currentSentenceIndex < widget.sentences.length - 1 ? 'Câu tiếp theo' : 'Hoàn thành',
                 ),
               ),
             ],

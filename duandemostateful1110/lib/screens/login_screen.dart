@@ -1,25 +1,39 @@
-import 'package:duandemo/screens/CreateTopicScreen.dart';
-import 'package:duandemo/screens/screentopic.dart';
-import 'package:duandemo/screens/topic_screen.dart';
 import 'package:flutter/material.dart';
-import 'level_selection_screen.dart'; // Đảm bảo đường dẫn đúng
-import 'register_screen.dart'; // Thêm màn hình Tạo tài khoản
-import 'forgot_password_screen.dart'; // Thêm màn hình Quên mật khẩu
+import 'level_selection_screen.dart'; // Màn hình chọn cấp độ
+import 'forgot_password_screen.dart'; // Màn hình quên mật khẩu
+import 'register_screen.dart'; // Màn hình đăng ký
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  void _login() {
+    if (_usernameController.text == 'admin' && _passwordController.text == '123') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LevelSelectionScreen()), // Thay thế bằng LevelSelectionScreen
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đăng nhập không thành công!')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đăng Nhập'),
+        title: Text('Đăng nhập'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _usernameController,
@@ -32,27 +46,18 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // Kiểm tra thông tin đăng nhập
-                if (_usernameController.text == 'admin' &&
-                    _passwordController.text == '123') {
-                  // Chuyển sang màn hình chọn level
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LevelSelectionScreen()),
-                  );
-                } else {
-                  // Hiển thị thông báo đăng nhập thất bại
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Thông tin đăng nhập không đúng!')),
-                  );
-                }
-              },
-              child: Text('Đăng Nhập'),
+              onPressed: _login,
+              child: Text('Đăng nhập'),
             ),
-            SizedBox(height: 10),
-            // Nút tạo tài khoản
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                );
+              },
+              child: Text('Quên mật khẩu?'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -60,18 +65,7 @@ class LoginScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => RegisterScreen()),
                 );
               },
-              child: Text('Tạo tài khoản'),
-            ),
-            // Nút quên mật khẩu
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ForgotPasswordScreen()),
-                );
-              },
-              child: Text('Quên mật khẩu?'),
+              child: Text('Đăng ký tài khoản'),
             ),
           ],
         ),

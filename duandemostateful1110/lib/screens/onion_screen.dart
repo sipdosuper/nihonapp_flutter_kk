@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-class OnionScreen extends StatelessWidget {
+class OnionScreen extends StatefulWidget {
+  @override
+  _OnionScreenState createState() => _OnionScreenState();
+}
+
+class _OnionScreenState extends State<OnionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

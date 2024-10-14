@@ -38,25 +38,25 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('APP HỖ TRỢ HỌC TIẾNG NHẬT GIAO TIẾP'),
-         automaticallyImplyLeading: false, // Ẩn nút quay lại
+        automaticallyImplyLeading: false, // Ẩn nút quay lại
       ),
       body: _screens[_currentIndex], // Hiển thị màn hình hiện tại
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.school), // Không cần chỉ định màu tại đây
+            icon: Icon(Icons.school),
             label: 'Học',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb), // Không cần chỉ định màu tại đây
+            icon: Icon(Icons.lightbulb),
             label: 'Onion',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center), // Không cần chỉ định màu tại đây
+            icon: Icon(Icons.fitness_center),
             label: 'Gym',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person), // Không cần chỉ định màu tại đây
+            icon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],
