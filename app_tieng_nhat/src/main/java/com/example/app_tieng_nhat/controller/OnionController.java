@@ -27,7 +27,7 @@ public class OnionController {
     @PutMapping
     public Onion updateOnion(@RequestBody CreateOnionRequest onionRequest){return onionService.updateOnion(onionRequest);}
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteOnion(@PathVariable Long id){onionService.deleteOnion(id);}
 
 }

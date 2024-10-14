@@ -47,7 +47,7 @@ public class UserController {
     @PutMapping("/forgot/{id}")
     public Users forGotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){return userService.forGotPassword(forgotPasswordRequest);}
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
     }

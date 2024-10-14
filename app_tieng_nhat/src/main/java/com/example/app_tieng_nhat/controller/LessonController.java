@@ -2,6 +2,7 @@ package com.example.app_tieng_nhat.controller;
 
 import com.example.app_tieng_nhat.model.Lessons;
 import com.example.app_tieng_nhat.request.CreateLessonRequest;
+import com.example.app_tieng_nhat.request.GetLessonByTopicLevelRequest;
 import com.example.app_tieng_nhat.request.UpdateLessonRequest;
 import com.example.app_tieng_nhat.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class LessonController {
         return lessonService.getAllLesson();
     }
 
-    @GetMapping("/{level}/{topic}")
-    public List<Lessons>getAllLessonByLevelAndTopic(@PathVariable Long level,@PathVariable Long topic){
-        return lessonService.getAllLessonByLevelAndTopic(level,topic);
+    @GetMapping("/getByTopicLevel")
+    public List<Lessons>getAllLessonByLevelAndTopic(@RequestBody GetLessonByTopicLevelRequest lesson){
+        return lessonService.getAllLessonByLevelAndTopic(lesson);
     }
 
     @GetMapping("/{id}")

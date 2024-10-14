@@ -41,6 +41,6 @@ public class SentenceController {
         return  sentenceService.updateSentence(sentenceRequest);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteSentence(@PathVariable Long id){sentenceService.deleteSentence(id);}
 }

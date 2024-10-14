@@ -1,109 +1,74 @@
-import 'package:flutter/material.dart';
-import 'learning_screen.dart'; // Đừng quên import LearningScreen
+import 'dart:convert';
 
-class TopicScreen extends StatelessWidget {
+import 'package:duandemo/model/Lesson.dart';
+import 'package:duandemo/model/Sentence.dart';
+import 'package:duandemo/model/Topic.dart';
+import 'package:duandemo/screens/screentopic.dart';
+import 'package:duandemo/service/ToppicService.dart';
+import 'package:flutter/material.dart';
+import 'learning_screen.dart';
+import 'package:http/http.dart' as http; // Đừng quên import LearningScreen
+
+class TopicScreen extends StatefulWidget {
   final int level;
 
   TopicScreen({required this.level});
 
-  final List<Map<String, dynamic>> n5Topics = [
-    {
-      'title': 'Chủ đề 1',
-      'lessons': [
-        {
-          'title': 'Bài học 1: Giới thiệu về bản thân',
-          'description': 'Học cách giới thiệu bản thân bằng tiếng Nhật.',
-          'image': 'https://kilala.vn/data/upload/article/10614/arigatou-co-nghia-la-gi.jpg',
-          'sentences': _getSentencesForLesson1(),
-        },
-        {
-          'title': 'Bài học 2: Hỏi thăm sức khỏe',
-          'description': 'Học cách hỏi thăm sức khỏe bằng tiếng Nhật.',
-          'image': 'https://kilala.vn/data/upload/article/10614/arigatou-co-nghia-la-gi.jpg',
-          'sentences': _getSentencesForLesson2(),
-        },
-      ],
-    },
-    {
-      'title': 'Chủ đề 2',
-      'lessons': [
-        {
-          'title': 'Bài học 1: Đặt câu hỏi',
-          'description': 'Học cách đặt câu hỏi bằng tiếng Nhật.',
-          'image': 'https://kilala.vn/data/upload/article/10614/arigatou-co-nghia-la-gi.jpg',
-        },
-        {
-          'title': 'Bài học 2: Nói về gia đình',
-          'description': 'Học cách nói về gia đình bằng tiếng Nhật.',
-          'image': 'https://kilala.vn/data/upload/article/10614/arigatou-co-nghia-la-gi.jpg',
-        },
-      ],
-    },
-  ];
+  @override
+  _TopicScreenState createState() => _TopicScreenState();
+}
 
-  final Map<int, List<Map<String, dynamic>>> n4Topics = {
-    4: [
-      {
-        'title': 'Chủ đề 1',
-        'lessons': [
-          {
-            'title': 'Bài học 1: Đàm thoại trong nhà hàng',
-            'description': 'Học cách đặt món ăn tại nhà hàng Nhật.',
-            'image': 'https://example.com/restaurant.png',
-          },
-        ],
-      },
-      {
-        'title': 'Chủ đề 2',
-        'lessons': [
-          {
-            'title': 'Bài học 2: Hỏi đường',
-            'description': 'Học cách hỏi đường và chỉ đường.',
-            'image': 'https://example.com/direction.png',
-          },
-        ],
-      },
-    ],
-  };
-
-  static List<Map<String, String>> _getSentencesForLesson1() {
-    return [
-      {
-        'japanese': '私は学生です。',
-        'vietnamese': 'Tôi là sinh viên.',
-        'missingWord': '学生',
-        'vocabulary': '学生 (がくせい): Sinh viên',
-        'grammar': 'です: Dùng để diễn đạt sự xác nhận về một sự thật.',
-      },
-      {
-        'japanese': '私は日本に行きます。',
-        'vietnamese': 'Tôi sẽ đi Nhật Bản.',
-        'missingWord': '日本',
-        'vocabulary': '日本 (にほん): Nhật Bản',
-        'grammar': 'に: Giới từ chỉ địa điểm.',
-      },
-    ];
+class _TopicScreenState extends State<TopicScreen> {
+  late Future<List<Topic>> futureTopics;
+  late List<Topic> lsttopic = [];
+  late List<Lesson> lstLesson = [];
+  late List<Sentence> lstSentence = [];
+  final topicService = TopicService();
+  late List<dynamic> body;
+  @override
+  void initState() {
+    super.initState();
+    futureTopics = fetchTopics();
+    topicService.createTopic(2, "Hom nay toi nghi hoc");
   }
 
-  static List<Map<String, String>> _getSentencesForLesson2() {
-    return [
-      {
-        'japanese': '彼は先生です。',
-        'vietnamese': 'Anh ấy là giáo viên.',
-        'missingWord': '先生',
-        'vocabulary': '先生 (せんせい): Giáo viên',
-        'grammar': 'です: Cấu trúc khẳng định.',
-      },
-    ];
+  Future<List<Topic>> fetchTopics() async {
+    // Thay URL bằng địa chỉ API của bạn
+    final response =
+        await http.get(Uri.parse('http://localhost:8080/api/topic'));
+
+    if (response.statusCode == 200) {
+      // Parse JSON từ response
+      body = json.decode(response.body);
+      print(body);
+      List<Topic> topics =
+          body.map((dynamic item) => Topic.fromJson(item)).toList();
+      print(topics.length);
+      List<Lesson> lessons = topics[0].lessons;
+      // body.map((dynamic item) => Lesson.fromJson(item)).toList();
+      print(lessons);
+      List<Sentence> sentences = lessons[0].sentence;
+
+      setState(() {
+        lsttopic = topics;
+        lstLesson = lessons;
+        lstSentence = sentences;
+      });
+      return topics;
+    } else {
+      // Nếu response thất bại
+      throw Exception('Failed to load topics');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> topics = level == 5 ? n5Topics : n4Topics[level]!;
-
+    // final List<Topic> topics = lsttopic;
+    // final List<Lesson> lessons = lstLesson;
+    final List<Sentence> sentences = lstSentence;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chủ đề N$level'),
+        title: Text('Chủ đề N${widget.level}'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -112,9 +77,9 @@ class TopicScreen extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: topics.length,
+        itemCount: sentences.length,
         itemBuilder: (context, index) {
-          final topic = topics[index];
+          final lesson = sentences[index];
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -122,70 +87,11 @@ class TopicScreen extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                    topic['title'],
+                    lesson.id.toString() + lesson.word,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ),
                 SizedBox(height: 10),
-                ...topic['lessons'].map<Widget>((lesson) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (lesson.containsKey('sentences')) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LearningScreen(
-                              lessonTitle: lesson['title'],
-                              sentences: lesson['sentences'] ?? [],
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(lesson['image']),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            gradient: LinearGradient(
-                              colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          right: 10,
-                          child: Text(
-                            lesson['title'],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-                SizedBox(height: 20),
               ],
             ),
           );

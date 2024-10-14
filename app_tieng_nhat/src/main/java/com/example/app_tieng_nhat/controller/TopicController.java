@@ -2,6 +2,7 @@ package com.example.app_tieng_nhat.controller;
 
 import com.example.app_tieng_nhat.model.Topics;
 import com.example.app_tieng_nhat.request.CreateTopicRequest;
+import com.example.app_tieng_nhat.request.UpdateTopicRequest;
 import com.example.app_tieng_nhat.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +21,22 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public Topics getTopicByID(Long id){
+    public Topics getTopicByID(@PathVariable Long id){
         return  topicService.getTopicByID(id);
     }
 
     @PostMapping
-    public Topics createTopic(CreateTopicRequest topics){
+    public Topics createTopic(@RequestBody CreateTopicRequest topics){
         return topicService.createTopic(topics);
     }
 
-    @PutMapping("/update/{id}")
-    public Topics updateTopic(Long id, Topics topics){
-        return topicService.updateTopic(id,topics);
+    @PutMapping
+    public Topics updateTopic(@RequestBody UpdateTopicRequest topicRequest){
+        return topicService.updateTopic(topicRequest);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteTopic(Long id){
+    @DeleteMapping("/{id}")
+    public void deleteTopic(@PathVariable Long id){
         topicService.deleteTopic(id);
     }
 }

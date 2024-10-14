@@ -32,12 +32,12 @@ public class LevelController {
         return levelService.createLevel(level);
     }
 
-    @PutMapping("/update/{id}")
-    public Levels updateLevel(UpdateLevelRequest updateLevelRequest){
+    @PutMapping("/{id}")
+    public Levels updateLevel(@RequestBody UpdateLevelRequest updateLevelRequest){
         return levelService.updateLevel(updateLevelRequest);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteLevel(@PathVariable Long id){
         levelService.deleteLevel(id);
     }

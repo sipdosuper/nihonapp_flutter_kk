@@ -19,22 +19,22 @@ public class UserProgressController {
     }
 
     @GetMapping("/{id}")
-    public UserProgress getUserProgressByID(Long id){
+    public UserProgress getUserProgressByID(@PathVariable Long id){
         return  userProgressService.getUserProgressByID(id);
     }
 
     @PostMapping
-    public UserProgress createUserProgress(UserProgress userProgress){
+    public UserProgress createUserProgress(@RequestBody UserProgress userProgress){
         return userProgressService.createUserProgress(userProgress);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public UserProgress updateUserProgress(Long id, UserProgress userProgress){
         return userProgressService.updateUserProgress(id,userProgress);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteUserProgress(Long id){
+    @DeleteMapping("/{id}")
+    public void deleteUserProgress(@PathVariable Long id){
         userProgressService.deleteUserProgress(id);
     }
 }

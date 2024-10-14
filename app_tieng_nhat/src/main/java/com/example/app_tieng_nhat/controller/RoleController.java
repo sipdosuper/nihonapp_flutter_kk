@@ -22,12 +22,12 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public Roles getRoleById(Long id){
+    public Roles getRoleById(@PathVariable Long id){
         return  roleService.getRoleById(id);
     }
 
     @PostMapping
-    public Roles createRole(RoleCreateRequest roleCreateRequest){
+    public Roles createRole(@RequestBody RoleCreateRequest roleCreateRequest){
         return roleService.createRole(roleCreateRequest);
     }
 

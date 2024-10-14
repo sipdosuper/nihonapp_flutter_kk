@@ -7,6 +7,7 @@ import com.example.app_tieng_nhat.repository.LessonRepository;
 import com.example.app_tieng_nhat.repository.LevelRepository;
 import com.example.app_tieng_nhat.repository.TopicRepository;
 import com.example.app_tieng_nhat.request.CreateLessonRequest;
+import com.example.app_tieng_nhat.request.GetLessonByTopicLevelRequest;
 import com.example.app_tieng_nhat.request.UpdateLessonRequest;
 import com.example.app_tieng_nhat.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lessons> getAllLessonByLevelAndTopic(Long level, Long topic) {
-        return lessonRepository.findByLevelIdAndTopicId(level,topic);
+    public List<Lessons> getAllLessonByLevelAndTopic(GetLessonByTopicLevelRequest lesson) {
+        return lessonRepository.findByLevelIdAndTopicId(lesson.topic_id(),lesson.level_id());
     }
 
     @Override

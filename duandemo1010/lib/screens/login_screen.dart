@@ -1,3 +1,6 @@
+import 'package:duandemo/screens/CreateTopicScreen.dart';
+import 'package:duandemo/screens/screentopic.dart';
+import 'package:duandemo/screens/topic_screen.dart';
 import 'package:flutter/material.dart';
 import 'level_selection_screen.dart'; // Đảm bảo đường dẫn đúng
 import 'register_screen.dart'; // Thêm màn hình Tạo tài khoản
@@ -31,11 +34,13 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Kiểm tra thông tin đăng nhập
-                if (_usernameController.text == 'admin' && _passwordController.text == '123') {
+                if (_usernameController.text == 'admin' &&
+                    _passwordController.text == '123') {
                   // Chuyển sang màn hình chọn level
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => LevelSelectionScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => LevelSelectionScreen()),
                   );
                 } else {
                   // Hiển thị thông báo đăng nhập thất bại
@@ -62,7 +67,8 @@ class LoginScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => ForgotPasswordScreen()),
                 );
               },
               child: Text('Quên mật khẩu?'),
