@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public interface OnionService {
     List<Onion> getAllOnion();
-    List<Onion> getAllOnionByLevelAndTopic(Long level,Long topic);
+    List<Onion> getAllOnionByTopic(Long topic);
     Optional<Onion> getOnionByID(Long id);
     Onion createOnion(CreateOnionRequest onionRequest);
     Onion updateOnion(CreateOnionRequest onionRequest);

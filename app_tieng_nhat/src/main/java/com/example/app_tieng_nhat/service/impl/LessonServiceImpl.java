@@ -32,9 +32,10 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lessons> getAllLessonByLevelAndTopic(GetLessonByTopicLevelRequest lesson) {
-        return lessonRepository.findByLevelIdAndTopicId(lesson.topic_id(),lesson.level_id());
+    public List<Lessons> getAllLessonByTopic(GetLessonByTopicLevelRequest lesson) {
+        return lessonRepository.findByTopicId(lesson.topic_id());
     }
+
 
     @Override
     public Lessons getLessonByID(Long id) {
@@ -43,14 +44,12 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lessons createLesson(CreateLessonRequest lesson) {
-        Optional<Levels> levels= levelRepository.findById(lesson.level_id());
         Optional<Topics> topics= topicRepository.findById(lesson.topic_id());
 
-        if(levels.isPresent() && topics.isPresent()){
+        if( topics.isPresent()){
             Lessons newLesson= new Lessons();
             newLesson.setId(lesson.id());
             newLesson.setTitle(lesson.title());
-            newLesson.setLevel(levels.get());
             newLesson.setTopic(topics.get());
             return lessonRepository.save(newLesson);
         }else {
@@ -62,14 +61,12 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public Lessons updateLesson(UpdateLessonRequest lessonRequest) {
         Optional<Lessons> checkLesson= lessonRepository.findById(lessonRequest.id());
-        Optional<Levels> levels = levelRepository.findById(lessonRequest.level_id());
         Optional<Topics> topics = topicRepository.findById(lessonRequest.topic_id());
 
         if(checkLesson.isPresent()){
             Lessons updateLesson= lessonRepository.findById(lessonRequest.id()).orElse(null);
             updateLesson.setTitle(lessonRequest.title());
             updateLesson.setTopic(topics.get());
-            updateLesson.setLevel(levels.get());
             return lessonRepository.save(updateLesson);
         }
         return null;
@@ -77,6 +74,6 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLesson(Long id) {
-
+        lessonRepository.deleteById(id);
     }
 }

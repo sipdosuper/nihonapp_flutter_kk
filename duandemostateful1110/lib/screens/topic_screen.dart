@@ -29,7 +29,7 @@ class _TopicScreenState extends State<TopicScreen> {
   void initState() {
     super.initState();
     futureTopics = fetchTopics();
-    topicService.createTopic(2, "Hom nay toi nghi hoc");
+    // topicService.createTopic(2, "Hom nay toi nghi hoc");
   }
 
   Future<List<Topic>> fetchTopics() async {

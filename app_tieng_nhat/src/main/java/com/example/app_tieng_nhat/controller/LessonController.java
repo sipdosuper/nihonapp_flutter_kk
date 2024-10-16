@@ -23,7 +23,7 @@ public class LessonController {
 
     @GetMapping("/getByTopicLevel")
     public List<Lessons>getAllLessonByLevelAndTopic(@RequestBody GetLessonByTopicLevelRequest lesson){
-        return lessonService.getAllLessonByLevelAndTopic(lesson);
+        return lessonService.getAllLessonByTopic(lesson);
     }
 
     @GetMapping("/{id}")

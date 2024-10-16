@@ -24,11 +24,6 @@ public class Lessons {
 
     private String title;
 
-    @ManyToOne
-    @JsonBackReference("level-lesson")
-    @JsonIgnoreProperties("lesson")
-    @JoinColumn(name = "level_id", nullable = false)
-    private Levels level;
 
     @ManyToOne
     @JsonBackReference("topic-lesson")

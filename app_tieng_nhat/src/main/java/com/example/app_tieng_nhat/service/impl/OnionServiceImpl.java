@@ -22,8 +22,6 @@ public class OnionServiceImpl implements OnionService {
     @Autowired
     private OnionRepository onionRepository;
     @Autowired
-    private LevelRepository levelRepository;
-    @Autowired
     private TopicRepository topicRepository;
 
     @Override
@@ -32,8 +30,8 @@ public class OnionServiceImpl implements OnionService {
     }
 
     @Override
-    public List<Onion> getAllOnionByLevelAndTopic(Long level, Long topic) {
-        return onionRepository.findByLevelIdAndTopicId(level, topic);
+    public List<Onion> getAllOnionByTopic(Long topic) {
+        return onionRepository.findByTopicId(topic);
     }
 
     @Override
@@ -43,16 +41,14 @@ public class OnionServiceImpl implements OnionService {
 
     @Override
     public Onion createOnion(CreateOnionRequest onionRequest) {
-        Optional<Levels> levels= levelRepository.findById(onionRequest.level_id());
         Optional<Topics> topics= topicRepository.findById(onionRequest.topic_id());
 
-        if(levels.isPresent()&&topics.isPresent()){
+        if(topics.isPresent()){
             Onion newOnion= new Onion();
             newOnion.setId(onionRequest.id());
             newOnion.setTitle(onionRequest.title());
             newOnion.setContent(onionRequest.content());
             newOnion.setTopic(topics.get());
-            newOnion.setLevel(levels.get());
             return onionRepository.save(newOnion);
         }
         return null;
@@ -61,15 +57,13 @@ public class OnionServiceImpl implements OnionService {
     @Override
     public Onion updateOnion(CreateOnionRequest onionRequest) {
         Optional<Onion> checkOnion= onionRepository.findById(onionRequest.id());
-        Optional<Levels> levels= levelRepository.findById(onionRequest.level_id());
         Optional<Topics> topics= topicRepository.findById(onionRequest.topic_id());
-        if(checkOnion.isPresent()&& levels.isPresent()&& topics.isPresent()){
+        if(checkOnion.isPresent()&& topics.isPresent()){
             Onion updateOnion= new Onion();
             updateOnion.setId(onionRequest.id());
             updateOnion.setTitle(onionRequest.title());
             updateOnion.setContent(onionRequest.content());
             updateOnion.setTopic(topics.get());
-            updateOnion.setLevel(levels.get());
             return onionRepository.save(updateOnion);
         }
         return null;

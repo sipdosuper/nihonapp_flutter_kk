@@ -26,7 +26,7 @@ public class Users {
     private String username;
 
     private String email;
-    @JsonIgnore
+
     private String password;
     @JsonIgnore
     private Boolean sex;

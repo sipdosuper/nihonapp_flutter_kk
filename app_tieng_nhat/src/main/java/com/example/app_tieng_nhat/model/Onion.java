@@ -24,11 +24,6 @@ public class Onion {
     private String title;
     private String content;
 
-    @ManyToOne
-    @JsonBackReference("level-onion")
-    @JsonIgnoreProperties("onion")
-    @JoinColumn(name = "level_id", nullable = false)
-    private Levels level;
 
     @ManyToOne
     @JsonBackReference("topic-onion")

@@ -1,5 +1,7 @@
 package com.example.app_tieng_nhat.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,6 +20,12 @@ public class Topics {
     private Long id;
 
     private String name;
+
+    @ManyToOne
+    @JsonBackReference("level-topic")
+    @JsonIgnoreProperties("topic")
+    @JoinColumn(name = "level_id", nullable = false)
+    private Levels level;
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     @JsonManagedReference("topic-lesson")

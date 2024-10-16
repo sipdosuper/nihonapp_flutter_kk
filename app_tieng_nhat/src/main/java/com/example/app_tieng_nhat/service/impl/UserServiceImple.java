@@ -55,14 +55,16 @@ public class UserServiceImple implements UserService {
                 String password= hashingService.hashWithSHA256(signUpUser.password());
                 user.setPassword(password);
                 user.setRole(checkRole.get());
-                return  (Users) userRepository.save(user);
+                return  userRepository.save(user);
             }
             else {
                 return null;
             }
-        }catch (Exception e){}
+        }catch (Exception e){
 
-        return null;
+            return null;
+        }
+
     }
 
     @Override

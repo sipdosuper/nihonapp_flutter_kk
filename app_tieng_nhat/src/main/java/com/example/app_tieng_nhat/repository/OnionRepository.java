@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface OnionRepository extends JpaRepository<Onion,Long> {
-    List<Onion> findByLevelIdAndTopicId(Long levelId, Long topicId);
+    List<Onion> findByTopicId( Long topicId);
 }

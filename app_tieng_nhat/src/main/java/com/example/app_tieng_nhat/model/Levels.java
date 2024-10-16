@@ -23,11 +23,8 @@ public class Levels {
     private String name;
 
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("level-lesson")
-    private Set<Lessons> lessons;
+    @JsonManagedReference("level-topic")
+    private Set<Topics> topics;
 
-    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("level-onion")
-    private Set<Onion> onions;
 
 }

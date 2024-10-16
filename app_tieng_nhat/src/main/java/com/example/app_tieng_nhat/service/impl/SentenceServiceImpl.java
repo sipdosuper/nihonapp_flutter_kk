@@ -8,14 +8,14 @@ import com.example.app_tieng_nhat.repository.LessonRepository;
 import com.example.app_tieng_nhat.repository.OnionRepository;
 import com.example.app_tieng_nhat.repository.SentenceRepository;
 import com.example.app_tieng_nhat.request.CreateUpdateSentenceRequest;
+import com.example.app_tieng_nhat.request.GetSentenceByLessonIdRequest;
 import com.example.app_tieng_nhat.request.GetSentenceByLessonOnion;
+import com.example.app_tieng_nhat.request.GetSentenceByOnionRequest;
 import com.example.app_tieng_nhat.service.SentenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SentenceServiceImpl implements SentenceService {
@@ -49,6 +49,24 @@ public class SentenceServiceImpl implements SentenceService {
     }
 
     @Override
+    public List<Sentence> getSentenceByLessonId(GetSentenceByLessonIdRequest lessonIdRequest) {
+        Optional<Lessons> checkLesson= lessonRepository.findById(lessonIdRequest.lesson_id());
+        if(checkLesson.isPresent()){
+            return sentenceRepository.findSentenceByLessonId(lessonIdRequest.lesson_id());
+        }
+        return null;
+    }
+
+    @Override
+    public List<Sentence> getSentenceByOnionId(GetSentenceByOnionRequest onionRequest) {
+        Optional<Lessons> checkLesson= lessonRepository.findById(onionRequest.onion_id());
+        if(checkLesson.isPresent()){
+            return sentenceRepository.findSentenceByLessonId(onionRequest.onion_id());
+        }
+        return null;
+    }
+
+    @Override
     public Optional<Sentence> getSentenceById(Long id) {
         return sentenceRepository.findById(id);
     }
@@ -63,6 +81,7 @@ public class SentenceServiceImpl implements SentenceService {
             newsentence.setWord(sentenceRequest.word());
             newsentence.setMeaning(sentenceRequest.meaning());
             newsentence.setTranscription(sentenceRequest.transcription());
+            newsentence.setAnswer(sentenceRequest.answer());
             newsentence.setLesson(lessons.get());
             newsentence.setOnion(onion.get());
             return sentenceRepository.save(newsentence);

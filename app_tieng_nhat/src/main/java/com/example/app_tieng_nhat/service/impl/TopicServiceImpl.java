@@ -1,6 +1,8 @@
 package com.example.app_tieng_nhat.service.impl;
 
+import com.example.app_tieng_nhat.model.Levels;
 import com.example.app_tieng_nhat.model.Topics;
+import com.example.app_tieng_nhat.repository.LevelRepository;
 import com.example.app_tieng_nhat.repository.TopicRepository;
 import com.example.app_tieng_nhat.request.CreateTopicRequest;
 import com.example.app_tieng_nhat.request.UpdateTopicRequest;
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class TopicServiceImpl implements TopicService {
     @Autowired
     private TopicRepository topicRepository;
+    @Autowired
+    private LevelRepository levelRepository;
     @Override
     public List<Topics> getAllTopic() {
         return topicRepository.findAll();
@@ -22,16 +26,18 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topics getTopicByID(Long id) {
-        return null;
+        return topicRepository.findById(id).orElse(null);
     }
 
     @Override
     public Topics createTopic(CreateTopicRequest topic) {
+        Optional<Levels> levels= levelRepository.findById(topic.level_id());
         Optional<Topics> check= topicRepository.findById(topic.id());
-        if(check.isEmpty()){
+        if(check.isEmpty()&& levels.isPresent()){
             Topics newtopic= new Topics();
             newtopic.setId(topic.id());
             newtopic.setName(topic.name());
+            newtopic.setLevel(levels.get());
             return (Topics) topicRepository.save(newtopic);
         }
         return  null;
@@ -51,6 +57,6 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public void deleteTopic(Long id) {
-
+        topicRepository.deleteById(id);
     }
 }

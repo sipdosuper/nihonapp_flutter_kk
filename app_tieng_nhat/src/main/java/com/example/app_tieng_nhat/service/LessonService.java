@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public interface LessonService {
     List<Lessons> getAllLesson();
-    List<Lessons> getAllLessonByLevelAndTopic(GetLessonByTopicLevelRequest lesson);
+    List<Lessons> getAllLessonByTopic(GetLessonByTopicLevelRequest lesson);
     Lessons getLessonByID(Long id);
     Lessons createLesson(CreateLessonRequest lesson);
     Lessons updateLesson(UpdateLessonRequest lessonRequest);
