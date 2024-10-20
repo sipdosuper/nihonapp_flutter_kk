@@ -14,4 +14,5 @@ public interface VocabularyService {
     Vocabularies createVocabularies(CreateVocabularyRequest vocabularyRequest);
     Vocabularies updateVocabularies(UpdateVocabularyRequest vocabularyRequest);
     void deleteVocabularies(Long id);
+    Vocabularies getByWord(String w);
 }

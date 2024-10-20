@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VolucabularyRepository extends JpaRepository<Vocabularies,Long> {
+    Vocabularies findByWord(String word);
 }

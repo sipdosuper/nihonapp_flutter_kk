@@ -1,12 +1,10 @@
 package com.example.app_tieng_nhat.service.impl;
 
-import com.example.app_tieng_nhat.model.Lessons;
-import com.example.app_tieng_nhat.model.Levels;
-import com.example.app_tieng_nhat.model.Onion;
-import com.example.app_tieng_nhat.model.Sentence;
+import com.example.app_tieng_nhat.model.*;
 import com.example.app_tieng_nhat.repository.LessonRepository;
 import com.example.app_tieng_nhat.repository.OnionRepository;
 import com.example.app_tieng_nhat.repository.SentenceRepository;
+import com.example.app_tieng_nhat.repository.VolucabularyRepository;
 import com.example.app_tieng_nhat.request.CreateUpdateSentenceRequest;
 import com.example.app_tieng_nhat.request.GetSentenceByLessonIdRequest;
 import com.example.app_tieng_nhat.request.GetSentenceByLessonOnion;
@@ -25,6 +23,8 @@ public class SentenceServiceImpl implements SentenceService {
     private LessonRepository lessonRepository;
     @Autowired
     private OnionRepository onionRepository;
+    @Autowired
+    private VolucabularyRepository volucabularyRepository;
 
     @Override
     public List<Sentence> getAllSentence() {
@@ -84,6 +84,8 @@ public class SentenceServiceImpl implements SentenceService {
             newsentence.setAnswer(sentenceRequest.answer());
             newsentence.setLesson(lessons.get());
             newsentence.setOnion(onion.get());
+            Set<Vocabularies> vocabulariesSet=findVocabularyWithSentence(sentenceRequest.word());
+            newsentence.setVocabularies(vocabulariesSet);
             return sentenceRepository.save(newsentence);
         }
         return null;
@@ -95,6 +97,7 @@ public class SentenceServiceImpl implements SentenceService {
         Optional<Lessons> lessons= lessonRepository.findById(sentenceRequest.lesson_id());
         Optional<Onion> onion= onionRepository.findById(sentenceRequest.onion_id());
         if(checkSentence.isPresent()&& lessons.isPresent()&& onion.isPresent()){
+
             Sentence newsentence= new Sentence();
             newsentence.setId(sentenceRequest.id());
             newsentence.setWord(sentenceRequest.word());
@@ -103,9 +106,25 @@ public class SentenceServiceImpl implements SentenceService {
             newsentence.setAnswer(sentenceRequest.answer());
             newsentence.setLesson(lessons.get());
             newsentence.setOnion(onion.get());
+            Set<Vocabularies> vocabulariesSet=findVocabularyWithSentence(sentenceRequest.word());
+            newsentence.setVocabularies(vocabulariesSet);
             return sentenceRepository.save(newsentence);
         }
         return null;
+    }
+    private Set<Vocabularies> findVocabularyWithSentence(String word){
+        String[] words = word.split(" ");
+
+        Set<Vocabularies> vocabularies = new HashSet<>();
+
+        // Step 2: Find vocabularies for each word
+        for (String w : words) {
+            Vocabularies vocab = volucabularyRepository.findByWord(w);
+            if (vocab != null) {
+                vocabularies.add(vocab);
+            }
+        }
+        return vocabularies;
     }
 
     @Override

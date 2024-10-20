@@ -29,7 +29,7 @@ public class UserController {
         return  userService.getUserByID(id);
     }
 
-    @GetMapping("/signIn")
+    @PostMapping("/signIn")
     public String signIn(@RequestBody SignInRequest request){
         return userService.signIn(request);
     }

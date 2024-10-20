@@ -10,10 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vocalbulary")
+@RequestMapping("/api/vocabulary")
 public class VocalbularyController {
     @Autowired
     private VocabularyService vocabularyService;
+
+    @GetMapping("/get/{w}")
+    public Vocabularies getByWord(@PathVariable String w){
+        return vocabularyService.getByWord(w);
+    }
 
     @GetMapping
     public List<Vocabularies> getAllLesson(){

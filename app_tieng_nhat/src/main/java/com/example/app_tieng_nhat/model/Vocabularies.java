@@ -26,9 +26,9 @@ public class Vocabularies {
     private String example;
     private String transcription;
 
-    @ManyToOne
-    @JoinColumn(name = "sentence_id", nullable = false)
-    @JsonBackReference("sentence-vocabularies")
-    @JsonIgnoreProperties("vocabularies")
-    private Sentence sentence;
+//    @ManyToOne
+//    @JoinColumn(name = "sentence_id", nullable = false)
+//    @JsonBackReference("sentence-vocabularies")
+//    @JsonIgnoreProperties("vocabularies")
+//    private Sentence sentence;
 }

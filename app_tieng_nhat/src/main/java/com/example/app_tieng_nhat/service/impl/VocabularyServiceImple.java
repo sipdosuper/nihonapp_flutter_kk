@@ -31,15 +31,16 @@ public class VocabularyServiceImple implements VocabularyService {
 
     @Override
     public Vocabularies createVocabularies(CreateVocabularyRequest vocabularyRequest) {
-        Optional<Sentence> sentence= sentenceRepository.findById(vocabularyRequest.sentence_id());
-        if(sentence.isPresent()){
+//        Optional<Sentence> sentence= sentenceRepository.findById(vocabularyRequest.sentence_id());
+        Optional<Vocabularies> check= volucabularyRepository.findById(vocabularyRequest.id());
+        if(check.isEmpty()){
             Vocabularies vocabularies= new Vocabularies();
             vocabularies.setId(vocabularyRequest.id());
             vocabularies.setWord(vocabularyRequest.word());
             vocabularies.setMeaning(vocabularyRequest.meaning());
             vocabularies.setTranscription(vocabularyRequest.transcription());
             vocabularies.setExample(vocabularyRequest.example());
-            vocabularies.setSentence(sentence.get());
+//            vocabularies.setSentence(sentence.get());
             return volucabularyRepository.save(vocabularies);
         }
         return null;
@@ -55,7 +56,7 @@ public class VocabularyServiceImple implements VocabularyService {
             vocabularies.setMeaning(vocabularyRequest.meaning());
             vocabularies.setTranscription(vocabularyRequest.transcription());
             vocabularies.setExample(vocabularyRequest.example());
-            vocabularies.setSentence(sentence.get());
+//            vocabularies.setSentence(sentence.get());
             return volucabularyRepository.save(vocabularies);
         }
         return null;
@@ -64,5 +65,10 @@ public class VocabularyServiceImple implements VocabularyService {
     @Override
     public void deleteVocabularies(Long id) {
         volucabularyRepository.deleteById(id);
+    }
+
+    @Override
+    public Vocabularies getByWord(String w) {
+        return volucabularyRepository.findByWord(w);
     }
 }

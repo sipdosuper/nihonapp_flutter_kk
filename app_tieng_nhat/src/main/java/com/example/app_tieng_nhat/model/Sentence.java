@@ -39,8 +39,9 @@ public class Sentence {
     @JsonIgnoreProperties("sentence")
     private Lessons lesson;
 
-    @OneToMany(mappedBy = "sentence", cascade = CascadeType.ALL)
-    @JsonManagedReference("sentence-vocabularies")
+//    @OneToMany(mappedBy = "sentence", cascade = CascadeType.ALL)
+//    @JsonManagedReference("sentence-vocabularies")
+    @ElementCollection
     private Set<Vocabularies> vocabularies;
 
 }
