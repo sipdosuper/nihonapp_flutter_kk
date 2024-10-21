@@ -2,13 +2,13 @@ package com.example.app_tieng_nhat.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -39,9 +39,12 @@ public class Sentence {
     @JsonIgnoreProperties("sentence")
     private Lessons lesson;
 
-//    @OneToMany(mappedBy = "sentence", cascade = CascadeType.ALL)
-//    @JsonManagedReference("sentence-vocabularies")
-    @ElementCollection
-    private Set<Vocabularies> vocabularies;
+    @ManyToMany
+    @JoinTable(
+            name = "sentence_vocabularies",
+            joinColumns = @JoinColumn(name = "sentence_id"),
+            inverseJoinColumns = @JoinColumn(name = "vocabulary_id")
+    )
+    private Set<Vocabularies> litsvocabulary = new HashSet<>();
 
 }

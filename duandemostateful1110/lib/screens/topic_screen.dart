@@ -39,19 +39,16 @@ class _TopicScreenState extends State<TopicScreen> {
 
     if (response.statusCode == 200) {
       // Parse JSON từ response
-      body = json.decode(response.body);
+      body = json.decode(utf8.decode(response.bodyBytes));
       print(body);
       List<Topic> topics =
           body.map((dynamic item) => Topic.fromJson(item)).toList();
       print(topics.length);
       List<Lesson> lessons = topics[0].lessons;
-      // body.map((dynamic item) => Lesson.fromJson(item)).toList();
-      print(lessons);
       List<Sentence> sentences = lessons[0].sentence;
-
+      print(sentences);
       setState(() {
         lsttopic = topics;
-        lstLesson = lessons;
         lstSentence = sentences;
       });
       return topics;

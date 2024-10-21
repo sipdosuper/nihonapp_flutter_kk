@@ -26,6 +26,7 @@ public class SentenceServiceImpl implements SentenceService {
     @Autowired
     private VolucabularyRepository volucabularyRepository;
 
+
     @Override
     public List<Sentence> getAllSentence() {
         return sentenceRepository.findAll();
@@ -84,9 +85,14 @@ public class SentenceServiceImpl implements SentenceService {
             newsentence.setAnswer(sentenceRequest.answer());
             newsentence.setLesson(lessons.get());
             newsentence.setOnion(onion.get());
+
             Set<Vocabularies> vocabulariesSet=findVocabularyWithSentence(sentenceRequest.word());
-            newsentence.setVocabularies(vocabulariesSet);
-            return sentenceRepository.save(newsentence);
+            if(vocabulariesSet.isEmpty()){
+                return null;
+            }
+            newsentence.setLitsvocabulary(vocabulariesSet);
+            Sentence saveSentence= sentenceRepository.save(newsentence);
+            return saveSentence;
         }
         return null;
     }
@@ -107,15 +113,18 @@ public class SentenceServiceImpl implements SentenceService {
             newsentence.setLesson(lessons.get());
             newsentence.setOnion(onion.get());
             Set<Vocabularies> vocabulariesSet=findVocabularyWithSentence(sentenceRequest.word());
-            newsentence.setVocabularies(vocabulariesSet);
-            return sentenceRepository.save(newsentence);
+            newsentence.setLitsvocabulary(vocabulariesSet);
+            Sentence saveSentence= sentenceRepository.save(newsentence);
+            return saveSentence;
         }
         return null;
     }
     private Set<Vocabularies> findVocabularyWithSentence(String word){
-        String[] words = word.split(" ");
+//        String[] words = word.split(" ");
+        String[] words = word.split("　");
 
-        Set<Vocabularies> vocabularies = new HashSet<>();
+//        String[] words = word.trim().split("\\s+");
+        Set<Vocabularies> vocabularies = new HashSet<Vocabularies>();
 
         // Step 2: Find vocabularies for each word
         for (String w : words) {
@@ -126,6 +135,7 @@ public class SentenceServiceImpl implements SentenceService {
         }
         return vocabularies;
     }
+
 
     @Override
     public void deleteSentence(Long id) {

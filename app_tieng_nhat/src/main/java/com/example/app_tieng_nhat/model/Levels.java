@@ -17,7 +17,6 @@ import java.util.Set;
 @Table(name = "level")
 public class Levels {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;

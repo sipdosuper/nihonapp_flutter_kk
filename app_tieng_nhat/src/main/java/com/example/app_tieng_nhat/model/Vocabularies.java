@@ -2,12 +2,17 @@ package com.example.app_tieng_nhat.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,9 +31,9 @@ public class Vocabularies {
     private String example;
     private String transcription;
 
-//    @ManyToOne
-//    @JoinColumn(name = "sentence_id", nullable = false)
-//    @JsonBackReference("sentence-vocabularies")
-//    @JsonIgnoreProperties("vocabularies")
-//    private Sentence sentence;
+    @ManyToMany(mappedBy = "litsvocabulary")
+    @JsonIgnore
+    private Set<Sentence> sentences = new HashSet<>();
+
+
 }
