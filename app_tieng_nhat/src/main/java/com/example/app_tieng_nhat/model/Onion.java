@@ -20,7 +20,6 @@ import java.util.Set;
 @Table(name = "onion")
 public class Onion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String content;

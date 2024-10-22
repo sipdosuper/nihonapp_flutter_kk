@@ -6,6 +6,7 @@ import com.example.app_tieng_nhat.request.UpdateTopicRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public interface TopicService {
@@ -13,5 +14,6 @@ public interface TopicService {
     Topics getTopicByID(Long id);
     Topics createTopic(CreateTopicRequest topic);
     Topics updateTopic(UpdateTopicRequest topicRequest);
+    List<Topics> getByLevelId(Long id);
     void deleteTopic(Long id);
 }

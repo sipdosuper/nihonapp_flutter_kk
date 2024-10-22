@@ -1,6 +1,7 @@
 package com.example.app_tieng_nhat.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -16,7 +17,6 @@ import java.util.Set;
 @Table(name = "topic")
 public class Topics {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -33,5 +33,6 @@ public class Topics {
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     @JsonManagedReference("topic-onion")
+    @JsonIgnore
     private Set<Onion> onions;
 }

@@ -25,6 +25,11 @@ public class TopicController {
         return  topicService.getTopicByID(id);
     }
 
+    @GetMapping("/getByLevel/{id}")
+    public List<Topics> getTopicByLevelId(@PathVariable Long id){
+        return topicService.getByLevelId(id);
+    }
+
     @PostMapping
     public Topics createTopic(@RequestBody CreateTopicRequest topics){
         return topicService.createTopic(topics);

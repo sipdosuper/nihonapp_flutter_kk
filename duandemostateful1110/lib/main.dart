@@ -20,9 +20,9 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: LoginScreen(), // Khởi động với màn hình đăng nhập
+      home: LoginScreen(), // Khởi động với màn hình đăng nhập
       // home: LoginPage(),
-      home: WordChainGame(),
+      // home: WordChainGame(),
     );
   }
 }

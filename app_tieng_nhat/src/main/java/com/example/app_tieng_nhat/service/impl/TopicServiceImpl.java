@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -53,6 +54,11 @@ public class TopicServiceImpl implements TopicService {
             topicRepository.save(update);
         }
         return null;
+    }
+
+    @Override
+    public List<Topics> getByLevelId(Long id) {
+        return topicRepository.getByLevelId(id);
     }
 
     @Override
