@@ -21,4 +21,5 @@ public interface SentenceService  {
     Sentence createSentence(CreateUpdateSentenceRequest sentenceRequest);
     Sentence updateSentence(CreateUpdateSentenceRequest sentenceRequest);
     void deleteSentence(Long id);
+    String createReturnStr(CreateUpdateSentenceRequest sentenceRequest);
 }

@@ -40,6 +40,4 @@ public class Users {
     @JsonManagedReference("user-userProgress")
     @JsonIgnoreProperties("user")
     private Set<UserProgress> progress;
-
-
 }

@@ -11,6 +11,8 @@ public class UserProgress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference("user-userProgress")
@@ -22,6 +24,4 @@ public class UserProgress {
     @JsonBackReference
     @JsonIgnoreProperties("userProgress")
     private Lessons lesson;
-
-    private String status;
 }

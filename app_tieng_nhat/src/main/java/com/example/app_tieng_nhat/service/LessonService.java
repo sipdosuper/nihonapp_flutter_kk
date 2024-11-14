@@ -16,5 +16,6 @@ public interface LessonService {
     Lessons createLesson(CreateLessonRequest lesson);
     Lessons updateLesson(UpdateLessonRequest lessonRequest);
     void deleteLesson(Long id);
-
+    String createReturnStr(CreateLessonRequest lessonRequest);
+    String updateReturnStr(UpdateLessonRequest lessonRequest);
 }

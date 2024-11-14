@@ -48,6 +48,10 @@ public class SentenceController {
     public Sentence createSentence(@RequestBody CreateUpdateSentenceRequest sentenceRequest){
         return sentenceService.createSentence(sentenceRequest);
     }
+    @PostMapping("/cre")
+    public String createSentenceReturnString(@RequestBody CreateUpdateSentenceRequest sentenceRequest){
+        return sentenceService.createReturnStr(sentenceRequest);
+    }
 
     @PutMapping
     public Sentence updateSentence(@RequestBody CreateUpdateSentenceRequest sentenceRequest){

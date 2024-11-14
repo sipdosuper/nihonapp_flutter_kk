@@ -76,4 +76,42 @@ public class LessonServiceImpl implements LessonService {
     public void deleteLesson(Long id) {
         lessonRepository.deleteById(id);
     }
+
+    @Override
+    public String createReturnStr(CreateLessonRequest lessonRequest) {
+        Optional<Topics> topics= topicRepository.findById(lessonRequest.topic_id());
+        Optional<Lessons> check= lessonRepository.findById(lessonRequest.id());
+        if(check.isPresent()){
+            return "Topic is exist! Try oder id";
+        }
+        if( topics.isEmpty()){
+            return "Topic is null!";
+
+        }
+        Lessons newLesson= new Lessons();
+        newLesson.setId(lessonRequest.id());
+        newLesson.setTitle(lessonRequest.title());
+        newLesson.setTopic(topics.get());
+        lessonRepository.save(newLesson);
+        return "Create Success";
+    }
+
+    @Override
+    public String updateReturnStr(UpdateLessonRequest lessonRequest) {
+        Optional<Lessons> checkLesson= lessonRepository.findById(lessonRequest.id());
+        Optional<Topics> topics = topicRepository.findById(lessonRequest.topic_id());
+
+        if(checkLesson.isEmpty()){
+            return "Lesson is not exist";
+        }
+        if(topics.isEmpty()){
+            return "Topic is not exist";
+        }
+        Lessons updateLesson= lessonRepository.findById(lessonRequest.id()).orElse(null);
+        updateLesson.setTitle(lessonRequest.title());
+        updateLesson.setTopic(topics.get());
+        lessonRepository.save(updateLesson);
+        return "Update success";
+
+    }
 }

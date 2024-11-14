@@ -23,17 +23,13 @@ public class Lessons {
 
     private String title;
 
-
     @ManyToOne
     @JsonBackReference("topic-lesson")
     @JoinColumn(name = "topic_id", nullable = false)
     @JsonIgnoreProperties("lesson")
     private Topics topic;
 
-
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
     @JsonManagedReference("lesson-sentence")
     private Set<Sentence> sentences;
-
-
 }

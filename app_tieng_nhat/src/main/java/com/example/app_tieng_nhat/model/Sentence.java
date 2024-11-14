@@ -46,5 +46,4 @@ public class Sentence {
             inverseJoinColumns = @JoinColumn(name = "vocabulary_id")
     )
     private Set<Vocabularies> litsvocabulary = new HashSet<>();
-
 }

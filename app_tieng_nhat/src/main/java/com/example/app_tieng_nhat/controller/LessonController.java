@@ -36,13 +36,24 @@ public class LessonController {
         return lessonService.createLesson(lessons);
     }
 
-    @PutMapping("/update/{id}")
+    //Create lesson and return a String
+    @PostMapping("/cre")
+    public String createLessonReturnString(@RequestBody CreateLessonRequest lessonRequest){
+        return lessonService.createReturnStr(lessonRequest);
+    }
+
+    @PutMapping
     public Lessons updateLesson(@RequestBody UpdateLessonRequest lessonRequest){
         return lessonService.updateLesson(lessonRequest);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteLesson(Long id){
+    @PutMapping("/up")
+    public String updateLessonReturnString(@RequestBody UpdateLessonRequest lessonRequest){
+        return lessonService.updateReturnStr(lessonRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteLesson(@PathVariable Long id){
         lessonService.deleteLesson(id);
     }
 

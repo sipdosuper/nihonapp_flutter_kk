@@ -21,7 +21,6 @@ import java.util.Set;
 @Entity
 @Table(name = "vocabularies")
 public class Vocabularies {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +33,4 @@ public class Vocabularies {
     @ManyToMany(mappedBy = "litsvocabulary")
     @JsonIgnore
     private Set<Sentence> sentences = new HashSet<>();
-
-
 }

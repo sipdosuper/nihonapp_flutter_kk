@@ -141,4 +141,31 @@ public class SentenceServiceImpl implements SentenceService {
     public void deleteSentence(Long id) {
         sentenceRepository.deleteById(id);
     }
+
+    @Override
+    public String createReturnStr(CreateUpdateSentenceRequest sentenceRequest) {
+        Optional<Lessons> lessons= lessonRepository.findById(sentenceRequest.lesson_id());
+        Optional<Onion> onion= onionRepository.findById(sentenceRequest.onion_id());
+        Optional<Sentence> check = sentenceRepository.findById(sentenceRequest.id());
+        if(lessons.isEmpty())return  "Lesson is not exist!";
+        if (onion.isEmpty())return "Onion is not exist!";
+        if(check.isPresent())return "Sentence_id is exist!";
+        Sentence newsentence= new Sentence();
+        newsentence.setId(sentenceRequest.id());
+        newsentence.setWord(sentenceRequest.word());
+        newsentence.setMeaning(sentenceRequest.meaning());
+        newsentence.setTranscription(sentenceRequest.transcription());
+        newsentence.setAnswer(sentenceRequest.answer());
+        newsentence.setLesson(lessons.get());
+        newsentence.setOnion(onion.get());
+
+        Set<Vocabularies> vocabulariesSet=findVocabularyWithSentence(sentenceRequest.word());
+        if(vocabulariesSet.isEmpty()){
+            return "Error don't find vocabulary for this sentence";
+        }
+        newsentence.setLitsvocabulary(vocabulariesSet);
+        sentenceRepository.save(newsentence);
+
+        return "create sentence success";
+    }
 }
