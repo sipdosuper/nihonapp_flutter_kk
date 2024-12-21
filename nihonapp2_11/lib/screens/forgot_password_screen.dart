@@ -11,11 +11,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _sendResetLink() {
     if (_formKey.currentState!.validate()) {
-      // Gửi email reset mật khẩu (đoạn này sẽ được thay bằng API thực tế)
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đã gửi liên kết đặt lại mật khẩu đến ${_emailController.text}')),
+        SnackBar(
+          content: Text(
+            'Đã gửi liên kết đặt lại mật khẩu đến ${_emailController.text}',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xFFE57373),
+        ),
       );
-      // Quay lại màn hình đăng nhập
       Navigator.pop(context);
     }
   }
@@ -25,16 +29,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Quên Mật Khẩu'),
+        backgroundColor: Color(0xFFE57373), // Màu đỏ nhẹ
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.white, // Nền trắng
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Nhập địa chỉ email'),
+                decoration: InputDecoration(
+                  labelText: 'Nhập địa chỉ email',
+                  prefixIcon: Icon(Icons.email, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Vui lòng nhập địa chỉ email';
@@ -45,7 +60,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _sendResetLink,
-                child: Text('Gửi liên kết đặt lại'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFE57373), // Màu đỏ nhẹ
+                  padding:
+                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'Gửi liên kết đặt lại',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ],
           ),

@@ -10,7 +10,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
 
-  // Các biến lưu thông tin đăng ký
   int id = 0;
   String username = '';
   String email = '';
@@ -19,10 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String rePassword = '';
   int roleId = 1;
 
-  // Hàm xử lý logic đăng ký
   void _register() async {
     if (_formKey.currentState!.validate()) {
-      // Gọi API đăng ký
       bool success = await _authService.register(
         id: id,
         email: email,
@@ -33,125 +30,169 @@ class _RegisterScreenState extends State<RegisterScreen> {
         roleId: roleId,
       );
 
-      // Hiển thị thông báo tùy thuộc vào kết quả đăng ký
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đăng ký thất bại. Vui lòng thử lại!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đăng ký thành công!')),
-        );
-        Navigator.pop(
-            context); // Quay lại màn hình trước đó hoặc màn hình đăng nhập
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success
+                ? 'Đăng ký thành công!'
+                : 'Đăng ký thất bại. Vui lòng thử lại!',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: success ? Colors.green : Color(0xFFE57373),
+        ),
+      );
+
+      if (success) Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Tạo tài khoản')),
-      body: Padding(
+      appBar: AppBar(
+        title: Text('Tạo tài khoản'),
+        backgroundColor: Color(0xFFE57373), // Màu đỏ nhẹ cho AppBar
+      ),
+      body: Container(
+        color: Colors.white, // Nền trắng
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'ID'),
+                decoration: InputDecoration(
+                  labelText: 'ID',
+                  prefixIcon: Icon(Icons.badge, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập ID';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  id = int.tryParse(value) ?? 0;
-                },
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Vui lòng nhập ID' : null,
+                onChanged: (value) => id = int.tryParse(value) ?? 0,
               ),
+              SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Tên tài khoản'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập tên tài khoản';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  username = value;
-                },
+                decoration: InputDecoration(
+                  labelText: 'Tên tài khoản',
+                  prefixIcon: Icon(Icons.person, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Vui lòng nhập tên tài khoản'
+                    : null,
+                onChanged: (value) => username = value,
               ),
+              SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập email';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  email = value;
-                },
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Vui lòng nhập email'
+                    : null,
+                onChanged: (value) => email = value,
               ),
+              SizedBox(height: 20),
               DropdownButtonFormField<bool>(
-                decoration: InputDecoration(labelText: 'Giới tính'),
+                decoration: InputDecoration(
+                  labelText: 'Giới tính',
+                  prefixIcon: Icon(Icons.transgender, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
                 value: sex,
                 items: [
                   DropdownMenuItem(value: true, child: Text('Nam')),
                   DropdownMenuItem(value: false, child: Text('Nữ')),
                 ],
-                onChanged: (value) {
-                  setState(() {
-                    sex = value ?? true;
-                  });
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Mật khẩu'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.length < 6) {
-                    return 'Mật khẩu phải dài ít nhất 6 ký tự';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  password = value;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Nhập lại mật khẩu'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value != password) {
-                    return 'Mật khẩu nhập lại không khớp';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  rePassword = value;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Role ID'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập Role ID';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  roleId = int.tryParse(value) ?? 1;
-                },
+                onChanged: (value) => setState(() => sex = value ?? true),
               ),
               SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Mật khẩu',
+                  prefixIcon: Icon(Icons.lock, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
+                obscureText: true,
+                validator: (value) => value == null || value.length < 6
+                    ? 'Mật khẩu phải dài ít nhất 6 ký tự'
+                    : null,
+                onChanged: (value) => password = value,
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Nhập lại mật khẩu',
+                  prefixIcon:
+                      Icon(Icons.lock_outline, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
+                obscureText: true,
+                validator: (value) => value == null || value != password
+                    ? 'Mật khẩu nhập lại không khớp'
+                    : null,
+                onChanged: (value) => rePassword = value,
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Role ID',
+                  prefixIcon:
+                      Icon(Icons.assignment_ind, color: Color(0xFFE57373)),
+                  labelStyle: TextStyle(color: Color(0xFFE57373)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Color(0xFFE57373)),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Vui lòng nhập Role ID'
+                    : null,
+                onChanged: (value) => roleId = int.tryParse(value) ?? 1,
+              ),
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _register,
-                child: Text('Đăng ký'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFE57373), // Màu đỏ nhẹ cho nút
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'Đăng ký',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ],
           ),

@@ -132,9 +132,10 @@ class _LearningScreenState extends State<LearningScreen> {
     final currentSentence = widget.sentences[_currentSentenceIndex];
 
     return Scaffold(
-      backgroundColor: Colors.teal.shade100, // Màu nền cho màn hình
+      backgroundColor:
+          const Color.fromARGB(255, 255, 255, 255), // Màu nền cho màn hình
       appBar: AppBar(
-        backgroundColor: Colors.teal.shade700, // Màu nền AppBar
+        backgroundColor: Color(0xFFE57373), // Màu nền AppBar
         title: Text(widget.lessonTitle, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 5, // Độ nổi của AppBar
@@ -149,14 +150,17 @@ class _LearningScreenState extends State<LearningScreen> {
               padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.teal.shade300, Colors.teal.shade400],
+                  colors: [
+                    const Color.fromARGB(255, 255, 255, 255),
+                    const Color.fromARGB(255, 255, 255, 255)
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.teal.shade400.withOpacity(0.5),
+                    color: Color(0xFFE57373).withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: Offset(0, 3),
@@ -167,7 +171,7 @@ class _LearningScreenState extends State<LearningScreen> {
                 children: [
                   Icon(
                     Icons.question_mark_rounded,
-                    color: Colors.white,
+                    color: const Color.fromARGB(255, 0, 0, 0),
                     size: 30,
                   ),
                   SizedBox(width: 10),
@@ -176,7 +180,7 @@ class _LearningScreenState extends State<LearningScreen> {
                       '$displaySentence',
                       style: TextStyle(
                         fontSize: 22,
-                        color: Colors.white,
+                        color: const Color.fromARGB(255, 0, 0, 0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -222,7 +226,7 @@ class _LearningScreenState extends State<LearningScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  backgroundColor: Colors.teal.shade500, // Nền nút
+                  backgroundColor: Color(0xFFE57373), // Nền nút
                   elevation: 5, // Bóng nổi của nút
                 ),
                 onPressed: _checkAnswer,

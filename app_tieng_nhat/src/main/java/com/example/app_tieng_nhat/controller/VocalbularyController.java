@@ -21,27 +21,32 @@ public class VocalbularyController {
     }
 
     @GetMapping
-    public List<Vocabularies> getAllLesson(){
+    public List<Vocabularies> getAllVocabulary(){
         return vocabularyService.getAllVocabularies();
     }
 
     @GetMapping("/{id}")
-    public Vocabularies getLessonByID(@PathVariable Long id){
+    public Vocabularies getVocabularyByID(@PathVariable Long id){
         return  vocabularyService.getVocabulariesByID(id);
     }
 
     @PostMapping
-    public Vocabularies createLesson(@RequestBody CreateVocabularyRequest vocabularyRequest){
+    public Vocabularies createVocabulary(@RequestBody CreateVocabularyRequest vocabularyRequest){
         return vocabularyService.createVocabularies(vocabularyRequest);
     }
 
+    @PostMapping("/multi_add")
+    public List<Vocabularies> multiCreateVOcabulary(@RequestBody List<Vocabularies> vocabularies){
+        return  vocabularyService.multiCreateVocabulary(vocabularies);
+    }
+
     @PutMapping
-    public Vocabularies updateLesson(@RequestBody UpdateVocabularyRequest vocabularyRequest){
+    public Vocabularies updateVocabulary(@RequestBody UpdateVocabularyRequest vocabularyRequest){
         return vocabularyService.updateVocabularies(vocabularyRequest);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLesson(@PathVariable Long id){
+    public void deleteVocabulary(@PathVariable Long id){
         vocabularyService.deleteVocabularies(id);
     }
 }

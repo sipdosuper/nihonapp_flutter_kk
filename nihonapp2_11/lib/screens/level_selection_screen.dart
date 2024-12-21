@@ -18,7 +18,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal.shade500,
+        backgroundColor: Color(0xFFE57373), // Màu đỏ nhạt
         title: Text(
           'Chọn Cấp Độ',
           style: TextStyle(
@@ -31,63 +31,53 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
         elevation: 0,
       ),
       body: Container(
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.teal.shade100, // Thay thế gradient bằng màu teal nhạt
-        ),
+        color: Colors.white, // Nền trắng
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildBlockItem('N5', 5, Colors.lightBlue.shade300,
-                Icons.directions_walk, 'Khởi đầu dễ dàng'),
-            _buildBlockItem('N4', 4, Colors.green.shade400,
-                Icons.directions_bike, 'Tiến bộ nhanh chóng'),
-            _buildBlockItem('N3', 3, Colors.yellow.shade600, Icons.motorcycle,
-                'Thách thức bắt đầu'),
-            _buildBlockItem('N2', 2, Colors.orange.shade600,
-                Icons.directions_car, 'Vượt qua thử thách'),
-            _buildBlockItem(
-                'N1', 1, Colors.red.shade600, Icons.flight, 'Đạt đến đỉnh cao'),
+            _buildLevelItem('N5', 5, Icons.directions_walk, 'Khởi đầu dễ dàng'),
+            _buildLevelItem(
+                'N4', 4, Icons.directions_bike, 'Tiến bộ nhanh chóng'),
+            _buildLevelItem('N3', 3, Icons.motorcycle, 'Thách thức bắt đầu'),
+            _buildLevelItem(
+                'N2', 2, Icons.directions_car, 'Vượt qua thử thách'),
+            _buildLevelItem('N1', 1, Icons.flight, 'Đạt đến đỉnh cao'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBlockItem(
-      String title, int level, Color color, IconData icon, String subtitle) {
+  Widget _buildLevelItem(
+      String title, int level, IconData icon, String subtitle) {
     return GestureDetector(
       onTap: () => _navigateToMainScreen(level),
       child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 8,
-              offset: Offset(0, 4),
-            ),
-          ],
+          border: Border.all(color: Color(0xFFE57373), width: 1), // Viền đỏ nhẹ
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Biểu tượng lớn
             Container(
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Color(0xFFE57373).withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 30,
-                color: Colors.white,
+                color: Color(0xFFE57373),
               ),
             ),
             SizedBox(width: 20),
+            // Nội dung tiêu đề và mô tả
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,24 +85,27 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
+                  SizedBox(height: 5),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 16,
-                      color: const Color.fromARGB(255, 255, 255, 255),
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
                     ),
                   ),
                 ],
               ),
             ),
+            // Nút điều hướng
             Icon(
               Icons.arrow_forward_ios,
-              color: Colors.white70,
+              size: 20,
+              color: Color(0xFFE57373),
             ),
           ],
         ),

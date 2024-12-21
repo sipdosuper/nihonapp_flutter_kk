@@ -12,64 +12,125 @@ class LessonListScreen extends StatelessWidget {
     final lessons = topic.lessons; // Lấy danh sách bài học từ chủ đề
 
     return Scaffold(
-      backgroundColor: Colors.teal.shade100, // Màu nền giống màn hình đầu tiên
-      appBar: AppBar(
-        backgroundColor:
-            Colors.teal.shade700, // Màu nền AppBar giống màn hình chủ đề
-        title: Text(
-          'Chủ đề: ${topic.name}', // Hiển thị tên của chủ đề
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: ListView.builder(
-        itemCount: lessons.length,
-        itemBuilder: (context, index) {
-          final lesson = lessons[index];
-
-          return Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: Card(
-              color: Colors.white.withOpacity(0.9), // Nền của mỗi Card bài học
-              elevation: 4, // Độ nổi của Card
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15), // Bo góc của Card
-              ),
-              child: ListTile(
-                leading: Icon(
-                  Icons.library_books,
-                  color: Colors.teal.shade800, // Màu của biểu tượng
-                  size: 30,
-                ),
-                title: Text(
-                  'Bài học: ${lesson.title}', // Hiển thị tiêu đề bài học
-                  style: TextStyle(
-                    color: Colors.teal.shade900, // Màu chữ của tiêu đề bài học
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                onTap: () {
-                  // Chuyển đến màn hình chi tiết bài học khi chọn một bài học
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LearningScreen(
-                        lessonTitle: lesson.title, // Truyền tiêu đề bài học
-                        sentences: lesson
-                            .sentence, // Truyền danh sách câu trong bài học (có thể cập nhật sau)
-                      ),
-                    ),
-                  );
-                },
+      backgroundColor: Colors.white, // Nền trắng
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Tên chủ đề
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Color(0xFFE57373), // Màu đỏ nhạt
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
             ),
-          );
-        },
+            child: Text(
+              'Chủ đề: ${topic.name}', // Hiển thị tên của chủ đề
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          // Danh sách bài học
+          Expanded(
+            child: ListView.builder(
+              itemCount: lessons.length,
+              itemBuilder: (context, index) {
+                final lesson = lessons[index];
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Chuyển đến màn hình chi tiết bài học
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LearningScreen(
+                            lessonTitle: lesson.title,
+                            sentences: lesson.sentence,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white, // Nền trắng
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: Color(0xFFE57373), // Viền đỏ nhạt
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          // Biểu tượng
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFE57373).withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.library_books,
+                              color: Color(0xFFE57373),
+                              size: 24,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // Nội dung
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Bài học: ${lesson.title}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Nhấp để xem chi tiết',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 18,
+                            color: Color(0xFFE57373),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

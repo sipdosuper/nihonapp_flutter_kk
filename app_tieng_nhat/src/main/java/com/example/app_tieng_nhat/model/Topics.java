@@ -33,6 +33,5 @@ public class Topics {
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     @JsonManagedReference("topic-onion")
-    @JsonIgnore
     private Set<Onion> onions;
 }

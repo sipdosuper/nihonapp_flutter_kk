@@ -28,9 +28,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal.shade100,
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        backgroundColor: Colors.teal.shade700,
+        backgroundColor: Color(0xFFE57373),
         title: Text(
           'Thông Tin Cá Nhân',
           style: TextStyle(
@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Card(
             color: Colors.white,
-            elevation: 5,
+            elevation: 10,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     'Tên tài khoản:',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.teal.shade700,
+                      color: Color(0xFFE57373),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _username,
                     style: TextStyle(
                       fontSize: 24,
-                      color: Colors.teal.shade900,
+                      color: const Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
                   Divider(height: 30, color: Colors.teal.shade300),
@@ -89,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     'Email:',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.teal.shade700,
+                      color: Color(0xFFE57373),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -98,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _email,
                     style: TextStyle(
                       fontSize: 24,
-                      color: Colors.teal.shade900,
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
                   Divider(height: 30, color: Colors.teal.shade300),
@@ -109,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal.shade600,
+                          backgroundColor: Color(0xFFE57373),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade400,
+                          backgroundColor: Color.fromARGB(255, 0, 0, 0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),

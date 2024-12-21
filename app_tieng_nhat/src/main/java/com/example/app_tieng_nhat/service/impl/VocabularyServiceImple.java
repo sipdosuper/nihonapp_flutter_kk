@@ -5,6 +5,7 @@ import com.example.app_tieng_nhat.model.Vocabularies;
 import com.example.app_tieng_nhat.repository.SentenceRepository;
 import com.example.app_tieng_nhat.repository.VolucabularyRepository;
 import com.example.app_tieng_nhat.request.CreateVocabularyRequest;
+import com.example.app_tieng_nhat.request.MutilCreateVocabulary;
 import com.example.app_tieng_nhat.request.UpdateVocabularyRequest;
 import com.example.app_tieng_nhat.service.VocabularyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,11 @@ public class VocabularyServiceImple implements VocabularyService {
             return volucabularyRepository.save(vocabularies);
         }
         return null;
+    }
+
+    @Override
+    public List<Vocabularies> multiCreateVocabulary(List<Vocabularies> vocabularies) {
+        return volucabularyRepository.saveAll(vocabularies);
     }
 
     @Override
