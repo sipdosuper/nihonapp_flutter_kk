@@ -5,6 +5,7 @@ import 'package:duandemo/screens/level_selection_screen.dart';
 import 'package:duandemo/screens/onionList_screen.dart';
 import 'package:duandemo/screens/onion_screen.dart';
 import 'package:duandemo/screens/onion_topic_screen.dart';
+import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart'; // Màn hình đăng nhập
@@ -35,16 +36,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Login to Dashboard App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginScreen(), // Khởi động với màn hình đăng nhập
-      //home: ChatHomescreen(),
-      //home: WordChainGame(),
-      // home: LevelSelectionScreen(),
-      //home: OnionTopicScreen(level: 5),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Login to Dashboard App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        // home: LoginScreen()); // Khởi động với màn hình đăng nhập
+        //home: ChatHomescreen(),
+        //home: WordChainGame(),
+        home: LevelSelectionScreen());
+    // home: OnionTopicScreen(level: 5));
+    // home: TopicScreen2(
+    //   level: 1,
+    // ));
   }
 }

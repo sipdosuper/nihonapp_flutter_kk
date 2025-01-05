@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -36,8 +37,7 @@ public class Users {
     @JoinColumn(name = "role_id", nullable = false)
     private Roles role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference("user-userProgress")
-    @JsonIgnoreProperties("user")
-    private Set<UserProgress> progress;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<UserProgress> userProgresses = new HashSet<>();
 }

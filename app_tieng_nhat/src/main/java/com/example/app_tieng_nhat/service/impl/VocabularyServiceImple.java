@@ -33,10 +33,9 @@ public class VocabularyServiceImple implements VocabularyService {
     @Override
     public Vocabularies createVocabularies(CreateVocabularyRequest vocabularyRequest) {
 //        Optional<Sentence> sentence= sentenceRepository.findById(vocabularyRequest.sentence_id());
-        Optional<Vocabularies> check= volucabularyRepository.findById(vocabularyRequest.id());
-        if(check.isEmpty()){
+        Vocabularies check= volucabularyRepository.findByWord(vocabularyRequest.word());
+        if(check==null){
             Vocabularies vocabularies= new Vocabularies();
-            vocabularies.setId(vocabularyRequest.id());
             vocabularies.setWord(vocabularyRequest.word());
             vocabularies.setMeaning(vocabularyRequest.meaning());
             vocabularies.setTranscription(vocabularyRequest.transcription());

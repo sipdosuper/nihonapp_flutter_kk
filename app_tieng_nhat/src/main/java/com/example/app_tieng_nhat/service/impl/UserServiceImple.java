@@ -5,7 +5,6 @@ import com.example.app_tieng_nhat.encode.HashingService;
 import com.example.app_tieng_nhat.model.Roles;
 import com.example.app_tieng_nhat.model.Users;
 import com.example.app_tieng_nhat.repository.RoleRepository;
-import com.example.app_tieng_nhat.repository.UserProgressRepository;
 import com.example.app_tieng_nhat.repository.UserRepository;
 import com.example.app_tieng_nhat.request.ForgotPasswordRequest;
 import com.example.app_tieng_nhat.request.SignInRequest;
@@ -45,10 +44,11 @@ public class UserServiceImple implements UserService {
         try{
             Optional<Roles> checkRole =roleRepository.findById(signUpUser.role_id());
             if (checkRole.isEmpty())return null;
-            Optional<Users> checkUser= userRepository.findById(signUpUser.id());
-            if(checkUser.isEmpty()){
+            Users checkUser= userRepository.findUserByEmail(signUpUser.email());
+//            Optional<Users>checkId= userRepository.findById(signUpUser.id());
+            if(checkUser==null){
                 Users user= new Users();
-                user.setId(signUpUser.id()) ;
+//                user.setId(signUpUser.id());
                 user.setUsername(signUpUser.username());
                 user.setEmail(signUpUser.email());
                 user.setSex(signUpUser.sex());
