@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -25,5 +27,11 @@ public class Levels {
     @JsonManagedReference("level-topic")
     private Set<Topics> topics;
 
-
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("level-class")
+    private Set<ClassRoom> classes;
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("level-registForm")
+    @JsonIgnore
+    private Set<TeacherRegistrationForm> teacherRegistrationForms= new HashSet<>();
 }

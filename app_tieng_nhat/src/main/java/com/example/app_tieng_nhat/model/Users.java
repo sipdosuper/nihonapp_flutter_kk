@@ -18,6 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "user")
 public class Users {
     @Id
@@ -40,4 +41,13 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<UserProgress> userProgresses = new HashSet<>();
+
+    @ManyToMany(mappedBy = "students")
+    @JsonIgnore
+    private Set<ClassRoom> classes=new HashSet<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<User_HomeWork> user_homeWorks=new HashSet<>();
+
 }
