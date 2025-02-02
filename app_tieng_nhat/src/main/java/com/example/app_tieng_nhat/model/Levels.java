@@ -31,7 +31,7 @@ public class Levels {
     @JsonManagedReference("level-class")
     private Set<ClassRoom> classes;
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("level-registForm")
+    @JsonManagedReference("level-regisForm")
     @JsonIgnore
     private Set<TeacherRegistrationForm> teacherRegistrationForms= new HashSet<>();
 }

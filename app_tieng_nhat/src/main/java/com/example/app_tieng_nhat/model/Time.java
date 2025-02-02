@@ -28,7 +28,7 @@ public class Time {
     @JsonIgnore
     private Set<ClassRoom> classSet=new HashSet<>();
     @OneToMany(mappedBy = "workingTime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("time-registForm")
+    @JsonManagedReference("time-regisForm")
     @JsonIgnore
     private Set<TeacherRegistrationForm> teacherRegistrationForms=new HashSet<>();
 }

@@ -1,12 +1,15 @@
 package com.example.app_tieng_nhat.service.impl;
 
 import com.example.app_tieng_nhat.encode.HashingService;
+import com.example.app_tieng_nhat.model.ClassRoom;
 import com.example.app_tieng_nhat.model.Roles;
 import com.example.app_tieng_nhat.model.Teacher;
 import com.example.app_tieng_nhat.model.TypeMode;
+import com.example.app_tieng_nhat.repository.ClassRepository;
 import com.example.app_tieng_nhat.repository.RoleRepository;
 import com.example.app_tieng_nhat.repository.TeacherRepository;
 import com.example.app_tieng_nhat.repository.TypeRepository;
+import com.example.app_tieng_nhat.request.AddTeacherToClassRoomRequest;
 import com.example.app_tieng_nhat.request.ChangeTypeTeacherRequest;
 import com.example.app_tieng_nhat.request.CreateTeacherRequest;
 import com.example.app_tieng_nhat.service.TeacherService;
@@ -26,6 +29,8 @@ public class TeacherServiceImpl implements TeacherService {
     private TypeRepository typeRepository;
     @Autowired
     private HashingService hashingService;
+    @Autowired
+    private ClassRepository classRepository;
 
     @Override
     public List<Teacher> getAllTeacher() {
@@ -70,6 +75,25 @@ public class TeacherServiceImpl implements TeacherService {
             return "doi chuc nghiep thanh cong";
         }
         return "tai khoan khong ton tai";
+    }
+
+    @Override
+    public String addTeacherToClassRoom(AddTeacherToClassRoomRequest request) {
+        Teacher teacher=teacherRepository.findById(request.teacher_id()).orElse(null);
+        if (teacher==null)return "Khong ton tai giao vien nay";
+        ClassRoom classRoom= classRepository.findById(request.classRoom_id()).orElse(null);
+        if (classRoom==null)return "Khong ton tai lop nay";
+        try {
+
+            classRoom.setTeacher(teacher);
+            teacher.getClasses().add(classRoom);
+
+            classRepository.save(classRoom);
+            teacherRepository.save(teacher);
+            return "Phan lop thanh cong";
+        }catch (Exception e){
+            return "co bien roi: "+e.getMessage();
+        }
     }
 
     @Override

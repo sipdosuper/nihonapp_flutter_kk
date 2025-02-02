@@ -6,6 +6,7 @@ import com.example.app_tieng_nhat.model.Roles;
 import com.example.app_tieng_nhat.model.Users;
 import com.example.app_tieng_nhat.repository.RoleRepository;
 import com.example.app_tieng_nhat.repository.UserRepository;
+import com.example.app_tieng_nhat.request.CreateStudentRegistrationRequest;
 import com.example.app_tieng_nhat.request.ForgotPasswordRequest;
 import com.example.app_tieng_nhat.request.SignInRequest;
 import com.example.app_tieng_nhat.request.SignUpRequest;
@@ -117,6 +118,8 @@ public class UserServiceImple implements UserService {
         }
         return null;
     }
+
+
     public Boolean checkPassword(Users users,String password){
         try{
             String encodePassword=hashingService.hashWithSHA256(password);

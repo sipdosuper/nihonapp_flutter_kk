@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -20,16 +21,18 @@ public class TeacherRegistrationForm {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String teacherName;
-    private Date birthDay;
+    private String email;
+    private String phone;
+    private LocalDate birthDay;
     private String proof;
     private String introduce;
-    private Date registDay;
+    private LocalDate regisDay;
     @ManyToOne
-    @JsonBackReference("level-registForm")
+    @JsonBackReference("level-regisForm")
     @JoinColumn(name = "level_id", nullable = false)
     private Levels level;
     @ManyToOne
-    @JsonBackReference("time-registForm")
+    @JsonBackReference("time-regisForm")
     @JoinColumn(name = "time_id", nullable = false)
     private Time workingTime;
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -46,8 +47,18 @@ public class Users {
     @JsonIgnore
     private Set<ClassRoom> classes=new HashSet<>();
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("student-studentRegistration")
+    @JsonIgnore
+    private Set<StudentRegistration> studentRegistrations=new HashSet<>();
+
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<User_HomeWork> user_homeWorks=new HashSet<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("student-cardList")
+    private List<FlashCardList> flashCardLists;
 
 }

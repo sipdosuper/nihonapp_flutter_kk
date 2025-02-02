@@ -1,6 +1,7 @@
 package com.example.app_tieng_nhat.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -68,6 +69,11 @@ public class ClassRoom {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<Users> students = new HashSet<>();
+
+    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("student-studentRegistration")
+    @JsonIgnore
+    private Set<StudentRegistration> studentRegistrations;
 
     @OneToMany(mappedBy = "classroom")
     @JsonManagedReference("home_work-class")

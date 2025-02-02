@@ -31,6 +31,7 @@ public class Teacher extends Users{
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     @JsonManagedReference("teacher-class")
+    @JsonIgnore
     private Set<ClassRoom> classes= new HashSet<>();
 
 }
