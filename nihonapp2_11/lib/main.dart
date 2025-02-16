@@ -1,10 +1,12 @@
 import 'package:duandemo/firebase_options.dart';
 import 'package:duandemo/screens/WordChainGame.dart';
 import 'package:duandemo/screens/chat_homescreen.dart';
+import 'package:duandemo/screens/cousers/CourseListScreen.dart';
 import 'package:duandemo/screens/level_selection_screen.dart';
 import 'package:duandemo/screens/onionList_screen.dart';
 import 'package:duandemo/screens/onion_screen.dart';
 import 'package:duandemo/screens/onion_topic_screen.dart';
+import 'package:duandemo/screens/test_up_image/upload_imageScreen.dart';
 import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,9 @@ class _MyAppState extends State<MyApp> {
         // home: LoginScreen()); // Khởi động với màn hình đăng nhập
         //home: ChatHomescreen(),
         //home: WordChainGame(),
-        home: LevelSelectionScreen());
+        // home: LevelSelectionScreen());
+        // home: CourseListScreen());
+        home: UploadImageScreen());
     // home: OnionTopicScreen(level: 5));
     // home: TopicScreen2(
     //   level: 1,
