@@ -1,4 +1,5 @@
 class Classroom {
+  final int id;
   final String name;
   final String level;
   final String description;
@@ -11,6 +12,7 @@ class Classroom {
   final String teacher;
 
   Classroom({
+    required this.id,
     required this.name,
     required this.level,
     required this.description,
@@ -25,8 +27,9 @@ class Classroom {
 
   factory Classroom.fromJson(Map<String, dynamic> json) {
     return Classroom(
+      id: json['id'] ?? 0,
       name: json['name'] ?? 'Không có tên',
-      level: json['level'] ?? 'Không có cấp độ',
+      level: json['level']['name'] ?? 'Không có cấp độ',
       description: json['description'] ?? 'Không có mô tả',
       slMax: (json['sl_max'] as num?)?.toInt() ?? 0,
       linkGiaotrinh: json['link_giaotrinh'] ?? '',
@@ -35,23 +38,24 @@ class Classroom {
           : DateTime.now(),
       end: json['end'] != null ? DateTime.parse(json['end']) : DateTime.now(),
       price: (json['price'] as num?)?.toInt() ?? 0,
-      time: json['time'] ?? 'Không có thời gian',
-      teacher: json['teacher'] ?? 'Không có giáo viên',
+      time: json['time']['time'] ?? 'Không có thời gian',
+      teacher: json['teacher']['teacherName'] ?? 'Không có giáo viên',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
-      'level': level,
+      'level': {'name': level},
       'description': description,
       'sl_max': slMax,
       'link_giaotrinh': linkGiaotrinh,
       'start': start.toIso8601String(),
       'end': end.toIso8601String(),
       'price': price,
-      'time': time,
-      'teacher': teacher,
+      'time': {'time': time},
+      'teacher': {'teacherName': teacher},
     };
   }
 }

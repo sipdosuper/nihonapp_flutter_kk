@@ -11,7 +11,7 @@ class CourseDescriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Gói combo ${classroom.name}')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,32 +33,26 @@ class CourseDescriptionScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Thời gian: ${classroom.time}'),
+                  Text('Cấp độ: ${classroom.level}'),
+                  Text('Mô tả: ${classroom.description}'),
                   Text('Số lượng tối đa: ${classroom.slMax}'),
+                  Text('Giá: ${classroom.price} VNĐ'),
+                  Text('Thời gian học: ${classroom.time}'),
+                  Text('Giáo viên: ${classroom.teacher}'),
                   Text(
                       'Bắt đầu: ${DateFormat('dd/MM/yyyy').format(classroom.start)}'),
                   Text(
                       'Kết thúc: ${DateFormat('dd/MM/yyyy').format(classroom.end)}'),
-                  Text('Giáo viên: ${classroom.teacher}'),
+                  const SizedBox(height: 10),
                   TextButton(
                     onPressed: () {},
                     style: TextButton.styleFrom(backgroundColor: Colors.green),
-                    child: const Text('Xem chi tiết',
+                    child: const Text('Xem giáo trình',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'Ý kiến học viên',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green),
-            ),
-            const Divider(),
-            Text(classroom.description),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},

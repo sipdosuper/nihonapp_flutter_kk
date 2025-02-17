@@ -44,32 +44,24 @@ class _CourseListScreenState extends State<CourseListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Khóa học luyện thi")),
+      appBar: AppBar(title: Text("Danh sách khóa học")),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 6, // Tổng cộng 6 cột
-                      childAspectRatio: 0.75, // Tỷ lệ chiều rộng / chiều cao
-                      crossAxisSpacing: 16, // Khoảng cách ngang giữa các item
-                      mainAxisSpacing: 16, // Khoảng cách dọc giữa các item
-                    ),
-                    itemCount: classrooms.length,
-                    itemBuilder: (context, index) {
-                      // Để trống 2 cột ngoài bằng cách dùng `Visibility`
-                      if (index % 6 < 1 || index % 6 > 4) {
-                        return Container(); // Cột rỗng
-                      }
-                      return ClassroomItem(classroom: classrooms[index]);
-                    },
-                  );
-                },
-              ),
-            ),
+          : classrooms.isEmpty
+              ? Center(child: Text("Không có khóa học nào!"))
+              : GridView.builder(
+                  padding: EdgeInsets.all(16.0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.0,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: classrooms.length,
+                  itemBuilder: (context, index) {
+                    return ClassroomItem(classroom: classrooms[index]);
+                  },
+                ),
     );
   }
 }
