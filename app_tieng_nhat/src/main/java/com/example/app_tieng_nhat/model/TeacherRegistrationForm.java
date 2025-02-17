@@ -1,6 +1,7 @@
 package com.example.app_tieng_nhat.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,11 +29,11 @@ public class TeacherRegistrationForm {
     private String introduce;
     private LocalDate regisDay;
     @ManyToOne
-    @JsonBackReference("level-regisForm")
+    @JsonManagedReference("level-regisForm")
     @JoinColumn(name = "level_id", nullable = false)
     private Levels level;
     @ManyToOne
-    @JsonBackReference("time-regisForm")
+    @JsonManagedReference("time-regisForm")
     @JoinColumn(name = "time_id", nullable = false)
     private Time workingTime;
 }

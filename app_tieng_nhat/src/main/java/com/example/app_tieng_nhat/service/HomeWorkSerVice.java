@@ -2,6 +2,7 @@ package com.example.app_tieng_nhat.service;
 
 import com.example.app_tieng_nhat.model.HomeWork;
 import com.example.app_tieng_nhat.request.CreateHomeWorkRequest;
+import com.example.app_tieng_nhat.request.MultiCreateHomeWorkRequest;
 import com.example.app_tieng_nhat.request.UpdateHomeWorkRequest;
 import org.springframework.stereotype.Service;
 

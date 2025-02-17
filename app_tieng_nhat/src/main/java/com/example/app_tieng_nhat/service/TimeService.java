@@ -2,6 +2,7 @@ package com.example.app_tieng_nhat.service;
 
 import com.example.app_tieng_nhat.model.Time;
 import com.example.app_tieng_nhat.request.CreateTimeRequest;
+import com.example.app_tieng_nhat.request.MultiCreateTimeRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

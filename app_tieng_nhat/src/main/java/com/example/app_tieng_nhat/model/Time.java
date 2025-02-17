@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class Time {
     @JsonIgnore
     private Set<ClassRoom> classSet=new HashSet<>();
     @OneToMany(mappedBy = "workingTime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("time-regisForm")
+    @JsonBackReference("time-regisForm")
     @JsonIgnore
     private Set<TeacherRegistrationForm> teacherRegistrationForms=new HashSet<>();
 }

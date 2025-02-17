@@ -39,7 +39,7 @@ public class ClassRoom {
     private String name;
 
     @ManyToOne
-    @JsonBackReference("level-class")
+    @JsonManagedReference("level-class")
     @JoinColumn(name = "level_id")
     private Levels level;
 
@@ -51,14 +51,15 @@ public class ClassRoom {
 
     private LocalDate start;
     private LocalDate end;
+    private Long price;
 
     @ManyToOne
-    @JsonManagedReference("class-time")
+    @JsonBackReference("class-time")
     @JoinColumn(name = "time_id",nullable = false)
     private Time time;
 
     @ManyToOne
-    @JsonManagedReference("teacher-class")
+    @JsonBackReference("teacher-class")
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 

@@ -5,6 +5,7 @@ import com.example.app_tieng_nhat.model.HomeWork;
 import com.example.app_tieng_nhat.repository.ClassRepository;
 import com.example.app_tieng_nhat.repository.HomeWorkRepository;
 import com.example.app_tieng_nhat.request.CreateHomeWorkRequest;
+import com.example.app_tieng_nhat.request.MultiCreateHomeWorkRequest;
 import com.example.app_tieng_nhat.request.UpdateHomeWorkRequest;
 import com.example.app_tieng_nhat.service.HomeWorkSerVice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class HomeWorkServiceImpl implements HomeWorkSerVice {
             return "co bien roi: "+e.getMessage();
         }
     }
+
+
 
     @Override
     public String updateHomeWork(UpdateHomeWorkRequest homeWorkRequest) {

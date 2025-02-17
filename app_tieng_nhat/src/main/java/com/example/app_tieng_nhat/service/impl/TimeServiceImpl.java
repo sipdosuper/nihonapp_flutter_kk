@@ -3,10 +3,12 @@ package com.example.app_tieng_nhat.service.impl;
 import com.example.app_tieng_nhat.model.Time;
 import com.example.app_tieng_nhat.repository.TimeRepository;
 import com.example.app_tieng_nhat.request.CreateTimeRequest;
+import com.example.app_tieng_nhat.request.MultiCreateTimeRequest;
 import com.example.app_tieng_nhat.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,4 +36,7 @@ public class TimeServiceImpl implements TimeService {
     public void deleteTime(Long id) {
         timeRepository.deleteById(id);
     }
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -24,14 +25,14 @@ public class Levels {
     private String name;
 
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("level-topic")
+    @JsonBackReference("level-topic")
     private Set<Topics> topics;
 
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("level-class")
+    @JsonBackReference("level-class")
     private Set<ClassRoom> classes;
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("level-regisForm")
+    @JsonBackReference("level-regisForm")
     @JsonIgnore
     private Set<TeacherRegistrationForm> teacherRegistrationForms= new HashSet<>();
 }

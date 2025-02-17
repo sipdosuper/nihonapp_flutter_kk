@@ -22,7 +22,7 @@ public class Topics {
     private String name;
 
     @ManyToOne
-    @JsonBackReference("level-topic")
+    @JsonManagedReference("level-topic")
     @JsonIgnoreProperties("topic")
     @JoinColumn(name = "level_id", nullable = false)
     private Levels level;
