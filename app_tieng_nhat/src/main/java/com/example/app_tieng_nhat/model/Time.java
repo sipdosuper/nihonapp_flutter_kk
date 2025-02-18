@@ -25,7 +25,7 @@ public class Time {
     private String time;
 
     @OneToMany(mappedBy = "time", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("class-time")
+    @JsonBackReference("class-time")
     @JsonIgnore
     private Set<ClassRoom> classSet=new HashSet<>();
     @OneToMany(mappedBy = "workingTime", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

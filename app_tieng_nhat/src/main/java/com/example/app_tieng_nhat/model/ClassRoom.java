@@ -54,12 +54,12 @@ public class ClassRoom {
     private Long price;
 
     @ManyToOne
-    @JsonBackReference("class-time")
+    @JsonManagedReference("class-time")
     @JoinColumn(name = "time_id",nullable = false)
     private Time time;
 
     @ManyToOne
-    @JsonBackReference("teacher-class")
+    @JsonManagedReference("teacher-class")
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 

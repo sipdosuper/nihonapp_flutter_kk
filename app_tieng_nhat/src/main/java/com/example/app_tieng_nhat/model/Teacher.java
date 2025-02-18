@@ -30,7 +30,7 @@ public class Teacher extends Users{
     private TypeMode type;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    @JsonManagedReference("teacher-class")
+    @JsonBackReference("teacher-class")
     @JsonIgnore
     private Set<ClassRoom> classes= new HashSet<>();
 
