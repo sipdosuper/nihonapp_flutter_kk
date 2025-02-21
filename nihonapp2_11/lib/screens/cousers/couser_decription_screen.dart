@@ -1,4 +1,5 @@
 import 'package:duandemo/model/ClassRoom.dart';
+import 'package:duandemo/screens/form/student_registration_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -55,7 +56,15 @@ class CourseDescriptionScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        StudentRegistrationScreen(classRoomId: classroom.id),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text('Mua combo',
                   style: TextStyle(color: Colors.white)),

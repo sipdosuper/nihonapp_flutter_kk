@@ -3,7 +3,7 @@ import 'package:duandemo/screens/WordChainGame.dart';
 import 'package:duandemo/screens/chat_homescreen.dart';
 import 'package:duandemo/screens/cousers/CourseListScreen.dart';
 import 'package:duandemo/screens/form/add_teacher_form_screen.dart';
-import 'package:duandemo/screens/form/teacher_form_list_screen.dart';
+import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
 import 'package:duandemo/screens/level_selection_screen.dart';
 import 'package:duandemo/screens/onionList_screen.dart';
 import 'package:duandemo/screens/onion_screen.dart';
@@ -49,7 +49,8 @@ class _MyAppState extends State<MyApp> {
         //home: ChatHomescreen(),
         //home: WordChainGame(),
         // home: LevelSelectionScreen());
-        home: CourseListScreen());
+        // home: CourseListScreen());
+        home: TeacherRegistrationListScreen());
     // home: UploadImageScreen());
     // home: AddTeacherFormScreen());
     // home: TeacherRegistrationFormListScreen());

@@ -120,7 +120,7 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
     print(newTeacher.proof);
 
     final response = await http.post(
-        Uri.parse("http://localhost:8080/api/teacherRegistration"),
+        Uri.parse(Wordval().api + "teacherRegistration"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(newTeacher.toJson()));
 
