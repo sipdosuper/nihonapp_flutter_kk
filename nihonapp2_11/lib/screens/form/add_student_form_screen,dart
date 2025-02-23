@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:duandemo/model/TeacherRegistrationForm.dart';
+import 'package:duandemo/model/StudentRegistration.dart';
 import 'package:duandemo/service/CloudinaryService.dart';
 import 'package:duandemo/word_val.dart';
 import 'package:flutter/foundation.dart';
@@ -11,19 +11,18 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart' as html;
 
-class AddTeacherFormScreen extends StatefulWidget {
+class AddStudentFormScreen extends StatefulWidget {
   @override
-  _AddTeacherFormScreenState createState() => _AddTeacherFormScreenState();
+  _AddStudentFormScreenState createState() => _AddStudentFormScreenState();
 }
 
-class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
+class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _birthDayController = TextEditingController();
+  final TextEditingController _regisDayController = TextEditingController();
 
-  String name = "", email = "", phone = "", introduce = "";
-  String birthDay = "";
+  String nameAndSdt = "", email = "", bill = "";
   String regisDay = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  int level_id = 1, workingTime_id = 1;
+  int classRoomId = 1;
   String? proofUrl = "";
   File? _imageFile;
   Uint8List? _imageBytes;
@@ -86,86 +85,75 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
     }
   }
 
-  Future<void> _selectBirthDay() async {
+  Future<void> _selectRegisDay() async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime(2000, 1, 1),
+      initialDate: DateTime.now(),
       firstDate: DateTime(1950),
       lastDate: DateTime.now(),
     );
 
     if (picked != null) {
       setState(() {
-        birthDay = DateFormat('yyyy-MM-dd').format(picked);
-        _birthDayController.text = birthDay;
+        regisDay = DateFormat('yyyy-MM-dd').format(picked);
+        _regisDayController.text = regisDay;
       });
     }
   }
 
   Future<void> _submitForm() async {
-  // Kiểm tra nếu các trường thông tin không hợp lệ
-  if (!_formKey.currentState!.validate()) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Vui lòng điền đầy đủ thông tin!")),
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng điền đầy đủ thông tin!")),
+      );
+      return;
+    }
+
+    if (_imageFile == null && _imageBytes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng chọn ảnh và upload ảnh!")),
+      );
+      return;
+    }
+
+    if (proofUrl == null && (_imageFile != null || _imageBytes != null)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng upload ảnh!")),
+      );
+      return;
+    }
+
+    final newStudent = StudentRegistration(
+      nameAndSdt: nameAndSdt,
+      regisDay: DateTime.parse(regisDay),
+      bill: bill,
+      email: email,
+      classRoomId: classRoomId,
     );
-    return;
-  }
 
-  // Kiểm tra nếu chưa chọn ảnh và upload ảnh
-  if (_imageFile == null && _imageBytes == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Vui lòng chọn ảnh và upload ảnh!")),
-    );
-    return;
-  }
-
-  // Kiểm tra nếu ảnh đã chọn nhưng chưa upload
-  if (proofUrl == null && (_imageFile != null || _imageBytes != null)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Vui lòng upload ảnh!")),
-    );
-    return;
-  }
-
-  final newTeacher = TeacherRegistrationForm(
-    name: name,
-    email: email,
-    phone: phone,
-    birthDay: birthDay,
-    proof: proofUrl!,
-    introduce: introduce,
-    regisDay: regisDay,
-    level_id: level_id,
-    workingTime_id: workingTime_id,
-  );
-
-  final response = await http.post(
-      Uri.parse(Wordval().api + "teacherRegistration"),
+    final response = await http.post(
+      Uri.parse(Wordval().api + "studentRegistration"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode(newTeacher.toJson()));
+      body: jsonEncode(newStudent.toJson()),
+    );
 
-  // Kiểm tra phản hồi từ API
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    // Thêm giáo viên thành công
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Thêm giáo viên thành công!")),
-    );
-    Navigator.pop(context);  // Quay lại màn hình trước
-  } else {
-    // Hiển thị lỗi nếu thêm thất bại
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Lỗi: ${response.body}")),
-    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Thêm học viên thành công!")),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Lỗi: ${response.body}")),
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Thêm AppBar với màu đỏ nhạt làm chủ đạo
       appBar: AppBar(
-        title: Text("Đăng ký giáo viên", style: TextStyle(color: Colors.white)),
+        title: Text("Đăng ký học viên", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red[200],
         elevation: 0,
         centerTitle: true,
@@ -178,28 +166,24 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Gộp tất cả trường nhập vào trong 1 Card
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // Đổi bo góc
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 5,
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      // Tên giáo viên
+                      // Tên học viên và SĐT
                       TextFormField(
                         decoration: InputDecoration(
-                          labelText: "Tên giáo viên",
+                          labelText: "Tên học viên và SĐT",
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
                         ),
                         validator: (value) =>
-                            value!.isEmpty ? "Vui lòng nhập tên" : null,
-                        onChanged: (value) => name = value,
+                            value!.isEmpty ? "Vui lòng nhập tên học viên" : null,
+                        onChanged: (value) => nameAndSdt = value,
                       ),
                       SizedBox(height: 12),
                       // Email
@@ -207,99 +191,53 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                         decoration: InputDecoration(
                           labelText: "Email",
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
                         ),
                         validator: (value) =>
                             value!.isEmpty ? "Vui lòng nhập email" : null,
                         onChanged: (value) => email = value,
                       ),
                       SizedBox(height: 12),
-                      // Mô tả
+                      // Hóa đơn
                       TextFormField(
                         decoration: InputDecoration(
-                          labelText: "Mô tả",
+                          labelText: "Hóa đơn",
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
                         ),
                         validator: (value) =>
-                            value!.isEmpty ? "Vui lòng nhập mô tả" : null,
-                        onChanged: (value) => introduce = value,
+                            value!.isEmpty ? "Vui lòng nhập hóa đơn" : null,
+                        onChanged: (value) => bill = value,
                       ),
                       SizedBox(height: 12),
-                      // Số điện thoại
-                      TextFormField(
+                      // Chọn lớp
+                      DropdownButtonFormField<int>(
+                        value: classRoomId,
                         decoration: InputDecoration(
-                          labelText: "Số điện thoại",
+                          labelText: "Chọn lớp",
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
                         ),
-                        validator: (value) =>
-                            value!.isEmpty ? "Vui lòng nhập số điện thoại" : null,
-                        onChanged: (value) => phone = value,
+                        items: List.generate(5, (index) => index + 1)
+                            .map((e) => DropdownMenuItem(
+                                value: e, child: Text("Lớp $e"))).toList(),
+                        onChanged: (value) => setState(() => classRoomId = value!),
                       ),
                       SizedBox(height: 12),
-                      // Ngày sinh
+                      // Ngày đăng ký
                       TextFormField(
-                        controller: _birthDayController,
+                        controller: _regisDayController,
                         decoration: InputDecoration(
-                          labelText: "Ngày sinh",
+                          labelText: "Ngày đăng ký",
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
                         ),
                         readOnly: true,
-                        onTap: _selectBirthDay,
+                        onTap: _selectRegisDay,
                         validator: (value) =>
-                            value!.isEmpty ? "Vui lòng chọn ngày sinh" : null,
-                      ),
-                      SizedBox(height: 12),
-                      // Chọn cấp độ
-                      DropdownButtonFormField<int>(
-                        value: level_id,
-                        decoration: InputDecoration(
-                          labelText: "Chọn cấp độ",
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
-                        ),
-                        items: List.generate(5, (index) => index + 1)
-                            .map((e) => DropdownMenuItem(
-                                value: e, child: Text("Level $e")))
-                            .toList(),
-                        onChanged: (value) => setState(() => level_id = value!),
-                      ),
-                      SizedBox(height: 12),
-                      // Chọn thời gian làm việc
-                      DropdownButtonFormField<int>(
-                        value: workingTime_id,
-                        decoration: InputDecoration(
-                          labelText: "Chọn thời gian làm việc",
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.redAccent),
-                          ),
-                        ),
-                        items: List.generate(5, (index) => index + 1)
-                            .map((e) => DropdownMenuItem(
-                                value: e, child: Text("Ca $e")))
-                            .toList(),
-                        onChanged: (value) =>
-                            setState(() => workingTime_id = value!),
+                            value!.isEmpty ? "Vui lòng chọn ngày đăng ký" : null,
                       ),
                     ],
                   ),
                 ),
               ),
               SizedBox(height: 20),
-              // Hiển thị ảnh (nếu có)
               _isImageUploaded
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -331,7 +269,6 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                               ),
                             ),
               SizedBox(height: 10),
-              // Button chọn ảnh
               ElevatedButton(
                 onPressed: _pickImage,
                 child: Text("Chọn ảnh"),
@@ -342,7 +279,6 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                 ),
               ),
               SizedBox(height: 10),
-              // Button upload ảnh (hiển thị khi có ảnh được chọn)
               if (_isImageSelected)
                 ElevatedButton(
                   onPressed: _isUploading ? null : _uploadImage,
@@ -359,11 +295,10 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                   ),
                 ),
               SizedBox(height: 20),
-              // Button submit form (hiển thị khi ảnh đã được upload thành công)
               if (_isImageUploaded)
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text("Thêm giáo viên"),
+                  child: Text("Thêm học viên"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent,
                     foregroundColor: Colors.white,

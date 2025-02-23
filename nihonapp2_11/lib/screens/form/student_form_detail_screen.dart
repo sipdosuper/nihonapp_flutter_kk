@@ -1,17 +1,17 @@
 import 'dart:convert';
-import 'package:duandemo/model/TeacherRegistrationForm.dart';
 import 'package:flutter/material.dart';
+import 'package:duandemo/model/StudentRegistration.dart';
 
-class TeacherFormDetailScreen extends StatelessWidget {
-  final TeacherRegistrationForm form;
+class StudentFormDetailScreen extends StatelessWidget {
+  final StudentRegistration form;
 
-  TeacherFormDetailScreen({required this.form});
+  StudentFormDetailScreen({required this.form});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chi tiết giáo viên', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Chi tiết học viên', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFFE57373),
       ),
@@ -29,28 +29,16 @@ class TeacherFormDetailScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.person, color: Color(0xFFE57373), size: 30),
                     SizedBox(width: 10),
-                    Text(form.name,
+                    Text(form.nameAndSdt,
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Divider(),
                 detailRow(Icons.email, 'Email', form.email),
-                detailRow(Icons.phone, 'SĐT', form.phone),
-                detailRow(Icons.cake, 'Ngày sinh', form.birthDay),
-                detailRow(Icons.info, 'Giới thiệu', form.introduce),
-                detailRow(Icons.school, 'Cấp độ', form.level_id.toString()),
-                detailRow(Icons.date_range, 'Ngày đăng ký', form.regisDay),
-                SizedBox(height: 20),
-                form.proof.isNotEmpty
-                    ? Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(form.proof, height: 200, fit: BoxFit.cover),
-                        ),
-                      )
-                    : Center(
-                        child: Text('Không có ảnh minh chứng',
-                            style: TextStyle(color: Colors.grey))),
+                detailRow(Icons.phone, 'SĐT', form.nameAndSdt),
+                detailRow(Icons.date_range, 'Ngày đăng ký', form.regisDay.toIso8601String()),
+                detailRow(Icons.receipt, 'Hóa đơn', form.bill),
+                detailRow(Icons.class_, 'Mã lớp', form.classRoomId.toString()),
               ],
             ),
           ),
@@ -66,8 +54,7 @@ class TeacherFormDetailScreen extends StatelessWidget {
         children: [
           Icon(icon, color: Color(0xFFE57373)),
           SizedBox(width: 10),
-          Text('$label: ',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           Expanded(
             child: Text(value, style: TextStyle(fontSize: 16), overflow: TextOverflow.ellipsis),
           ),
