@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.service.impl;
 
+import com.example.app_tieng_nhat.DTO.StudentRegistrationDTO;
 import com.example.app_tieng_nhat.model.ClassRoom;
 import com.example.app_tieng_nhat.model.StudentRegistration;
 import com.example.app_tieng_nhat.model.Users;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentRegistrationServiceImpl implements StudentRegistrationService {
@@ -25,9 +27,38 @@ public class StudentRegistrationServiceImpl implements StudentRegistrationServic
     @Autowired
     private UserRepository userRepository;
 
+    private StudentRegistrationDTO convertToDTO(StudentRegistration studentRegistration) {
+        StudentRegistrationDTO dto = new StudentRegistrationDTO();
+        dto.setId(studentRegistration.getId());
+        dto.setNameAndSdt(studentRegistration.getNameAndSdt());
+        dto.setEmail(studentRegistration.getEmail());
+        dto.setBankCheck(studentRegistration.getBankCheck());
+        dto.setRegisDay(studentRegistration.getRegisDay());
+        dto.setBill(studentRegistration.getBill());
+        dto.setStatus(studentRegistration.getStatus());
+        dto.setStudentId(studentRegistration.getStudent().getId());
+        dto.setClassRoomId(studentRegistration.getClassRoom().getId());
+        return dto;
+    }
+
     @Override
-    public List<StudentRegistration> getAllStudentRegistration() {
-        return studentRegistrationRepository.findAll();
+    public List<StudentRegistrationDTO> getAllStudentRegistration() {
+        return studentRegistrationRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentRegistrationDTO> getAllByBankCheck(Long check) {
+        boolean bankcheck= false;
+        if (check==1){
+            bankcheck =true;
+        }
+        return studentRegistrationRepository.findByBankCheck(bankcheck)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -43,6 +74,7 @@ public class StudentRegistrationServiceImpl implements StudentRegistrationServic
             newRegis.setRegisDay(studentRegistrationRequest.regisDay());
             newRegis.setBill(studentRegistrationRequest.bill());
             newRegis.setStatus(false);
+            newRegis.setEmail(studentRegistrationRequest.email());
             newRegis.setStudent(checkUser);
             newRegis.setClassRoom(checkClassRoom.get());
             studentRegistrationRepository.save(newRegis);
@@ -61,6 +93,7 @@ public class StudentRegistrationServiceImpl implements StudentRegistrationServic
         try {
             StudentRegistration form=studentRegistrationRepository.findById(request.regisForm_id()).orElse(null);
             form.setStatus(true);
+            form.setBankCheck(true);
             checkClassRoom.getStudents().add(checkUser);
             checkUser.getClasses().add(checkClassRoom);
 

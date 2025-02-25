@@ -2,7 +2,7 @@ import 'package:duandemo/firebase_options.dart';
 import 'package:duandemo/screens/WordChainGame.dart';
 import 'package:duandemo/screens/chat_homescreen.dart';
 import 'package:duandemo/screens/cousers/CourseListScreen.dart';
-import 'package:duandemo/screens/form/add_student_form_screen,dart';
+import 'package:duandemo/screens/form/add_student_form_screen.dart';
 import 'package:duandemo/screens/form/add_teacher_form_screen.dart';
 import 'package:duandemo/screens/form/list_student_form_screen.dart';
 import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
@@ -21,6 +21,7 @@ import 'package:duandemo/screens/form/teacher_registration_form_delta_screen.dar
 import 'package:duandemo/screens/form/teacher_form_item.dart'; // Màn hình danh sách giáo viên
 import 'package:duandemo/screens/form/teacher_form_detail_screen.dart'; // Màn hình chi tiết giáo viên
 import 'package:duandemo/screens/form/list_student_form_screen.dart'; // Ví dụ màn hình học viên, nếu cần
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -56,16 +57,14 @@ class _MyAppState extends State<MyApp> {
         //home: ChatHomescreen(),
         //home: WordChainGame(),
         // home: LevelSelectionScreen());
-       //  home: CourseListScreen());
+        //  home: CourseListScreen());
 
         // home: UploadImageScreen());
-       // home: AddTeacherFormScreen());
-       // home: TeacherRegistrationFormListScreen());
-        
-      //  home:AddStudentFormScreen()); //Khánh 
-        home:StudentRegistrationListScreen());
+        // home: AddTeacherFormScreen());
+        // home: TeacherRegistrationFormListScreen());
 
-       
+        //  home:AddStudentFormScreen()); //Khánh
+        home: StudentRegistrationListScreen());
 
     // home: OnionTopicScreen(level: 5));
     // home: TopicScreen2(

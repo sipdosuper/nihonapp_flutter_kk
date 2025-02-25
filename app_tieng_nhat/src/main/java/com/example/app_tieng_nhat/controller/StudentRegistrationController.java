@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.controller;
 
+import com.example.app_tieng_nhat.DTO.StudentRegistrationDTO;
 import com.example.app_tieng_nhat.model.StudentRegistration;
 import com.example.app_tieng_nhat.request.AddStudentToClassRoomRequest;
 import com.example.app_tieng_nhat.request.CreateStudentRegistrationRequest;
@@ -16,8 +17,13 @@ public class StudentRegistrationController {
     private StudentRegistrationService studentRegistrationService;
 
     @GetMapping
-    public List<StudentRegistration> getAllStudentRegistration(){
+    public List<StudentRegistrationDTO> getAllStudentRegistration(){
         return studentRegistrationService.getAllStudentRegistration();
+    }
+
+    @GetMapping("/{check}")
+    public List<StudentRegistrationDTO> getAllByBankCheck(@PathVariable Long check){
+        return studentRegistrationService.getAllByBankCheck(check);
     }
 
     @PostMapping

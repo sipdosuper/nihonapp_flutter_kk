@@ -17,24 +17,26 @@ class _StudentRegistrationFormListScreenState
 
   // Lấy dữ liệu sinh viên từ API
   Future<List<StudentRegistration>> fetchStudentRegistrationForms() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8080/api/studentRegistration'));
+    final response = await http
+        .get(Uri.parse('http://localhost:8080/api/studentRegistration'));
 
     if (response.statusCode == 200) {
       try {
         List<dynamic> data = json.decode(response.body);
         return data.map((json) {
           try {
-            return StudentRegistration.fromJson(json); // Chuyển JSON thành đối tượng StudentRegistration
+            return StudentRegistration.fromJson(
+                json); // Chuyển JSON thành đối tượng StudentRegistration
           } catch (e) {
             print('Error parsing student: $e');
             return StudentRegistration(
-              nameAndSdt: 'Unknown',
-              regisDay: DateTime.now(),
-              bill: '',
-              email: 'Unknown',
-              classRoomId: 0,
-            );
+                id: 0,
+                nameAndSdt: 'Unknown',
+                regisDay: DateTime.now(),
+                bill: '',
+                email: 'Unknown',
+                classRoomId: 0,
+                bankCheck: false);
           }
         }).toList();
       } catch (e) {
@@ -56,7 +58,8 @@ class _StudentRegistrationFormListScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách sinh viên', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Danh sách sinh viên',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFFE57373), // Màu chủ đạo
       ),
@@ -105,13 +108,15 @@ class StudentRegistrationFormItem extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text("Email: ${student.email}"),  // Hiển thị email
-            Text("Ngày đăng ký: ${DateFormat('yyyy-MM-dd').format(student.regisDay)}"),
-            Text("Lớp học ID: ${student.classRoomId}"),  // Hiển thị lớp học ID
+            Text("Email: ${student.email}"), // Hiển thị email
+            Text(
+                "Ngày đăng ký: ${DateFormat('yyyy-MM-dd').format(student.regisDay)}"),
+            Text("Lớp học ID: ${student.classRoomId}"), // Hiển thị lớp học ID
             if (student.bill.isNotEmpty)
               Padding(
                 padding: EdgeInsets.only(top: 8.0),
-                child: Image.network(student.bill, height: 100, fit: BoxFit.cover),
+                child:
+                    Image.network(student.bill, height: 100, fit: BoxFit.cover),
               ),
             // Thêm nút chuyển đến màn hình chi tiết
             Padding(
@@ -121,7 +126,8 @@ class StudentRegistrationFormItem extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => StudentFormDetailScreen(student: student),
+                      builder: (context) =>
+                          StudentFormDetailScreen(student: student),
                     ),
                   );
                 },

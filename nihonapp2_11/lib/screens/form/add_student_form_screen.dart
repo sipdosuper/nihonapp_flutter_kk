@@ -22,7 +22,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
 
   String nameAndSdt = "", email = "", bill = "";
   String regisDay = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  int classRoomId = 1;
+  int classRoomId = 1, id = 0;
   String? proofUrl = "";
   File? _imageFile;
   Uint8List? _imageBytes;
@@ -41,7 +41,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
           setState(() {
             _imageBytes = reader.result as Uint8List;
             _imageFile = null;
-            _isImageSelected = true;  // Đánh dấu ảnh đã được chọn
+            _isImageSelected = true; // Đánh dấu ảnh đã được chọn
           });
         });
       });
@@ -52,7 +52,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
         setState(() {
           _imageFile = File(pickedFile.path);
           _imageBytes = null;
-          _isImageSelected = true;  // Đánh dấu ảnh đã được chọn
+          _isImageSelected = true; // Đánh dấu ảnh đã được chọn
         });
       }
     }
@@ -71,7 +71,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
     setState(() {
       proofUrl = url;
       _isUploading = false;
-      _isImageUploaded = true;  // Đánh dấu ảnh đã được upload thành công
+      _isImageUploaded = true; // Đánh dấu ảnh đã được upload thành công
     });
 
     if (url == null) {
@@ -124,12 +124,14 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
     }
 
     final newStudent = StudentRegistration(
-      nameAndSdt: nameAndSdt,
-      regisDay: DateTime.parse(regisDay),
-      bill: bill,
-      email: email,
-      classRoomId: classRoomId,
-    );
+        id: id,
+        nameAndSdt: nameAndSdt,
+        regisDay: DateTime.parse(regisDay),
+        bill: bill,
+        email: email,
+        classRoomId: classRoomId,
+        bankCheck: false,
+        status: false);
 
     final response = await http.post(
       Uri.parse(Wordval().api + "studentRegistration"),
@@ -181,8 +183,9 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
                           labelText: "Tên học viên và SĐT",
                           border: OutlineInputBorder(),
                         ),
-                        validator: (value) =>
-                            value!.isEmpty ? "Vui lòng nhập tên học viên" : null,
+                        validator: (value) => value!.isEmpty
+                            ? "Vui lòng nhập tên học viên"
+                            : null,
                         onChanged: (value) => nameAndSdt = value,
                       ),
                       SizedBox(height: 12),
@@ -217,8 +220,10 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
                         ),
                         items: List.generate(5, (index) => index + 1)
                             .map((e) => DropdownMenuItem(
-                                value: e, child: Text("Lớp $e"))).toList(),
-                        onChanged: (value) => setState(() => classRoomId = value!),
+                                value: e, child: Text("Lớp $e")))
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => classRoomId = value!),
                       ),
                       SizedBox(height: 12),
                       // Ngày đăng ký
@@ -230,8 +235,9 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
                         ),
                         readOnly: true,
                         onTap: _selectRegisDay,
-                        validator: (value) =>
-                            value!.isEmpty ? "Vui lòng chọn ngày đăng ký" : null,
+                        validator: (value) => value!.isEmpty
+                            ? "Vui lòng chọn ngày đăng ký"
+                            : null,
                       ),
                     ],
                   ),

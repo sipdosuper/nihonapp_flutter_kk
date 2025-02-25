@@ -11,14 +11,16 @@ class StudentFormDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chi tiết sinh viên', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Chi tiết sinh viên',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFFE57373), // Màu chủ đạo
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           elevation: 5,
           child: Padding(
             padding: EdgeInsets.all(16.0),
@@ -30,20 +32,30 @@ class StudentFormDetailScreen extends StatelessWidget {
                     Icon(Icons.person, color: Color(0xFFE57373), size: 30),
                     SizedBox(width: 10),
                     Text(student.nameAndSdt,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Divider(),
                 // Hiển thị các thông tin chi tiết
-                detailRow(Icons.email, 'Email', student.email),
-                detailRow(Icons.date_range, 'Ngày đăng ký', DateFormat('yyyy-MM-dd').format(student.regisDay)),
-                detailRow(Icons.class_, 'Lớp học ID', student.classRoomId.toString()),
-                detailRow(Icons.attach_money, 'Hóa đơn', student.bill.isNotEmpty ? student.bill : 'Không có hóa đơn'),
+                detailRow(Icons.email, 'Email', student.email.toString()),
+                detailRow(Icons.date_range, 'Ngày đăng ký',
+                    DateFormat('yyyy-MM-dd').format(student.regisDay)),
+                detailRow(
+                    Icons.class_, 'Lớp học ID', student.classRoomId.toString()),
+                detailRow(
+                    Icons.attach_money,
+                    'Hóa đơn',
+                    student.bill.isNotEmpty
+                        ? student.bill
+                        : 'Không có hóa đơn'),
                 SizedBox(height: 20), // Khoảng cách dưới ảnh hóa đơn
 
                 // Nếu bill là URL của hình ảnh, hiển thị hình ảnh
-                if (student.bill.isNotEmpty && Uri.tryParse(student.bill)?.hasAbsolutePath == true)
-                  Image.network(student.bill, height: 200, width: double.infinity, fit: BoxFit.cover),
+                if (student.bill.isNotEmpty &&
+                    Uri.tryParse(student.bill)?.hasAbsolutePath == true)
+                  Image.network(student.bill,
+                      height: 200, width: double.infinity, fit: BoxFit.cover),
 
                 SizedBox(height: 20), // Khoảng cách dưới hình ảnh hóa đơn
 
@@ -84,9 +96,12 @@ class StudentFormDetailScreen extends StatelessWidget {
         children: [
           Icon(icon, color: Color(0xFFE57373)),
           SizedBox(width: 10),
-          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text('$label: ',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           Expanded(
-            child: Text(value, style: TextStyle(fontSize: 16), overflow: TextOverflow.ellipsis),
+            child: Text(value,
+                style: TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis),
           ),
         ],
       ),

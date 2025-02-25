@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.model;
 
+import com.example.app_tieng_nhat.DTO.StudentRegistrationDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,6 +25,7 @@ public class StudentRegistration {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nameAndSdt;
+    private String email;
 
     private Boolean bankCheck;
     private LocalDate regisDay;
@@ -36,8 +38,22 @@ public class StudentRegistration {
     private Users student;
 
     @ManyToOne
-    @JsonBackReference("classroom-studentRegistration")
+    @JsonManagedReference("classroom-studentRegistration")
     @JoinColumn(name = "classroom_id", nullable = false)
     private ClassRoom classRoom;
+
+    public StudentRegistrationDTO toDTO() {
+        StudentRegistrationDTO dto = new StudentRegistrationDTO();
+        dto.setId(this.id);
+        dto.setNameAndSdt(this.nameAndSdt);
+        dto.setEmail(this.email);
+        dto.setBankCheck(this.bankCheck);
+        dto.setRegisDay(this.regisDay);
+        dto.setBill(this.bill);
+        dto.setStatus(this.status);
+        dto.setStudentId(this.student != null ? this.student.getId() : null);
+        dto.setClassRoomId(this.classRoom != null ? this.classRoom.getId() : null);
+        return dto;
+    }
 
 }

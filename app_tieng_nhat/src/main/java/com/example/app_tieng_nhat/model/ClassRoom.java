@@ -72,7 +72,7 @@ public class ClassRoom {
     private Set<Users> students = new HashSet<>();
 
     @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("student-studentRegistration")
+    @JsonBackReference("student-studentRegistration")
     @JsonIgnore
     private Set<StudentRegistration> studentRegistrations;
 

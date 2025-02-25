@@ -16,7 +16,8 @@ class StudentRegistrationScreen extends StatefulWidget {
   const StudentRegistrationScreen({super.key, required this.classRoomId});
 
   @override
-  _StudentRegistrationScreenState createState() => _StudentRegistrationScreenState();
+  _StudentRegistrationScreenState createState() =>
+      _StudentRegistrationScreenState();
 }
 
 class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
@@ -30,7 +31,8 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
 
   Future<void> _pickImage() async {
     if (kIsWeb) {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null) {
         setState(() {
           _imageBytes = result.files.first.bytes;
@@ -39,7 +41,8 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
         });
       }
     } else {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null) {
         setState(() {
           _imageFile = File(result.files.single.path!);
@@ -51,28 +54,33 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   }
 
   Future<void> _submitRegistration() async {
-    if (!_formKey.currentState!.validate() || (_imageFile == null && _imageBytes == null)) {
+    if (!_formKey.currentState!.validate() ||
+        (_imageFile == null && _imageBytes == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Vui lòng điền đầy đủ thông tin và tải ảnh lên!")),
+        const SnackBar(
+            content: Text("Vui lòng điền đầy đủ thông tin và tải ảnh lên!")),
       );
       return;
     }
-    
+
     setState(() => _isLoading = true);
-    String? billUrl = await CloudinaryService.uploadImage(_imageFile, _imageBytes);
+    String? billUrl =
+        await CloudinaryService.uploadImage(_imageFile, _imageBytes);
     if (billUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Lỗi khi upload ảnh!")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Lỗi khi upload ảnh!")));
       setState(() => _isLoading = false);
       return;
     }
-    
+
     StudentRegistration registration = StudentRegistration(
-      nameAndSdt: _nameController.text,
-      regisDay: DateTime.now(),
-      bill: billUrl,
-      email: _emailController.text,
-      classRoomId: widget.classRoomId,
-    );
+        id: 0,
+        nameAndSdt: _nameController.text,
+        regisDay: DateTime.now(),
+        bill: billUrl,
+        email: _emailController.text,
+        classRoomId: widget.classRoomId,
+        bankCheck: false);
 
     try {
       final response = await http.post(
@@ -80,12 +88,17 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
         headers: {"Content-Type": "application/json"},
         body: json.encode(registration.toJson()),
       );
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.statusCode == 200 || response.statusCode == 201 ? "Gửi đơn thành công!" : "Lỗi đăng ký")),
+        SnackBar(
+            content: Text(
+                response.statusCode == 200 || response.statusCode == 201
+                    ? "Gửi đơn thành công!"
+                    : "Lỗi đăng ký")),
       );
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Lỗi khi gửi đơn!")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Lỗi khi gửi đơn!")));
     }
 
     setState(() => _isLoading = false);
@@ -94,14 +107,17 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Đăng ký khóa học"), backgroundColor: Colors.red[300]),
+      appBar: AppBar(
+          title: const Text("Đăng ký khóa học"),
+          backgroundColor: Colors.red[300]),
       backgroundColor: Colors.red[50],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Card(
             elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -121,7 +137,8 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                       ElevatedButton(
                         onPressed: _pickImage,
                         child: const Text("Chọn ảnh hóa đơn"),
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red[300]),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red[300]),
                       ),
                     const SizedBox(height: 20),
                     _isLoading
@@ -129,7 +146,8 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                         : ElevatedButton(
                             onPressed: _submitRegistration,
                             child: const Text("Gửi đơn"),
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red[300]),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red[300]),
                           ),
                   ],
                 ),
@@ -146,7 +164,8 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(labelText: label, border: OutlineInputBorder()),
+        decoration:
+            InputDecoration(labelText: label, border: OutlineInputBorder()),
         validator: (value) => value!.isEmpty ? "Vui lòng nhập $label" : null,
       ),
     );
