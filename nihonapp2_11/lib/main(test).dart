@@ -15,7 +15,6 @@ import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart'; // Màn hình đăng nhập
-import 'package:duandemo/screens/form/student_registration_form_screen.dart'; // Màn hình đăng ký học viên
 import 'package:duandemo/screens/form/student_registration_form_item.dart'; // Màn hình hiển thị thông tin học viên
 import 'package:duandemo/screens/form/list_student_form_screen.dart'; // Màn hình danh sách học viên
 import 'package:duandemo/screens/form/teacher_registration_form_delta_screen.dart'; // Chi tiết giáo viên
@@ -60,12 +59,12 @@ class _MyAppState extends State<MyApp> {
        //  home: CourseListScreen());
 
         // home: UploadImageScreen());
-      //  home: AddTeacherFormScreen());
-     //   home: TeacherRegistrationFormListScreen());
+       // home: AddTeacherFormScreen());
+       // home: TeacherRegistrationFormListScreen());
         
-        home:AddStudentFormScreen());
-      //  home:StudentRegistrationListScreen());
-       // home: StudentRegistrationScreen(classRoomId: 1));
+      //  home:AddStudentFormScreen()); //Khánh 
+        home:StudentRegistrationListScreen());
+
        
 
     // home: OnionTopicScreen(level: 5));
