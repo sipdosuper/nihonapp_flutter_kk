@@ -60,11 +60,11 @@ class _MyAppState extends State<MyApp> {
         //  home: CourseListScreen());
 
         // home: UploadImageScreen());
-        // home: AddTeacherFormScreen());
-        // home: TeacherRegistrationFormListScreen());
+       //  home: AddTeacherFormScreen());
+       //  home: TeacherRegistrationFormListScreen());
 
-        //  home:AddStudentFormScreen()); //Khánh
-        home: StudentRegistrationListScreen());
+          home:AddStudentFormScreen()); 
+      //  home: StudentRegistrationListScreen());
 
     // home: OnionTopicScreen(level: 5));
     // home: TopicScreen2(

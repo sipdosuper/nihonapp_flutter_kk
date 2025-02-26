@@ -272,7 +272,7 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                         ),
                         items: List.generate(5, (index) => index + 1)
                             .map((e) => DropdownMenuItem(
-                                value: e, child: Text("Level $e")))
+                                value: e, child: Text("N$e")))
                             .toList(),
                         onChanged: (value) => setState(() => level_id = value!),
                       ),
