@@ -32,6 +32,5 @@ public class HomeWork {
     private ClassRoom classroom;
 
     @OneToMany(mappedBy = "homeWork", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private Set<User_HomeWork> user_HomeWorks=new HashSet<>();
 }

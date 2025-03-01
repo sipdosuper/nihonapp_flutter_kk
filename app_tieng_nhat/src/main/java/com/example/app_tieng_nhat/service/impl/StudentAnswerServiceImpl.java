@@ -44,6 +44,7 @@ public class StudentAnswerServiceImpl implements StudentAnswerService {
         try{
             User_HomeWork newAnswer= new User_HomeWork();
             newAnswer.setStudent_answer(studentAnswerRequest.student_answer());
+            newAnswer.setAudio(studentAnswerRequest.audio());
             newAnswer.setHomeWork(homeWork);
             newAnswer.setStudent(checkStudent.get());
             newAnswer.setTeacher_note(studentAnswerRequest.teacher_note());

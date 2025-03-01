@@ -21,9 +21,9 @@ public class User_HomeWork{
     private Long id;
 
     private String student_answer;
+    private String audio;
 
     private String teacher_note;
-
     private Float point;
 
     @ManyToOne
