@@ -1,6 +1,5 @@
-// lib/screens/cousers/couser_decription_screen.dart
 import 'package:duandemo/model/ClassRoom.dart';
-import 'package:duandemo/screens/form/student_registration_form_screen.dart';
+import 'package:duandemo/screens/form/add_student_form_screen.dart'; // THAY ĐỔI: Import màn hình đăng ký học viên mới
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -123,11 +122,11 @@ class CourseDescriptionScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  // THAY ĐỔI: Chuyển qua AddStudentFormScreen thay vì StudentRegistrationScreen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          StudentRegistrationScreen(classRoomId: classroom.id),
+                      builder: (context) => AddStudentFormScreen(),
                     ),
                   );
                 },
