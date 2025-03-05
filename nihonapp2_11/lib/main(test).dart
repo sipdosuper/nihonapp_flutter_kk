@@ -58,14 +58,14 @@ class _MyAppState extends State<MyApp> {
         //home: ChatHomescreen(),
         //home: WordChainGame(),
         // home: LevelSelectionScreen());
-        //  home: CourseListScreen());
+          home: CourseListScreen());
 
         // home: UploadImageScreen());
         //  home: AddTeacherFormScreen());
         //  home: TeacherRegistrationFormListScreen());
 
-        // home:AddStudentFormScreen());
-        home: HomeworkScreen());
+      //   home:AddStudentFormScreen());
+      //  home: HomeworkScreen());
     //  home: StudentRegistrationListScreen());
 
     // home: OnionTopicScreen(level: 5));
