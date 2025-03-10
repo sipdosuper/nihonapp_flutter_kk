@@ -1,5 +1,6 @@
 package com.example.app_tieng_nhat.controller;
 
+import com.example.app_tieng_nhat.DTO.User_HomeWorkDTO;
 import com.example.app_tieng_nhat.model.HomeWork;
 import com.example.app_tieng_nhat.request.CreateHomeWorkRequest;
 import com.example.app_tieng_nhat.request.MultiCreateHomeWorkRequest;
@@ -22,6 +23,21 @@ public class HomeWorkController {
     @GetMapping
     public List<HomeWork> getAllHomeWork(){
         return homeWorkSerVice.getAllHomeWork();
+    }
+
+    @GetMapping("/dto")
+    public List<User_HomeWorkDTO> getAllUserHomeWork(){
+        return homeWorkSerVice.getAllUserHomeWork();
+    }
+
+    @GetMapping("/{id}")
+    public List<HomeWork> getAllByClassRoomId(@PathVariable Long id){
+        return homeWorkSerVice.getHomeWorkByClassRoomId(id);
+    }
+
+    @GetMapping("/dto/{id}")
+    List<User_HomeWorkDTO> getAllUserHomeWorkByHomeWorkId(@PathVariable Long id){
+        return homeWorkSerVice.getAllUserHomeWorkByHomeWorkId(id);
     }
 
     @PostMapping

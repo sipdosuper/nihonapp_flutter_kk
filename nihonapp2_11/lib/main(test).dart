@@ -2,16 +2,20 @@ import 'package:duandemo/firebase_options.dart';
 import 'package:duandemo/screens/WordChainGame.dart';
 import 'package:duandemo/screens/chat_homescreen.dart';
 import 'package:duandemo/screens/cousers/CourseListScreen.dart';
+import 'package:duandemo/screens/cousers/create_classroom_screen.dart';
 import 'package:duandemo/screens/form/add_student_form_screen.dart';
 import 'package:duandemo/screens/form/add_teacher_form_screen.dart';
 import 'package:duandemo/screens/form/list_student_form_screen.dart';
 import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
+import 'package:duandemo/screens/homework/create_homework_screen.dart';
 import 'package:duandemo/screens/homework/homework_screen.dart';
+import 'package:duandemo/screens/homework/show_homework_by_class.dart';
 import 'package:duandemo/screens/level_selection_screen.dart';
 import 'package:duandemo/screens/onionList_screen.dart';
 import 'package:duandemo/screens/onion_screen.dart';
 import 'package:duandemo/screens/onion_topic_screen.dart';
 import 'package:duandemo/screens/test_up_image/upload_imageScreen.dart';
+import 'package:duandemo/screens/time/time_screen.dart';
 import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -58,14 +62,18 @@ class _MyAppState extends State<MyApp> {
         //home: ChatHomescreen(),
         //home: WordChainGame(),
         // home: LevelSelectionScreen());
-          home: CourseListScreen());
+        // home: CreateClassroomScreen());
+        // home: TimeManagementScreen());
+        // home: AddHomeWorkScreen(classRoomId: 9266));
+        home: ShowHomeworkByClass(classId: 9266));
+    // home: CourseListScreen());
 
-        // home: UploadImageScreen());
-         // home: AddTeacherFormScreen());
-        //  home: TeacherRegistrationFormListScreen());
+    // home: UploadImageScreen());
+    // home: AddTeacherFormScreen());
+    //  home: TeacherRegistrationFormListScreen());
 
-      //   home:AddStudentFormScreen());
-       // home: HomeworkScreen());
+    //   home:AddStudentFormScreen());
+    // home: HomeworkScreen());
     //  home: StudentRegistrationListScreen());
 
     // home: OnionTopicScreen(level: 5));

@@ -24,9 +24,9 @@ class UserHomeWork {
       studentAnswer: json['student_answer'],
       audio: json['audio'], // Giá trị có thể null
       teacherNote: json['teacher_note'],
-      point: (json['point'] as num).toDouble(),
-      homeWorkId: json['homework_id'],
-      studentId: json['student_id'],
+      point: json['point'] != null ? (json['point'] as num).toDouble() : 0.0,
+      homeWorkId: json['homeworkId'],
+      studentId: json['userId'],
     );
   }
 
@@ -37,8 +37,8 @@ class UserHomeWork {
       'audio': audio,
       'teacher_note': teacherNote,
       'point': point,
-      'homework_id': homeWorkId,
-      'student_id': studentId,
+      'homeworkId': homeWorkId,
+      'userId': studentId,
     };
   }
 }

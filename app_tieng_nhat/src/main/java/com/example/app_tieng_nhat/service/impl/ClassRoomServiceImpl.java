@@ -47,6 +47,7 @@ public class ClassRoomServiceImpl implements ClassRoomService {
             newClassRoom.setLink_giaotrinh(classroomRequest.link_giaotrinh());
             newClassRoom.setStart(classroomRequest.start());
             newClassRoom.setEnd(classroomRequest.end());
+            newClassRoom.setPrice(classroomRequest.price());
             newClassRoom.setTeacher(teacher.get());
             newClassRoom.setTime(checkTime.get());
             classRepository.save(newClassRoom);

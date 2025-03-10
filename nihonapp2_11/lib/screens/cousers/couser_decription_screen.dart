@@ -126,7 +126,10 @@ class CourseDescriptionScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddStudentFormScreen(),
+                      builder: (context) => AddStudentFormScreen(
+                        classRoomId: classroom.id,
+                        className: classroom.name,
+                      ),
                     ),
                   );
                 },
@@ -152,8 +155,8 @@ class CourseDescriptionScreen extends StatelessWidget {
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.lightBlue[100],
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

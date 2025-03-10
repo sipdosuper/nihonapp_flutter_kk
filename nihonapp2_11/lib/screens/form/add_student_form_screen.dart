@@ -13,17 +13,25 @@ import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart' as html;
 
 class AddStudentFormScreen extends StatefulWidget {
+  final int classRoomId;
+  final String className;
+  AddStudentFormScreen({required this.classRoomId, required this.className});
+
   @override
-  _AddStudentFormScreenState createState() => _AddStudentFormScreenState();
+  _AddStudentFormScreenState createState() => _AddStudentFormScreenState(
+      classRoomId: classRoomId, className: className);
 }
 
 class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _regisDayController = TextEditingController();
-
+  final int classRoomId;
+  final String className;
+  _AddStudentFormScreenState(
+      {required this.classRoomId, required this.className});
   String nameAndSdt = "", email = "";
   String regisDay = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  int? classRoomId;
+
   int id = 0;
   String? bill = "";
   File? _imageFile;
@@ -37,6 +45,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
   void initState() {
     super.initState();
     _fetchClassrooms();
+    print(classRoomId);
     _regisDayController.text = regisDay; // Gán ngày hiện tại cho controller
   }
 
@@ -47,9 +56,9 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
           _classrooms = data.map((json) => Classroom.fromJson(json)).toList();
-          if (_classrooms.isNotEmpty) {
-            classRoomId = _classrooms.first.id;
-          }
+          // if (_classrooms.isNotEmpty) {
+          //   classRoomId = _classrooms.first.id;
+          // }
         });
       } else {
         throw Exception("Lỗi khi tải danh sách lớp học");
@@ -209,33 +218,44 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
                       ),
                       // Loại bỏ TextFormField cho trường bill
                       SizedBox(height: 12),
-                      DropdownButtonFormField<int>(
-                        value: classRoomId,
+                      TextFormField(
                         decoration: InputDecoration(
-                          labelText: "Chọn lớp",
+                          labelText: "Tên Lớp Học: ${className}",
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.redAccent),
                           ),
                         ),
-                        items: _classrooms.map((classroom) {
-                          return DropdownMenuItem<int>(
-                            value: classroom.id,
-                            child: Text(classroom.name),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            classRoomId = value!;
-                          });
-                        },
                       ),
+                      // SizedBox(height: 12),
+                      // DropdownButtonFormField<int>(
+                      //   value: classRoomId,
+                      //   decoration: InputDecoration(
+                      //     labelText: "Chọn lớp",
+                      //     border: OutlineInputBorder(),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.redAccent),
+                      //     ),
+                      //   ),
+                      //   items: _classrooms.map((classroom) {
+                      //     return DropdownMenuItem<int>(
+                      //       value: classroom.id,
+                      //       child: Text(classroom.name),
+                      //     );
+                      //   }).toList(),
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       classRoomId = value!;
+                      //     });
+                      //   },
+                      // ),
                       SizedBox(height: 12),
                       TextFormField(
                         controller: _regisDayController,
                         decoration: InputDecoration(
                           labelText: "Ngày đăng ký",
-                          border: OutlineInputBorder(),focusedBorder: OutlineInputBorder(
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.redAccent),
                           ),
                         ),

@@ -1,9 +1,14 @@
 package com.example.app_tieng_nhat.service.impl;
 
+import com.example.app_tieng_nhat.DTO.StudentRegistrationDTO;
+import com.example.app_tieng_nhat.DTO.User_HomeWorkDTO;
 import com.example.app_tieng_nhat.model.ClassRoom;
 import com.example.app_tieng_nhat.model.HomeWork;
+import com.example.app_tieng_nhat.model.StudentRegistration;
+import com.example.app_tieng_nhat.model.User_HomeWork;
 import com.example.app_tieng_nhat.repository.ClassRepository;
 import com.example.app_tieng_nhat.repository.HomeWorkRepository;
+import com.example.app_tieng_nhat.repository.UserHomeWorkRepository;
 import com.example.app_tieng_nhat.request.CreateHomeWorkRequest;
 import com.example.app_tieng_nhat.request.MultiCreateHomeWorkRequest;
 import com.example.app_tieng_nhat.request.UpdateHomeWorkRequest;
@@ -13,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HomeWorkServiceImpl implements HomeWorkSerVice {
@@ -20,9 +26,33 @@ public class HomeWorkServiceImpl implements HomeWorkSerVice {
     private HomeWorkRepository homeWorkRepository;
     @Autowired
     private ClassRepository classRepository;
+    @Autowired
+    private UserHomeWorkRepository userHomeWorkRepository;
+
+    private User_HomeWorkDTO convertToDTO(User_HomeWork user_homeWork) {
+        User_HomeWorkDTO dto = new User_HomeWorkDTO();
+        dto.setId(user_homeWork.getId());
+        dto.setStudent_answer(user_homeWork.getStudent_answer());
+        dto.setAudio(user_homeWork.getAudio());
+        dto.setTeacher_note(user_homeWork.getTeacher_note());
+        dto.setPoint(user_homeWork.getPoint());
+        dto.setUserId(user_homeWork.getStudent().getId());
+        dto.setHomeworkId(user_homeWork.getHomeWork().getId());
+        return dto;
+    }
+
+
     @Override
     public List<HomeWork> getAllHomeWork() {
         return homeWorkRepository.findAll();
+    }
+
+    @Override
+    public List<HomeWork> getHomeWorkByClassRoomId(Long classRoom_id) {
+        Optional<ClassRoom> checkClass = classRepository.findById(classRoom_id);
+        if(checkClass.isEmpty())return null;
+        return checkClass.get().getHomeWorks();
+
     }
 
     @Override
@@ -64,5 +94,22 @@ public class HomeWorkServiceImpl implements HomeWorkSerVice {
     @Override
     public void deleteHomeWork(Long id) {
         homeWorkRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User_HomeWorkDTO> getAllUserHomeWork() {
+        return userHomeWorkRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User_HomeWorkDTO> getAllUserHomeWorkByHomeWorkId(Long id) {
+
+        return userHomeWorkRepository.findAllByHomeWorkId(id)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -10,6 +10,7 @@ public record CreateClassroomRequest(String name,
                                      String link_giaotrinh,
                                      LocalDate start,
                                      LocalDate end,
+                                     Long price,
                                      Long time_id,
                                      Long teacher_id) {
 }

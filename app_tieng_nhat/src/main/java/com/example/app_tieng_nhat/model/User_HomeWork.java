@@ -1,6 +1,7 @@
 package com.example.app_tieng_nhat.model;
 
 
+import com.example.app_tieng_nhat.DTO.User_HomeWorkDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -36,5 +37,16 @@ public class User_HomeWork{
     @JsonBackReference("home_work-user_home_work")
     private HomeWork homeWork;
 
+    public User_HomeWorkDTO toDTO(){
+        User_HomeWorkDTO dto= new User_HomeWorkDTO();
+        dto.setId(this.id);
+        dto.setStudent_answer(this.student_answer);
+        dto.setAudio(this.audio);
+        dto.setTeacher_note(this.teacher_note);
+        dto.setPoint(this.point);
+        dto.setUserId(this.student != null? this.student.getId() : null);
+        dto.setHomeworkId(this.homeWork!=null? this.homeWork.getId(): null);
+        return dto;
+    }
 
 }
