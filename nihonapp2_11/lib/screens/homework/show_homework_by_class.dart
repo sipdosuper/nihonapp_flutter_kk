@@ -18,6 +18,7 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
   List<dynamic> homeworks = [];
   Map<String, dynamic>? selectedHomework;
   List<UserHomeWork> userHomeworks = [];
+  bool _isLeftPanelExpanded = true; // Điều khiển trạng thái panel trái
 
   @override
   void initState() {
@@ -55,6 +56,9 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
   @override
   Widget build(BuildContext context) {
     final Color mainColor = Color(0xFFE57373);
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double leftPanelExpandedWidth = screenWidth * 0.25;
+    final double leftPanelCollapsedWidth = 50.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -63,99 +67,139 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
       ),
       body: Row(
         children: [
-          // Danh sách bài tập bên trái
-          Expanded(
-            flex: 1,
+          // Panel bên trái với AnimatedContainer thay đổi chiều rộng
+          AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            width: _isLeftPanelExpanded ? leftPanelExpandedWidth : leftPanelCollapsedWidth,
+            decoration: BoxDecoration(
+              color: Color(0xFFFFCDD2), // sắc thái nhạt của màu chủ đạo
+              border: Border(
+                right: BorderSide(width: 1, color: Colors.grey.shade300),
+              ),
+            ),
             child: Column(
               children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: homeworks.length,
-                    itemBuilder: (context, index) {
-                      final isSelected = selectedHomework != null &&
-                          selectedHomework!['id'] == homeworks[index]['id'];
-                      return ListTile(
-                        tileColor:
-                            isSelected ? mainColor.withOpacity(0.3) : null,
-                        title: Text(homeworks[index]["name"]),
-                        onTap: () {
-                          setState(() {
-                            selectedHomework = homeworks[index];
-                          });
-                          fetchUserHomeworks(homeworks[index]['id']);
-                        },
-                      );
+                // Nút thu/mở panel luôn hiển thị
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(
+                      _isLeftPanelExpanded ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+                      color: mainColor,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isLeftPanelExpanded = !_isLeftPanelExpanded;
+                      });
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Chức năng thêm bài tập
-                  },
-                  child: Text("Thêm Bài Tập"),
-                  style: ElevatedButton.styleFrom(backgroundColor: mainColor),
-                ),
+                // Khi panel mở rộng hiển thị danh sách bài tập và nút "Thêm Bài Tập"
+                _isLeftPanelExpanded
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: homeworks.length,
+                          itemBuilder: (context, index) {
+                            bool isSelected = selectedHomework != null &&
+                                selectedHomework!['id'] == homeworks[index]['id'];
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: isSelected ? mainColor.withOpacity(0.3) : Colors.transparent,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                  homeworks[index]["name"],
+                                  style: TextStyle(fontSize: 14), // Kích cỡ chữ nhỏ hơn
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    selectedHomework = homeworks[index];
+                                  });
+                                  fetchUserHomeworks(homeworks[index]['id']);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Container(),
+                _isLeftPanelExpanded
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Chức năng thêm bài tập
+                          },
+                          child: Text("Thêm Bài", style: TextStyle(fontSize: 14)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: mainColor,
+                            foregroundColor: Colors.black, // Màu chữ là đen
+                            minimumSize: Size(140, 36), // Đảm bảo đủ rộng & cao để chữ không bị xuống dòng
+                          ),
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           ),
-          // Chi tiết bài tập và danh sách học sinh bên phải
+          // Panel bên phải chiếm phần còn lại của màn hình
           Expanded(
-            flex: 2,
-            child: selectedHomework == null
-                ? Center(child: Text("Chọn bài tập để xem chi tiết"))
-                : Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Câu hỏi:",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          selectedHomework!["question"] ?? "Không có câu hỏi",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Divider(),
-                        Text(
-                          "Danh sách bài làm:",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: userHomeworks.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: ListTile(
-                                  title: Text(
-                                      "Học sinh: ${userHomeworks[index].studentId}"),
-                                  subtitle: Text(
-                                      "Điểm: ${userHomeworks[index].point == 0 ? "0/10" : "${userHomeworks[index].point}/10"}"),
-                                  trailing: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              HomeworkDetailScreen(
-                                                  userHomeWork:
-                                                      userHomeworks[index]),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text("Xem bài tập"),
-                                  ),
-                                ),
-                              );
-                            },
+            child: Container(
+              color: Colors.white,
+              child: selectedHomework == null
+                  ? Center(child: Text("Chọn bài tập để xem chi tiết"))
+                  : Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Câu hỏi:",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 5),
+                          Text(
+                            selectedHomework!["question"] ?? "Không có câu hỏi",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Divider(),
+                          Text(
+                            "Danh sách bài làm:",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: userHomeworks.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: ListTile(
+                                    title: Text("Học sinh: ${userHomeworks[index].studentId}"),
+                                    subtitle: Text(
+                                      "Điểm: ${userHomeworks[index].point == 0 ? "0/10" : "${userHomeworks[index].point}/10"}",
+                                    ),
+                                    trailing: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomeworkDetailScreen(
+                                                userHomeWork: userHomeworks[index]),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text("Xem bài tập"),
+                                      style: ElevatedButton.styleFrom(backgroundColor: mainColor),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
         ],
       ),

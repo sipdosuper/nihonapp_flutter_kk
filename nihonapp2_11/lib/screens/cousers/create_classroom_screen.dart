@@ -29,13 +29,26 @@ class _CreateClassroomScreenState extends State<CreateClassroomScreen> {
   Uint8List? _imageBytes;
   bool _isUploading = false;
   bool _isImageSelected = false;
-  bool _isImageUploaded = false;
+  
+  // Danh sách cho Dropdown
   List<Level> levels = [];
   List<Teacher> teachers = [];
   List<Time> times = [];
   Level? selectedLevel;
   Teacher? selectedTeacher;
   Time? selectedTime;
+  
+  // Các biến đánh dấu lỗi cho validation
+  bool _nameError = false;
+  bool _descriptionError = false;
+  bool _slMaxError = false;
+  bool _priceError = false;
+  bool _startDayError = false;
+  bool _endDayError = false;
+  bool _selectedLevelError = false;
+  bool _selectedTeacherError = false;
+  bool _selectedTimeError = false;
+  bool _imageError = false;
 
   @override
   void initState() {
@@ -113,22 +126,30 @@ class _CreateClassroomScreenState extends State<CreateClassroomScreen> {
       );
       return;
     }
-
     setState(() => _isUploading = true);
     final url = await CloudinaryService.uploadImage(_imageFile, _imageBytes);
     setState(() {
-      imageUrl = url;
       _isUploading = false;
-      _isImageUploaded = true;
+      // Sau khi upload thành công, cập nhật imageUrl và xóa preview ảnh đã chọn
+      if (url != null) {
+        imageUrl = url;
+        _isImageSelected = false;
+        _imageFile = null;
+        _imageBytes = null;
+      }
+      _imageError = url == null;
     });
-
     if (url == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Upload ảnh thất bại!")),
+        SnackBar(
+            content: Text("Upload ảnh thất bại!"),
+            backgroundColor: Colors.redAccent),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Ảnh đã được tải lên thành công!")),
+        SnackBar(
+            content: Text("Ảnh đã được tải lên thành công!"),
+            backgroundColor: Colors.green),
       );
     }
   }
@@ -152,12 +173,38 @@ class _CreateClassroomScreenState extends State<CreateClassroomScreen> {
   }
 
   Future<void> createClassroom() async {
-    if (selectedLevel == null ||
-        selectedTeacher == null ||
-        selectedTime == null ||
-        imageUrl == null) {
+    setState(() {
+      _nameError = nameController.text.isEmpty;
+      _descriptionError = descriptionController.text.isEmpty;
+      _slMaxError = slMaxController.text.isEmpty;
+      _priceError = priceController.text.isEmpty;
+      _startDayError = _startDayController.text.isEmpty;
+      _endDayError = _endDayController.text.isEmpty;
+      _selectedLevelError = selectedLevel == null;
+      _selectedTeacherError = selectedTeacher == null;
+      _selectedTimeError = selectedTime == null;
+      _imageError = imageUrl == null;
+    });
+
+    if (_nameError ||
+        _descriptionError ||
+        _slMaxError ||
+        _priceError ||
+        _startDayError ||
+        _endDayError ||
+        _selectedLevelError ||
+        _selectedTeacherError ||
+        _selectedTimeError ||
+        _imageError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Vui lòng điền đầy đủ thông tin!"),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
       return;
     }
+
     Map<String, dynamic> classroomData = {
       "name": nameController.text,
       "level_id": selectedLevel!.id,
@@ -176,145 +223,360 @@ class _CreateClassroomScreenState extends State<CreateClassroomScreen> {
       body: json.encode(classroomData),
     );
     if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Tạo lớp học thành công!"),
+          backgroundColor: Colors.green,
+        ),
+      );
       print("Tạo lớp học thành công!");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Có lỗi xảy ra khi tạo lớp học!"),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final Color mainColor = Color(0xFFE57373);
     return Scaffold(
-      appBar: AppBar(title: Text("Tạo Lớp Học")),
+      appBar: AppBar(
+        title: Text("Tạo Lớp Học"),
+        backgroundColor: mainColor,
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: "Tên lớp học")),
-              DropdownButton<Level>(
-                hint: Text("Chọn Level"),
-                value: selectedLevel,
-                isExpanded: true,
-                items: levels.map((level) {
-                  return DropdownMenuItem(
-                      value: level, child: Text(level.name));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedLevel = value;
-                  });
-                },
-              ),
-              TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(labelText: "Mô tả")),
-              TextField(
-                  controller: slMaxController,
-                  decoration: InputDecoration(labelText: "Số lượng tối đa")),
-              TextField(
-                  controller: priceController,
-                  decoration: InputDecoration(labelText: "Giá")),
-              DropdownButton<Time>(
-                hint: Text("Chọn thời gian"),
-                value: selectedTime,
-                isExpanded: true,
-                items: times.map((time) {
-                  return DropdownMenuItem(value: time, child: Text(time.time));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedTime = value;
-                  });
-                },
-              ),
-              DropdownButton<Teacher>(
-                hint: Text("Chọn giáo viên"),
-                value: selectedTeacher,
-                isExpanded: true,
-                items: teachers.map((teacher) {
-                  return DropdownMenuItem(
-                      value: teacher,
-                      child: Text("${teacher.username} - ${teacher.email}"));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedTeacher = value;
-                  });
-                },
-              ),
-              TextField(
-                  controller: _startDayController,
-                  readOnly: true,
-                  decoration: InputDecoration(labelText: "Ngày bắt đầu"),
-                  onTap: () => selectDate(context, true)),
-              TextField(
-                  controller: _endDayController,
-                  readOnly: true,
-                  decoration: InputDecoration(labelText: "Ngày kết thúc"),
-                  onTap: () => selectDate(context, false)),
-              if (imageUrl != null) Image.network(imageUrl!),
-              SizedBox(height: 20),
-              _isImageUploaded
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(imageUrl!,
-                          width: 200, height: 200, fit: BoxFit.cover),
-                    )
-                  : _imageBytes != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.memory(_imageBytes!,
-                              width: 200, height: 200, fit: BoxFit.cover),
-                        )
-                      : _imageFile != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.file(_imageFile!,
-                                  width: 200, height: 200, fit: BoxFit.cover),
-                            )
-                          : Container(
-                              width: 200,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.redAccent),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: Icon(Icons.image,
-                                    size: 50, color: Colors.redAccent),
-                              ),
-                            ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text("Chọn ảnh"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-              SizedBox(height: 10),
-              if (_isImageSelected)
-                ElevatedButton(
-                  onPressed: _isUploading ? null : _uploadImage,
-                  child: _isUploading
-                      ? CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        )
-                      : Text("Upload ảnh"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Tên lớp học
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: "Tên lớp học",
+                      errorText:
+                          _nameError ? "Vui lòng điền đầy đủ thông tin" : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
                   ),
-                ),
-              ElevatedButton(
-                  onPressed: createClassroom, child: Text("Tạo lớp học")),
-            ],
+                  SizedBox(height: 16),
+                  // Dropdown Level
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: _selectedLevelError
+                                  ? Colors.red
+                                  : Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: DropdownButton<Level>(
+                          hint: Text("Chọn Level"),
+                          value: selectedLevel,
+                          isExpanded: true,
+                          underline: SizedBox(),
+                          items: levels
+                              .map((level) => DropdownMenuItem(
+                                  value: level, child: Text(level.name)))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedLevel = value;
+                              _selectedLevelError = false;
+                            });
+                          },
+                        ),
+                      ),
+                      if (_selectedLevelError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0, left: 12),
+                          child: Text(
+                            "Vui lòng điền đầy đủ thông tin",
+                            style:
+                                TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  // Mô tả
+                  TextField(
+                    controller: descriptionController,
+                    decoration: InputDecoration(
+                      labelText: "Mô tả",
+                      errorText: _descriptionError
+                          ? "Vui lòng điền đầy đủ thông tin"
+                          : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  // Số lượng tối đa
+                  TextField(
+                    controller: slMaxController,
+                    decoration: InputDecoration(
+                      labelText: "Số lượng tối đa",
+                      errorText: _slMaxError
+                          ? "Vui lòng điền đầy đủ thông tin"
+                          : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  // Giá
+                  TextField(
+                    controller: priceController,
+                    decoration: InputDecoration(
+                      labelText: "Giá",
+                      errorText:
+                          _priceError ? "Vui lòng điền đầy đủ thông tin" : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  // Dropdown Thời gian
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: _selectedTimeError
+                                  ? Colors.red
+                                  : Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: DropdownButton<Time>(
+                          hint: Text("Chọn thời gian"),
+                          value: selectedTime,
+                          isExpanded: true,
+                          underline: SizedBox(),
+                          items: times
+                              .map((time) => DropdownMenuItem(
+                                  value: time, child: Text(time.time)))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedTime = value;
+                              _selectedTimeError = false;
+                            });
+                          },
+                        ),
+                      ),
+                      if (_selectedTimeError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0, left: 12),
+                          child: Text(
+                            "Vui lòng điền đầy đủ thông tin",
+                            style:
+                                TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  // Dropdown Giáo viên
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: _selectedTeacherError
+                                  ? Colors.red
+                                  : Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: DropdownButton<Teacher>(
+                          hint: Text("Chọn giáo viên"),
+                          value: selectedTeacher,
+                          isExpanded: true,
+                          underline: SizedBox(),
+                          items: teachers
+                              .map((teacher) => DropdownMenuItem(
+                                  value: teacher,
+                                  child: Text(
+                                      "${teacher.username} - ${teacher.email}")))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedTeacher = value;
+                              _selectedTeacherError = false;
+                            });
+                          },
+                        ),
+                      ),
+                      if (_selectedTeacherError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0, left: 12),
+                          child: Text(
+                            "Vui lòng điền đầy đủ thông tin",
+                            style:
+                                TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  // Ngày bắt đầu
+                  TextField(
+                    controller: _startDayController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Ngày bắt đầu",
+                      errorText: _startDayError
+                          ? "Vui lòng điền đầy đủ thông tin"
+                          : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    onTap: () => selectDate(context, true),
+                  ),
+                  SizedBox(height: 16),
+                  // Ngày kết thúc
+                  TextField(
+                    controller: _endDayController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Ngày kết thúc",
+                      errorText: _endDayError
+                          ? "Vui lòng điền đầy đủ thông tin"
+                          : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    onTap: () => selectDate(context, false),
+                  ),
+                  SizedBox(height: 16),
+                  // Phần hiển thị ảnh:
+                  // 1. Ảnh đã upload (nếu có)
+                  if (imageUrl != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Ảnh đã tải lên:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            imageUrl!,
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
+                    ),
+                  SizedBox(height: 16),
+                  // 2. Preview ảnh mới được chọn (chưa upload)
+                  if (_isImageSelected)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Ảnh mới chọn:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(height: 8),
+                        _imageBytes != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.memory(
+                                  _imageBytes!,
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : _imageFile != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.file(
+                                      _imageFile!,
+                                      width: 200,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : Container(),
+                      ],
+                    ),
+                  if (_isImageSelected && _imageError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0, left: 4.0),
+                      child: Text(
+                        "Vui lòng tải lên ảnh",
+                        style: TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ),
+                  SizedBox(height: 20),
+                  // Nút "Chọn ảnh" luôn hiển thị
+                  ElevatedButton(
+                    onPressed: _pickImage,
+                    child: Text("Chọn ảnh"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainColor,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  // Nút "Upload ảnh" chỉ xuất hiện nếu có ảnh mới được chọn (chưa upload)
+                  if (_isImageSelected)
+                    ElevatedButton(
+                      onPressed: _isUploading ? null : _uploadImage,
+                      child: _isUploading
+                          ? CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
+                          : Text("Upload ảnh"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: mainColor,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  // Nút tạo lớp học
+                  ElevatedButton(
+                    onPressed: createClassroom,
+                    child: Text("Tạo lớp học"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainColor,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

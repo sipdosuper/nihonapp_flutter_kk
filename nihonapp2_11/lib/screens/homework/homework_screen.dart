@@ -15,11 +15,15 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
   String api = Wordval().api;
   List<dynamic> homeworks = [];
   Map<String, dynamic>? selectedHomework;
+
   TextEditingController answerController = TextEditingController();
-  File? audioFile; // File âm thanh được chọn
-  String? audioUrl; // URL sau khi tải lên Cloudinary
-  File? uploadedFile; // File khác (nếu có)
+
+  File? audioFile;        
+  String? audioUrl;       
+  File? uploadedFile;     
   String? uploadedFileUrl;
+
+  bool _isLeftPanelExpanded = true; // Điều khiển panel bên trái
 
   @override
   void initState() {
@@ -44,9 +48,8 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
       type: FileType.audio,
     );
     if (result != null) {
-      File file = File(result.files.single.path!);
       setState(() {
-        audioFile = file;
+        audioFile = File(result.files.single.path!);
       });
     }
   }
@@ -77,7 +80,6 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
       setState(() {
         uploadedFile = file;
       });
-
       String? url = await CloudinaryService.uploadImage(file, null);
       if (url != null) {
         setState(() {
@@ -125,127 +127,107 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Màu chủ đạo
     final Color mainColor = Color(0xFFE57373);
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double leftPanelExpandedWidth = screenWidth * 0.25;
+    final double leftPanelCollapsedWidth = 50.0;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
         title: Text("Homework Screen"),
       ),
-      body: Container(
-        color: Colors.white.withOpacity(0.95),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // MÀN HÌNH RỘNG (TABLET/WEB)
-            if (constraints.maxWidth > 600) {
-              return Row(
-                children: [
-                  // Cột trái: Danh sách bài tập
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          right: BorderSide(color: Colors.grey.shade300),
-                        ),
-                      ),
-                      child: ListView.builder(
-                        itemCount: homeworks.length,
-                        itemBuilder: (context, index) {
-                          // THAY ĐỔI: Xác định item đang chọn
-                          final isSelected = (selectedHomework != null &&
-                              selectedHomework!['id'] == homeworks[index]['id']);
-
-                          return Container(
-                            // THAY ĐỔI: Dùng màu đậm hơn để phân biệt
-                            color: isSelected
-                                ? mainColor.withOpacity(0.7) // Đậm hơn
-                                : Colors.transparent,
-                            child: ListTile(
-                              title: Text(homeworks[index]["name"]),
-                              onTap: () {
-                                setState(() {
-                                  selectedHomework = homeworks[index];
-                                  answerController.clear();
-                                  audioFile = null;
-                                  uploadedFile = null;
-                                  audioUrl = null;
-                                  uploadedFileUrl = null;
-                                });
-                              },
-                            ),
-                          );
-                        },
-                      ),
+      // QUAN TRỌNG: Đặt crossAxisAlignment: CrossAxisAlignment.start để nội dung nằm sát trên
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Panel bên trái
+          AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            width: _isLeftPanelExpanded
+                ? leftPanelExpandedWidth
+                : leftPanelCollapsedWidth,
+            decoration: BoxDecoration(
+              color: Color(0xFFFFCDD2),
+              border: Border(
+                right: BorderSide(color: Colors.grey.shade300),
+              ),
+            ),
+            child: Column(
+              children: [
+                // Nút thu/mở
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(
+                      _isLeftPanelExpanded
+                          ? Icons.arrow_back_ios
+                          : Icons.arrow_forward_ios,
+                      color: mainColor,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        _isLeftPanelExpanded = !_isLeftPanelExpanded;
+                      });
+                    },
                   ),
-                  // Cột phải: Chi tiết bài tập + form
-                  Expanded(
-                    flex: 2,
-                    child: buildHomeworkDetail(mainColor),
-                  ),
-                ],
-              );
-            } else {
-              // MÀN HÌNH HẸP (MOBILE)
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Phần danh sách bài tập (dọc)
-                    ListView.builder(
-                      itemCount: homeworks.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        // THAY ĐỔI: Xác định item đang chọn
-                        final isSelected = (selectedHomework != null &&
-                            selectedHomework!['id'] == homeworks[index]['id']);
-
-                        return Card(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          // THAY ĐỔI: Nếu item được chọn, dùng màu đậm hơn
-                          color: isSelected
-                              ? mainColor.withOpacity(0.7)
-                              : mainColor.withOpacity(0.2),
-                          child: ListTile(
-                            title: Text(
-                              homeworks[index]["name"],
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                selectedHomework = homeworks[index];
-                                answerController.clear();
-                                audioFile = null;
-                                uploadedFile = null;
-                                audioUrl = null;
-                                uploadedFileUrl = null;
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    // Phần chi tiết bài tập
-                    buildHomeworkDetail(mainColor),
-                  ],
                 ),
-              );
-            }
-          },
-        ),
+                // Danh sách bài tập
+                _isLeftPanelExpanded
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: homeworks.length,
+                          itemBuilder: (context, index) {
+                            final bool isSelected = (selectedHomework != null &&
+                                selectedHomework!['id'] ==
+                                    homeworks[index]['id']);
+
+                            return Container(
+                              color: isSelected
+                                  ? mainColor.withOpacity(0.3)
+                                  : Colors.transparent,
+                              child: ListTile(
+                                title: Text(
+                                  homeworks[index]["name"],
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    selectedHomework = homeworks[index];
+                                    // Reset form
+                                    answerController.clear();
+                                    audioFile = null;
+                                    uploadedFile = null;
+                                    audioUrl = null;
+                                    uploadedFileUrl = null;
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
+          ),
+          // Panel bên phải
+          Expanded(
+            child: buildHomeworkDetail(mainColor),
+          ),
+        ],
       ),
     );
   }
 
-  // Widget riêng hiển thị chi tiết bài tập + form
   Widget buildHomeworkDetail(Color mainColor) {
     if (selectedHomework == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      // Chưa chọn bài tập
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        // Align top-left nếu muốn chữ nằm góc trên trái
+        child: Align(
+          alignment: Alignment.topLeft,
           child: Text(
             "Chọn bài tập để làm",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
@@ -254,110 +236,128 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Câu hỏi:",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 5),
-          Text(
-            selectedHomework!["question"] ?? "Không có câu hỏi",
-            style: TextStyle(fontSize: 18),
-          ),
-          Divider(thickness: 1, height: 20),
-          TextField(
-            controller: answerController,
-            keyboardType: TextInputType.multiline,
-            minLines: 1,
-            maxLines: null,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: "Nhập câu trả lời của bạn",
+    // Đã chọn bài tập
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          // Dính lên trên
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Tên bài tập
+            Text(
+              selectedHomework!["name"] ?? "Không có tên bài tập",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
-          SizedBox(height: 10),
-          // Chọn + Upload âm thanh
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: pickAudioFile,
-                  icon: Icon(Icons.audiotrack),
-                  label: Text("Chọn Âm Thanh"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+            SizedBox(height: 8),
+
+            // Câu hỏi
+            Text(
+              "Câu hỏi:",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4),
+            Text(
+              selectedHomework!["question"] ?? "Không có câu hỏi",
+              style: TextStyle(fontSize: 16),
+            ),
+            Divider(thickness: 1, height: 20),
+
+            // Ô nhập câu trả lời
+            TextField(
+              controller: answerController,
+              keyboardType: TextInputType.multiline,
+              minLines: 1,
+              maxLines: null,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Nhập câu trả lời của bạn",
+              ),
+            ),
+            SizedBox(height: 10),
+
+            // Chọn + Upload âm thanh
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: pickAudioFile,
+                    icon: Icon(Icons.audiotrack),
+                    label: Text("Chọn Âm Thanh"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: uploadAudio,
-                  icon: Icon(Icons.cloud_upload),
-                  label: Text("Tải âm thanh lên"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: uploadAudio,
+                    icon: Icon(Icons.cloud_upload),
+                    label: Text("Tải âm thanh lên"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
+              ],
+            ),
+            if (audioFile != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text("File đã chọn: ${audioFile!.path.split('/').last}"),
               ),
-            ],
-          ),
-          if (audioFile != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text("File đã chọn: ${audioFile!.path.split('/').last}"),
-            ),
-          if (audioUrl != null) Text("Đã tải lên: $audioUrl"),
-          SizedBox(height: 10),
-          // Chọn file khác
-          ElevatedButton.icon(
-            onPressed: pickFile,
-            icon: Icon(Icons.attach_file),
-            label: Text("Chọn File Khác"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: mainColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
-          if (uploadedFileUrl != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text("Đã tải lên: $uploadedFileUrl"),
-            ),
-          SizedBox(height: 20),
-          // Nút nộp bài
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: submitHomework,
-              child: Text("Nộp bài"),
+            if (audioUrl != null) Text("Đã tải lên: $audioUrl"),
+            SizedBox(height: 10),
+
+            // Chọn file khác
+            ElevatedButton.icon(
+              onPressed: pickFile,
+              icon: Icon(Icons.attach_file),
+              label: Text("Chọn File Khác"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: mainColor,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.all(15),
-                textStyle: TextStyle(fontSize: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),
-          ),
-        ],
+            if (uploadedFileUrl != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text("Đã tải lên: $uploadedFileUrl"),
+              ),
+            SizedBox(height: 20),
+
+            // Nút nộp bài
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: submitHomework,
+                child: Text("Nộp bài"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: mainColor,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.all(15),
+                  textStyle: TextStyle(fontSize: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -43,7 +43,14 @@ class _AddHomeWorkScreenState extends State<AddHomeWorkScreen> {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Thêm bài tập thành công!")),
+        SnackBar(
+          content: Text(
+            "Thêm bài tập thành công!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       Navigator.pop(context);
     } else {
@@ -55,42 +62,75 @@ class _AddHomeWorkScreenState extends State<AddHomeWorkScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Color(0xFFE57373);
     return Scaffold(
       appBar: AppBar(
         title: Text("Thêm Bài Tập"),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: primaryColor,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: "Tên bài tập"),
-                validator: (value) =>
-                    value!.isEmpty ? "Nhập tên bài tập" : null,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _questionController,
-                decoration: InputDecoration(labelText: "Câu hỏi"),
-                validator: (value) => value!.isEmpty ? "Nhập câu hỏi" : null,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submitHomeWork,
-                child: _isLoading
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Thêm bài tập"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: "Tên bài tập",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? "Nhập tên bài tập" : null,
                 ),
-              ),
-            ],
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: _questionController,
+                  decoration: InputDecoration(
+                    labelText: "Câu hỏi",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? "Nhập câu hỏi" : null,
+                  maxLines: 3,
+                ),
+                SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _submitHomeWork,
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.black87),
+                          )
+                        : Text("Thêm bài tập"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.black87, // Màu chữ thay đổi
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      textStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
