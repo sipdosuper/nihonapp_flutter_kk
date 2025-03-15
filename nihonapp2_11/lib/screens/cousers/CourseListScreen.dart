@@ -132,7 +132,8 @@ class _CourseListScreenState extends State<CourseListScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => CourseDescriptionScreen(
+                                      builder: (context) =>
+                                          CourseDescriptionScreen(
                                         classroom: classroom,
                                       ),
                                     ),

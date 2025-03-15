@@ -29,7 +29,7 @@ class Classroom {
     return Classroom(
       id: json['id'] ?? 0,
       name: json['name'] ?? 'Không có tên',
-      level: json['level']['name'] ?? 'Không có cấp độ',
+      level: json['level'] ?? 'Không có cấp độ',
       description: json['description'] ?? 'Không có mô tả',
       slMax: (json['sl_max'] as num?)?.toInt() ?? 0,
       linkGiaotrinh: json['link_giaotrinh'] ?? '',
@@ -38,8 +38,8 @@ class Classroom {
           : DateTime.now(),
       end: json['end'] != null ? DateTime.parse(json['end']) : DateTime.now(),
       price: (json['price'] as num?)?.toInt() ?? 0,
-      time: json['time']['time'] ?? 'Không có thời gian',
-      teacher: json['teacher']['teacherName'] ?? 'Không có giáo viên',
+      time: json['time'] ?? 'Không có thời gian',
+      teacher: json['teacherName'] ?? 'Không có giáo viên',
     );
   }
 

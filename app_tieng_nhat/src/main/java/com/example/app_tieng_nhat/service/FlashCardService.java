@@ -11,5 +11,6 @@ public interface FlashCardService {
     List<FlashCard> getAllFlashCard();
     List<FlashCard> getFlashCardByListId(Long list_id);
     String createFlashCard(CreateFlashCardRequest request);
+    String multiCreateFlashCard(List<CreateFlashCardRequest> list);
     void delete(Long id);
 }

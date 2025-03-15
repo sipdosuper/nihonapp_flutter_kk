@@ -17,7 +17,7 @@ public class EmailServiceImpl implements EmailService {
         message.setTo(emailRequest.to());
         message.setSubject(emailRequest.subject());
         message.setText(emailRequest.text());
-        message.setFrom("khoatrinhdang18052000@gmail.com"); // Thay bằng email của bạn
+        message.setFrom(emailRequest.form()); // Thay bằng email của bạn
         mailSender.send(message);
     }
 }

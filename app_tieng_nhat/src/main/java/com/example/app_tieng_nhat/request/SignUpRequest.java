@@ -4,7 +4,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 public record SignUpRequest(
-//                            @GeneratedValue(strategy = GenerationType.IDENTITY) Long id,
                             String email,
                             String username,
                             Boolean sex,

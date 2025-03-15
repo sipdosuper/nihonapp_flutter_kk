@@ -1,6 +1,7 @@
 package com.example.app_tieng_nhat.request;
 
-public record SendEmailRequest(String to,
-                               String subject,
-                               String text) {
+public record SendEmailRequest(String form,
+                                String to,
+                                String subject,
+                                String text) {
 }

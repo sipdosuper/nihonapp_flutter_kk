@@ -1,13 +1,8 @@
 package com.example.app_tieng_nhat.service.impl;
 
-import com.example.app_tieng_nhat.model.ClassRoom;
-import com.example.app_tieng_nhat.model.Levels;
-import com.example.app_tieng_nhat.model.Teacher;
-import com.example.app_tieng_nhat.model.Time;
-import com.example.app_tieng_nhat.repository.ClassRepository;
-import com.example.app_tieng_nhat.repository.LevelRepository;
-import com.example.app_tieng_nhat.repository.TeacherRepository;
-import com.example.app_tieng_nhat.repository.TimeRepository;
+import com.example.app_tieng_nhat.DTO.ClassRoomDTO;
+import com.example.app_tieng_nhat.model.*;
+import com.example.app_tieng_nhat.repository.*;
 import com.example.app_tieng_nhat.request.CreateClassroomRequest;
 import com.example.app_tieng_nhat.service.ClassRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassRoomServiceImpl implements ClassRoomService {
@@ -25,10 +21,42 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     @Autowired
     private TeacherRepository teacherRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private LevelRepository levelRepository;
+
+    private ClassRoomDTO convertToDTO(ClassRoom classRoom){
+        ClassRoomDTO dto= new ClassRoomDTO();
+        dto.setId(classRoom.getId());
+        dto.setName(classRoom.getName());
+        dto.setLevel(classRoom.getLevel().getName());
+        dto.setDescription(classRoom.getDescription());
+        dto.setSl_max(classRoom.getSl_max());
+        dto.setLink_giaotrinh(classRoom.getLink_giaotrinh());
+        dto.setStart(classRoom.getStart());
+        dto.setEnd(classRoom.getEnd());
+        dto.setPrice(classRoom.getPrice());
+        dto.setTime(classRoom.getTime().getTime());
+        dto.setTeacherName(classRoom.getTeacher().getUsername());
+        return dto;
+    }
+
     @Override
-    public List<ClassRoom> getAllClassRoom() {
-        return classRepository.findAll();
+    public List<ClassRoomDTO> getAllClassRoom() {
+        return classRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClassRoomDTO> getAllClassRoomDTO(String email) {
+        Users check= userRepository.findUserByEmail(email);
+        if (check==null) return null;
+        return classRepository.findClassroomsByUserId(check.getId())
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

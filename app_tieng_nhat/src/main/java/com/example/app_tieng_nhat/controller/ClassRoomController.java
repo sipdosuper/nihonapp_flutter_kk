@@ -1,7 +1,9 @@
 package com.example.app_tieng_nhat.controller;
 
+import com.example.app_tieng_nhat.DTO.ClassRoomDTO;
 import com.example.app_tieng_nhat.model.ClassRoom;
 import com.example.app_tieng_nhat.request.CreateClassroomRequest;
+import com.example.app_tieng_nhat.request.GetClassRoomByEmailRequest;
 import com.example.app_tieng_nhat.service.ClassRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +17,14 @@ public class ClassRoomController {
     private ClassRoomService classRoomService;
 
     @GetMapping
-    public List<ClassRoom> getAllClassRoom(){
+    public List<ClassRoomDTO> getAllClassRoom(){
         return classRoomService.getAllClassRoom();
+    }
+
+    //lấy ra danh sách lớp của user theo email
+    @GetMapping("/dto")
+    public List<ClassRoomDTO> getAllClassRoomDTO(@RequestBody GetClassRoomByEmailRequest request){
+        return classRoomService.getAllClassRoomDTO(request.email());
     }
 
     @PostMapping

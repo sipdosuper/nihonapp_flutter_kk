@@ -25,6 +25,7 @@ public class HomeWorkController {
         return homeWorkSerVice.getAllHomeWork();
     }
 
+    // lấy ra user_homework
     @GetMapping("/dto")
     public List<User_HomeWorkDTO> getAllUserHomeWork(){
         return homeWorkSerVice.getAllUserHomeWork();

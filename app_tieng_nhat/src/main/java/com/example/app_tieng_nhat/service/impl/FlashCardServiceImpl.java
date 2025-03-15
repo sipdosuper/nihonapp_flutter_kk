@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FlashCardServiceImpl implements FlashCardService {
@@ -49,6 +50,29 @@ public class FlashCardServiceImpl implements FlashCardService {
         }catch (Exception e){
             return "co bien roi: "+e.getMessage();
         }
+    }
+
+    @Override
+    public String multiCreateFlashCard(List<CreateFlashCardRequest> list) {
+        Optional<FlashCardList> listCard;
+        try {
+            for (CreateFlashCardRequest card : list){
+                listCard=flashCardListRepository.findById(card.cardList_id());
+                if (listCard.isPresent()){
+                    FlashCard newCard= new FlashCard();
+                    newCard.setFont(card.font());
+                    newCard.setFont_img(card.font_img());
+                    newCard.setBack(card.back());
+                    newCard.setBack_img(card.back_img());
+                    newCard.setFlashCardList(listCard.get());
+                    flashCardRepository.save(newCard);
+                }
+            }
+            return "Tao nhieu thanh cong";
+        }catch (Exception e){
+            return "tao nhieu that bai: "+e.getMessage();
+        }
+
     }
 
     @Override

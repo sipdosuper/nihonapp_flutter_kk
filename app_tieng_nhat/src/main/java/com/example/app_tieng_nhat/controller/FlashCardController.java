@@ -28,6 +28,11 @@ public class FlashCardController {
     public String createFlashCard(@RequestBody CreateFlashCardRequest request){
         return flashCardService.createFlashCard(request);
     }
+    // tạo nhiều flashcard 1 lúc 
+    @PostMapping("/multi")
+    public String multiCreateFlashCard(@RequestBody List<CreateFlashCardRequest> list){
+        return flashCardService.multiCreateFlashCard(list);
+    }
 
     @DeleteMapping("/{id}")
     void delete(@PathVariable Long id){

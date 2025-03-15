@@ -12,5 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface ClassRepository extends JpaRepository<ClassRoom, Long> {
-
+    // Sử dụng JPQL
+    @Query("SELECT c FROM ClassRoom c JOIN c.students u WHERE u.Id = :userId")
+    List<ClassRoom> findClassroomsByUserId(@Param("userId") Long userId);
 }
