@@ -36,3 +36,8 @@ flutter:
     - assets/logo.png
 
   uses-material-design: true
+
+  fonts:
+    - family: NotoSansJP
+      fonts:
+        - asset: assets/fonts/NotoSansJP-Regular.otf

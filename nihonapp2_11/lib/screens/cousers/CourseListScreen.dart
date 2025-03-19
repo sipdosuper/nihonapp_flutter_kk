@@ -25,7 +25,10 @@ class _CourseListScreenState extends State<CourseListScreen> {
     try {
       final response = await http.get(Uri.parse(Wordval().api + 'classroom'));
       if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
+        // Giải mã dữ liệu bằng UTF-8 trước khi parse JSON
+        final utfDecodedBody = utf8.decode(response.bodyBytes);
+        List<dynamic> data = json.decode(utfDecodedBody);
+
         setState(() {
           classrooms = data.map((json) => Classroom.fromJson(json)).toList();
           isLoading = false;

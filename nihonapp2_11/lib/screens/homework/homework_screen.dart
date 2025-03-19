@@ -35,7 +35,8 @@ class _HomeworkScreenState extends State<HomeworkScreen> {
     final response = await http.get(Uri.parse('${api}homework'));
     if (response.statusCode == 200) {
       setState(() {
-        homeworks = json.decode(response.body);
+        // Sử dụng utf8.decode để đảm bảo dữ liệu (bao gồm tiếng Nhật) được giải mã đúng
+        homeworks = json.decode(utf8.decode(response.bodyBytes));
       });
     } else {
       print("Lỗi khi tải danh sách bài tập");

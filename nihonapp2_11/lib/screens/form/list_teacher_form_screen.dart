@@ -19,7 +19,8 @@ class _TeacherRegistrationFormListScreenState
 
     if (response.statusCode == 200) {
       try {
-        List<dynamic> data = json.decode(response.body);
+        // Giải mã dữ liệu theo chuẩn UTF-8 để hỗ trợ tiếng Nhật
+        List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
         return data.map((json) {
           try {
             return TeacherRegistrationForm.fromJson(json);

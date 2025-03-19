@@ -31,7 +31,8 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
         await http.get(Uri.parse('${api}homework/${widget.classId}'));
     if (response.statusCode == 200) {
       setState(() {
-        homeworks = json.decode(response.body);
+        // Sử dụng utf8.decode để đảm bảo dữ liệu tiếng Nhật được giải mã đúng
+        homeworks = json.decode(utf8.decode(response.bodyBytes));
       });
     } else {
       print("Lỗi khi tải danh sách bài tập");
@@ -43,7 +44,8 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
         await http.get(Uri.parse('${api}homework/dto/$homeworkId'));
     if (response.statusCode == 200) {
       setState(() {
-        userHomeworks = (json.decode(response.body) as List)
+        // Giải mã dữ liệu theo UTF-8 trước khi parse JSON
+        userHomeworks = (json.decode(utf8.decode(response.bodyBytes)) as List)
             .map((item) => UserHomeWork.fromJson(item))
             .toList();
       });
@@ -110,7 +112,7 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
                               child: ListTile(
                                 title: Text(
                                   homeworks[index]["name"],
-                                  style: TextStyle(fontSize: 14), // Kích cỡ chữ nhỏ hơn
+                                  style: TextStyle(fontSize: 14),
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -134,8 +136,8 @@ class _ShowHomeworkByClassState extends State<ShowHomeworkByClass> {
                           child: Text("Thêm Bài", style: TextStyle(fontSize: 14)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: mainColor,
-                            foregroundColor: Colors.black, // Màu chữ là đen
-                            minimumSize: Size(140, 36), // Đảm bảo đủ rộng & cao để chữ không bị xuống dòng
+                            foregroundColor: Colors.black,
+                            minimumSize: Size(140, 36),
                           ),
                         ),
                       )

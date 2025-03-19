@@ -26,6 +26,8 @@ import 'package:duandemo/screens/form/teacher_registration_form_delta_screen.dar
 import 'package:duandemo/screens/form/teacher_form_item.dart'; // Màn hình danh sách giáo viên
 import 'package:duandemo/screens/form/teacher_form_detail_screen.dart'; // Màn hình chi tiết giáo viên
 import 'package:duandemo/screens/form/list_student_form_screen.dart'; // Ví dụ màn hình học viên, nếu cần
+import 'package:duandemo/screens/sendMail_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,36 +55,37 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Login to Dashboard App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        // home: LoginScreen()); // Khởi động với màn hình đăng nhập
-        //home: ChatHomescreen(),
-        //home: WordChainGame(),
-        // home: LevelSelectionScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Login to Dashboard App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        // Thêm font mặc định hỗ trợ tiếng Nhật cho toàn bộ dự án
+        fontFamily: 'NotoSansJP',
+      ),
+      // home: LoginScreen()); // Khởi động với màn hình đăng nhập
+      // home: ChatHomescreen(),
+      // home: WordChainGame(),
+      // home: LevelSelectionScreen(),
 
-        //    home: TimeManagementScreen());
-        // home: CreateClassroomScreen());
+      // home: TimeManagementScreen());
+      // home: CreateClassroomScreen());
 
-        //  home: AddHomeWorkScreen(classRoomId: 2996));
-        // home: ShowHomeworkByClass(classId: 2996));
-        // home: HomeworkScreen());
+      // home: AddHomeWorkScreen(classRoomId: 2996));
+      // home: ShowHomeworkByClass(classId: 2996));
+      // home: HomeworkScreen());
 
-        home: CourseListScreen());
+    //  home: CourseListScreen());
 
-    // home: UploadImageScreen());
-
-    // home: AddTeacherFormScreen());
-    //  home: TeacherRegistrationFormListScreen());
-
-    //   home:AddStudentFormScreen());
-    //  home: StudentRegistrationListScreen());
-
-    // home: OnionTopicScreen(level: 5));
-    // home: TopicScreen2(
-    //   level: 1,
-    // ));
+       home: SendMailScreen());
+      // home: UploadImageScreen());
+     //  home: AddTeacherFormScreen());
+    //   home: TeacherRegistrationFormListScreen());
+      // home: AddStudentFormScreen());
+    //  home: AddStudentFormScreen(classRoomId: 2996, className: ""));
+     //  home: StudentRegistrationListScreen());
+      // home: OnionTopicScreen(level: 5));
+      // home: TopicScreen2(
+      //   level: 1,
+      // ),
   }
 }

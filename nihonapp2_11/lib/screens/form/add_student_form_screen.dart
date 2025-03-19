@@ -219,6 +219,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
                       // Loại bỏ TextFormField cho trường bill
                       SizedBox(height: 12),
                       TextFormField(
+                        controller: TextEditingController(text: className), // Gán tên lớp vào
                         decoration: InputDecoration(
                           labelText: "Tên Lớp Học: ${className}",
                           border: OutlineInputBorder(),
@@ -226,6 +227,7 @@ class _AddStudentFormScreenState extends State<AddStudentFormScreen> {
                             borderSide: BorderSide(color: Colors.redAccent),
                           ),
                         ),
+                        readOnly: true, // Không cho phép chỉnh sửa
                       ),
                       // SizedBox(height: 12),
                       // DropdownButtonFormField<int>(
