@@ -27,11 +27,7 @@ public class Sentence {
     private String transcription;
     private String answer;
 
-    @ManyToOne
-    @JoinColumn(name = "onion_id", nullable = false)
-    @JsonBackReference("onion-sentence")
-    @JsonIgnoreProperties("sentence")
-    private Onion onion;
+
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)

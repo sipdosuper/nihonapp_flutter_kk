@@ -14,9 +14,7 @@ import java.util.Set;
 @Service
 public interface SentenceService  {
     List<Sentence> getAllSentence();
-    List<Sentence> getByLessonOnion(GetSentenceByLessonOnion get);
     List<Sentence> getSentenceByLessonId(GetSentenceByLessonIdRequest lessonIdRequest);
-    List<Sentence> getSentenceByOnionId(GetSentenceByOnionRequest onionRequest);
     Optional<Sentence> getSentenceById(Long id);
     Sentence createSentence(CreateUpdateSentenceRequest sentenceRequest);
     Sentence updateSentence(CreateUpdateSentenceRequest sentenceRequest);

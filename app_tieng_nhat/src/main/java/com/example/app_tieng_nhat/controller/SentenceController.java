@@ -34,21 +34,8 @@ public class SentenceController {
         return  sentenceService.getSentenceByLessonId(lessonIdRequest);
     }
 
-    @GetMapping("/getByOnion")
-    public List<Sentence> getSentenceByOnionId(@RequestBody GetSentenceByOnionRequest onionRequest){
-        return  sentenceService.getSentenceByOnionId(onionRequest);
-    }
-
-    @GetMapping("/byLessonOnion")
-    public List<Sentence> getSentenceByLessonOnion(@RequestBody GetSentenceByLessonOnion get){
-        return sentenceService.getByLessonOnion(get);
-    }
 
     @PostMapping
-    public Sentence createSentence(@RequestBody CreateUpdateSentenceRequest sentenceRequest){
-        return sentenceService.createSentence(sentenceRequest);
-    }
-    @PostMapping("/cre")
     public String createSentenceReturnString(@RequestBody CreateUpdateSentenceRequest sentenceRequest){
         return sentenceService.createReturnStr(sentenceRequest);
     }

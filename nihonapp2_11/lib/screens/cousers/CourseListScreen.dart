@@ -7,11 +7,15 @@ import 'package:http/http.dart' as http;
 import 'package:duandemo/screens/cousers/couser_decription_screen.dart';
 
 class CourseListScreen extends StatefulWidget {
+  final String email;
+  CourseListScreen({required this.email});
   @override
-  _CourseListScreenState createState() => _CourseListScreenState();
+  _CourseListScreenState createState() => _CourseListScreenState(email: email);
 }
 
 class _CourseListScreenState extends State<CourseListScreen> {
+  final String email;
+  _CourseListScreenState({required this.email});
   List<Classroom> classrooms = [];
   bool isLoading = true;
 
@@ -23,7 +27,18 @@ class _CourseListScreenState extends State<CourseListScreen> {
 
   Future<void> fetchCourses() async {
     try {
-      final response = await http.get(Uri.parse(Wordval().api + 'classroom'));
+      final response;
+      if (email == "") {
+        response = await http.get(Uri.parse(Wordval().api + 'classroom'));
+      } else {
+        Map<String, dynamic> data = {"email": email};
+        response = await http.post(
+          Uri.parse(Wordval().api + 'classroom/dto'),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(data),
+        );
+      }
+
       if (response.statusCode == 200) {
         // Giải mã dữ liệu bằng UTF-8 trước khi parse JSON
         final utfDecodedBody = utf8.decode(response.bodyBytes);

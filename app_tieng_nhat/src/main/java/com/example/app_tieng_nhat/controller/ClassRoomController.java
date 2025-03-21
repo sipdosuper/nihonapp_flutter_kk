@@ -22,8 +22,8 @@ public class ClassRoomController {
     }
 
     //lấy ra danh sách lớp của user theo email
-    @GetMapping("/dto")
-    public List<ClassRoomDTO> getAllClassRoomDTO(@RequestBody GetClassRoomByEmailRequest request){
+    @PostMapping("/dto")
+    public List<ClassRoomDTO> getAllClassRoomDTOByEmail(@RequestBody GetClassRoomByEmailRequest request){
         return classRoomService.getAllClassRoomDTO(request.email());
     }
 

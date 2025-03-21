@@ -11,11 +11,10 @@ class SendMailScreen extends StatefulWidget {
 
 class _SendMailScreenState extends State<SendMailScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _fromController = TextEditingController();
   final TextEditingController _toController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
-  
+
   bool _isLoading = false;
 
   Future<void> _submitSendMail() async {
@@ -24,7 +23,7 @@ class _SendMailScreenState extends State<SendMailScreen> {
 
     // Tạo object SendMail từ dữ liệu form
     SendMail sendMail = SendMail(
-      from: _fromController.text,
+      from: "",
       to: _toController.text,
       subject: _subjectController.text,
       text: _textController.text,
@@ -83,23 +82,6 @@ class _SendMailScreenState extends State<SendMailScreen> {
             key: _formKey,
             child: Column(
               children: [
-                // Nhập email người gửi
-                TextFormField(
-                  controller: _fromController,
-                  decoration: InputDecoration(
-                    labelText: "Từ (Email người gửi)",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: primaryColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? "Nhập email người gửi" : null,
-                ),
-                SizedBox(height: 16),
                 // Nhập email người nhận
                 TextFormField(
                   controller: _toController,
@@ -130,8 +112,7 @@ class _SendMailScreenState extends State<SendMailScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? "Nhập tiêu đề" : null,
+                  validator: (value) => value!.isEmpty ? "Nhập tiêu đề" : null,
                 ),
                 SizedBox(height: 16),
                 // Nhập nội dung email
@@ -147,8 +128,7 @@ class _SendMailScreenState extends State<SendMailScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? "Nhập nội dung" : null,
+                  validator: (value) => value!.isEmpty ? "Nhập nội dung" : null,
                   maxLines: 5,
                 ),
                 SizedBox(height: 24),

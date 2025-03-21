@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:duandemo/model/TeacherRegistrationForm.dart';
+import 'package:duandemo/screens/email/logIn_to_send_mail.dart';
 import 'package:flutter/material.dart';
 
 class TeacherFormDetailScreen extends StatelessWidget {
@@ -11,14 +12,16 @@ class TeacherFormDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chi tiết giáo viên', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Chi tiết giáo viên',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFFE57373),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           elevation: 5,
           child: Padding(
             padding: EdgeInsets.all(16.0),
@@ -30,7 +33,8 @@ class TeacherFormDetailScreen extends StatelessWidget {
                     Icon(Icons.person, color: Color(0xFFE57373), size: 30),
                     SizedBox(width: 10),
                     Text(form.name,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Divider(),
@@ -45,7 +49,8 @@ class TeacherFormDetailScreen extends StatelessWidget {
                     ? Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.network(form.proof, height: 200, fit: BoxFit.cover),
+                          child: Image.network(form.proof,
+                              height: 200, fit: BoxFit.cover),
                         ),
                       )
                     : Center(
@@ -57,10 +62,7 @@ class TeacherFormDetailScreen extends StatelessWidget {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Chức năng gửi email sẽ được thêm sau
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Chức năng gửi email sẽ có sau")),
-                      );
+                      showLoginToSendMailDialog(context);
                     },
                     child: Text("Gửi Email"),
                     style: ElevatedButton.styleFrom(
@@ -92,7 +94,9 @@ class TeacherFormDetailScreen extends StatelessWidget {
           Text('$label: ',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           Expanded(
-            child: Text(value, style: TextStyle(fontSize: 16), overflow: TextOverflow.ellipsis),
+            child: Text(value,
+                style: TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis),
           ),
         ],
       ),

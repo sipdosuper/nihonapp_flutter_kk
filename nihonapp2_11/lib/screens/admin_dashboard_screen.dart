@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'package:duandemo/screens/cousers/CourseListScreen.dart';
+import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
+import 'package:duandemo/screens/form/student_registration_form_item.dart';
+import 'package:duandemo/screens/time/time_screen.dart';
 import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -42,11 +46,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final TextEditingController _vocabExampleController = TextEditingController();
 
   List<dynamic> _topics = [];
+  List<dynamic> _lessons = [];
+
+  bool _isLoadTime = false;
 
   @override
   void initState() {
     super.initState();
     _fetchTopics();
+    _fetchLessons();
   }
 
   Future<void> _fetchTopics() async {
@@ -54,6 +62,18 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     if (response.statusCode == 200) {
       setState(() {
         _topics = json.decode(utf8.decode(response.bodyBytes));
+      });
+    } else {
+      throw Exception('Failed to load topics');
+    }
+  }
+
+  Future<void> _fetchLessons() async {
+    final response = await http.get(Uri.parse(api_lesson));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _lessons = json.decode(utf8.decode(response.bodyBytes));
       });
     } else {
       throw Exception('Failed to load topics');
@@ -118,13 +138,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         Uri.parse(api_sentence),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'id': int.parse(_sentenceLessonIdController.text),
           'word': _sentenceWordController.text,
           'meaning': _sentenceMeaningController.text,
           'transcription': _sentenceTranscriptionController.text,
           'answer': _sentenceAnswerController.text,
-          'lesson_id': int.parse(_sentenceLessonIdController.text),
-          'onion_id': 1,
+          'lesson_id': int.parse(_sentenceLessonIdController.text)
         }),
       );
 
@@ -143,18 +161,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
   Future<void> _addVocabulary() async {
     try {
-      final int? id = int.tryParse(_vocabIdController.text);
-      if (id == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('ID phải là một số nguyên hợp lệ')));
-        return;
-      }
-
       final response = await http.post(
         Uri.parse(api_vocabulary),
         headers: {'Content-Type': 'application/json;charset=UTF-8'},
         body: jsonEncode({
-          'id': id,
           'word': _vocabWordController.text,
           'meaning': _vocabMeaningController.text,
           'transcription': _vocabTranscriptionController.text,
@@ -219,6 +229,18 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     }
   }
 
+  Future<void> _deleteSentence(int id) async {
+    final response = await http.delete(Uri.parse(api_sentence + '/$id'));
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Đã xóa Sentence thành công')));
+      _fetchLessons();
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Xóa Sentence thất bại')));
+    }
+  }
+
   void _logout() {
     Navigator.pushAndRemoveUntil(
       context,
@@ -227,184 +249,127 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Quản lý dữ liệu Admin'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: _logout,
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  String _selectedCategory = 'Topic';
+
+  Widget _buildForm() {
+    switch (_selectedCategory) {
+      case 'Time':
+        return TimeManagementScreen();
+      case 'ClassRoom':
+        return CourseListScreen(
+          email: "",
+        );
+      case 'Student Form':
+        return StudentRegistrationFormListScreen();
+      case 'Teacher Form':
+        return TeacherRegistrationFormListScreen();
+
+      case 'Lesson':
+        return Column(
           children: [
-            // Form thêm Topic
-            Card(
-              margin: EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Thêm Topic',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
-                    TextField(
-                      controller: _idController,
-                      decoration: InputDecoration(labelText: 'ID Topic'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(labelText: 'Tên Topic'),
-                    ),
-                    TextField(
-                      controller: _levelIdController,
-                      decoration: InputDecoration(labelText: 'ID Level'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: _addTopic,
-                      icon: Icon(Icons.add),
-                      label: Text('Thêm Topic'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            TextField(
+                controller: _lessonIdController,
+                decoration: InputDecoration(labelText: 'ID Lesson')),
+            TextField(
+                controller: _lessonTitleController,
+                decoration: InputDecoration(labelText: 'Tiêu đề Lesson')),
+            TextField(
+                controller: _lessonTopicIdController,
+                decoration: InputDecoration(labelText: 'Topic ID')),
+            ElevatedButton(onPressed: _addLesson, child: Text('Thêm Lesson')),
 
-            // Form thêm Lesson
-            Card(
-              margin: EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Thêm Lesson',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
-                    TextField(
-                      controller: _lessonIdController,
-                      decoration: InputDecoration(labelText: 'ID Lesson'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    TextField(
-                      controller: _lessonTitleController,
-                      decoration: InputDecoration(labelText: 'Tiêu đề Lesson'),
-                    ),
-                    TextField(
-                      controller: _lessonTopicIdController,
-                      decoration:
-                          InputDecoration(labelText: 'ID Topic liên kết'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: _addLesson,
-                      icon: Icon(Icons.add),
-                      label: Text('Thêm Lesson'),
-                    ),
-                  ],
-                ),
-              ),
+            //hien thi danh sach lesson
+            Text('Danh sách Lesson:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _lessons.length,
+              itemBuilder: (context, index) {
+                final lesson = _lessons[index];
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 4.0),
+                  child: ExpansionTile(
+                    title: Text(lesson['title']),
+                    children: [
+                      for (var sentence in lesson['sentences'])
+                        ListTile(
+                          title: Text(sentence['word']),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteSentence(sentence['id']),
+                          ),
+                        ),
+                      ListTile(
+                        title: Text('Xóa Lesson',
+                            style: TextStyle(color: Colors.red)),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteLesson(lesson['id']),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-
-            // Form thêm Sentence
-            Card(
-              margin: EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Thêm Sentence',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
-                    TextField(
-                      controller: _sentenceWordController,
-                      decoration: InputDecoration(labelText: 'Word'),
-                    ),
-                    TextField(
-                      controller: _sentenceMeaningController,
-                      decoration: InputDecoration(labelText: 'Meaning'),
-                    ),
-                    TextField(
-                      controller: _sentenceTranscriptionController,
-                      decoration: InputDecoration(labelText: 'Transcription'),
-                    ),
-                    TextField(
-                      controller: _sentenceAnswerController,
-                      decoration: InputDecoration(labelText: 'Answer'),
-                    ),
-                    TextField(
-                      controller: _sentenceLessonIdController,
-                      decoration: InputDecoration(labelText: 'Lesson ID'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: _addSentence,
-                      icon: Icon(Icons.add),
-                      label: Text('Thêm Sentence'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Form thêm Vocabulary
-            Card(
-              margin: EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Thêm Vocabulary',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
-                    TextField(
-                      controller: _vocabIdController,
-                      keyboardType:
-                          TextInputType.number, // Chỉ cho phép nhập số
-                      decoration: InputDecoration(labelText: 'ID'),
-                    ),
-                    TextField(
-                      controller: _vocabWordController,
-                      decoration: InputDecoration(labelText: 'Word'),
-                    ),
-                    TextField(
-                      controller: _vocabMeaningController,
-                      decoration: InputDecoration(labelText: 'Meaning'),
-                    ),
-                    TextField(
-                      controller: _vocabTranscriptionController,
-                      decoration: InputDecoration(labelText: 'Transcription'),
-                    ),
-                    TextField(
-                      controller: _vocabExampleController,
-                      decoration: InputDecoration(labelText: 'Example'),
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: _addVocabulary,
-                      icon: Icon(Icons.add),
-                      label: Text('Thêm Vocabulary'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Danh sách các Topic
+          ],
+        );
+      case 'Sentence':
+        return Column(
+          children: [
+            TextField(
+                controller: _sentenceWordController,
+                decoration: InputDecoration(labelText: 'Từ')),
+            TextField(
+                controller: _sentenceMeaningController,
+                decoration: InputDecoration(labelText: 'Nghĩa')),
+            TextField(
+                controller: _sentenceTranscriptionController,
+                decoration: InputDecoration(labelText: 'Phiên âm')),
+            TextField(
+                controller: _sentenceAnswerController,
+                decoration: InputDecoration(labelText: 'Câu trả lời')),
+            TextField(
+                controller: _sentenceLessonIdController,
+                decoration: InputDecoration(labelText: 'Lesson ID')),
+            ElevatedButton(
+                onPressed: _addSentence, child: Text('Thêm Sentence')),
+          ],
+        );
+      case 'Vocabulary':
+        return Column(
+          children: [
+            TextField(
+                controller: _vocabWordController,
+                decoration: InputDecoration(labelText: 'Từ')),
+            TextField(
+                controller: _vocabMeaningController,
+                decoration: InputDecoration(labelText: 'Nghĩa')),
+            TextField(
+                controller: _vocabTranscriptionController,
+                decoration: InputDecoration(labelText: 'Phiên âm')),
+            TextField(
+                controller: _vocabExampleController,
+                decoration: InputDecoration(labelText: 'Ví dụ')),
+            ElevatedButton(
+                onPressed: _addVocabulary, child: Text('Thêm Vocabulary')),
+          ],
+        );
+      default:
+        return Column(
+          children: [
+            TextField(
+                controller: _idController,
+                decoration: InputDecoration(labelText: 'ID Topic')),
+            TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Tên Topic')),
+            TextField(
+                controller: _levelIdController,
+                decoration: InputDecoration(labelText: 'Level ID')),
+            ElevatedButton(onPressed: _addTopic, child: Text('Thêm Topic')),
+            //hien thi danh sach topic
             Text('Danh sách Topic:',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             ListView.builder(
@@ -440,7 +405,60 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               },
             ),
           ],
-        ),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Admin Dashboard")),
+      body: Row(
+        children: [
+          Container(
+            width: 200,
+            color: Colors.grey[200],
+            child: Column(
+              children: [
+                ListTile(
+                    title: Text('Time'),
+                    onTap: () => setState(() => _selectedCategory = 'Time')),
+                ListTile(
+                    title: Text('ClassRoom'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'ClassRoom')),
+                ListTile(
+                    title: Text('Student Form'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'Student Form')),
+                ListTile(
+                    title: Text('Teacher Form'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'Teacher Form')),
+                ListTile(
+                    title: Text('Topic'),
+                    onTap: () => setState(() => _selectedCategory = 'Topic')),
+                ListTile(
+                    title: Text('Lesson'),
+                    onTap: () => setState(() => _selectedCategory = 'Lesson')),
+                ListTile(
+                    title: Text('Sentence'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'Sentence')),
+                ListTile(
+                    title: Text('Vocabulary'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'Vocabulary')),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildForm(),
+            ),
+          ),
+        ],
       ),
     );
   }

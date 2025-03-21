@@ -31,7 +31,5 @@ public class Topics {
     @JsonManagedReference("topic-lesson")
     private Set<Lessons> lessons;
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
-    @JsonManagedReference("topic-onion")
-    private Set<Onion> onions;
+
 }
