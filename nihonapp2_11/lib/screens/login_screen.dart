@@ -4,7 +4,7 @@ import 'level_selection_screen.dart';
 import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 import 'admin_dashboard_screen.dart';
-
+import 'package:duandemo/main(chinh).dart';
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -17,40 +17,42 @@ class _LoginScreenState extends State<LoginScreen> {
   String _errorMessage = '';
 
   Future<void> _login() async {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
+  String username = _usernameController.text;
+  String password = _passwordController.text;
 
-    int userId = await _authService.signIn(username, password);
+  int userId = await _authService.signIn(username, password);
 
-    setState(() {
-      if (userId != 10) {
-        if (userId == 1) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => AdminDashboardScreen()),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => LevelSelectionScreen()),
-          );
-        }
+  setState(() {
+    if (userId != 10) {
+      if (userId == 1) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminDashboardScreen()),
+        );
       } else {
-        _errorMessage =
-            'Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _errorMessage,
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
-          ),
+        // Đăng nhập thành công, chuyển sang MainScreen với Level mặc định là N5 (level: 5)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen(level: 5)),
         );
       }
-    });
-  }
+    } else {
+      _errorMessage =
+          'Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _errorMessage,
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:duandemo/model/Topic.dart';
 import 'package:duandemo/model/Sentence.dart';
 import 'learning_screen.dart'; // Import màn hình LearningScreen
+import 'package:duandemo/service/ToppicService.dart';
 
 class TopicScreen2 extends StatefulWidget {
   final int level;
@@ -39,12 +40,19 @@ class _TopicScreenState extends State<TopicScreen2> {
       throw Exception('Failed to load topics');
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Thay đổi từ màu trắng sang gradient để có nền mềm mại hơn
       body: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.red.shade100, Colors.red.shade300],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: FutureBuilder<List<Topic>>(
           future: futureTopics,
           builder: (context, snapshot) {
@@ -73,12 +81,17 @@ class _TopicScreenState extends State<TopicScreen2> {
 
               return Column(
                 children: [
-                  // Thanh tiêu đề
+                  // Thanh tiêu đề được thiết kế lại với gradient và shadow mềm mại
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Color(0xFFE57373),
+                      // Code cũ: color: Color(0xFFE57373),
+                      // Thay bằng gradient:
+                      gradient: LinearGradient(
+                        colors: [Colors.red.shade400, Colors.red.shade700],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(25),
                         bottomRight: Radius.circular(25),
@@ -121,7 +134,7 @@ class _TopicScreenState extends State<TopicScreen2> {
                       ],
                     ),
                   ),
-                  // Combobox hiển thị danh sách chủ đề
+                  // Combobox hiển thị danh sách chủ đề với thiết kế mềm mại
                   if (showDropdown)
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -150,8 +163,7 @@ class _TopicScreenState extends State<TopicScreen2> {
                               });
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 16),
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: selectedTopicIndex == index
@@ -186,7 +198,7 @@ class _TopicScreenState extends State<TopicScreen2> {
                       ),
                     ),
                   SizedBox(height: 20),
-                  // Danh sách bài học
+                  // Danh sách bài học được thiết kế với hiệu ứng bo tròn và shadow
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -206,11 +218,9 @@ class _TopicScreenState extends State<TopicScreen2> {
                               );
                             },
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              padding: const EdgeInsets.symmetric(vertical: 16.0),
                               child: Container(
-                                margin:
-                                    EdgeInsets.only(left: 50.0 * (index % 2)),
+                                margin: EdgeInsets.only(left: 50.0 * (index % 2)),
                                 height: 80,
                                 width: 80,
                                 decoration: BoxDecoration(

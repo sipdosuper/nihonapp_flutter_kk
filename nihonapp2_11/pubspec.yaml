@@ -32,10 +32,10 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
+  uses-material-design: true
+
   assets:
     - assets/logo.png
-
-  uses-material-design: true
 
   fonts:
     - family: NotoSansJP

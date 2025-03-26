@@ -12,15 +12,18 @@ class Lesson {
   });
 
   // Ánh xạ dữ liệu từ JSON
-  factory Lesson.fromJson(Map<String, dynamic> json) {
-    var sentenceList = json['sentences'] as List;
-    List<Sentence> sentenceObjects =
-        sentenceList.map((i) => Sentence.fromJson(i)).toList();
+factory Lesson.fromJson(Map<String, dynamic> json) {
+  // Đổi 'sentence' -> 'sentences' cho đúng với key của JSON
+  var sentenceList = json['sentences'] as List? ?? [];
+  List<Sentence> sentenceObjects =
+      sentenceList.map((i) => Sentence.fromJson(i)).toList();
 
-    return Lesson(
-      id: json['id'],
-      title: json['title'], // Đây là tiêu đề của bài học
-      sentence: sentenceObjects, // Danh sách câu
-    );
-  }
+  return Lesson(
+    id: json['id'],
+    title: json['title'],
+    sentence: sentenceObjects,
+  );
+}
+
+
 }

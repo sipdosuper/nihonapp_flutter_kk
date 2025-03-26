@@ -19,7 +19,6 @@ import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
 
 // -------------------------------------------------------------------------
-
 // Định nghĩa model NewsItem để chứa dữ liệu tin tức
 class NewsItem {
   final String title;
@@ -40,7 +39,8 @@ Future<List<NewsItem>> fetchNewsItems() async {
   const url = 'https://www.nhhk.com.vn/blogs/tin-tuc/ky-thi-jlpt';
   final response = await http.get(Uri.parse(url));
   if (response.statusCode == 200) {
-    final document = htmlParser.parse(response.body);
+    // Giải mã dữ liệu HTML theo UTF-8 để tránh lỗi khi gặp ký tự tiếng Nhật
+    final document = htmlParser.parse(utf8.decode(response.bodyBytes));
     // Giả sử mỗi tin tức nằm trong thẻ có class "item-blog"
     List<dom.Element> newsElements = document.querySelectorAll('.item-blog');
     List<NewsItem> newsItems = [];
@@ -52,10 +52,10 @@ Future<List<NewsItem>> fetchNewsItems() async {
       // Mô tả nằm trong p.description
       var descElement = element.querySelector('p.description');
       var description = descElement?.text.trim() ?? 'No description';
-      // Ảnh tin tức: có thể lấy từ thẻ <img>
+      // Ảnh tin tức
       var imgElement = element.querySelector('img');
       var imageUrl = imgElement?.attributes['src'] ?? '';
-      
+
       newsItems.add(NewsItem(
         title: title,
         link: link,
@@ -81,12 +81,18 @@ class MyApp extends StatelessWidget {
       title: 'Học Tiếng Nhật',
       theme: ThemeData(
         primarySwatch: Colors.red,
+        // Đặt font mặc định hỗ trợ tiếng Nhật
+        fontFamily: 'NotoSansJP',
       ),
-      home: LoginScreen(), // Màn hình đầu tiên là Đăng Nhập
+      // Chạy ứng dụng bắt đầu từ màn hình đăng nhập
+      home: LoginScreen(),
     );
   }
 }
 
+// -------------------------------------------------------------------------
+// MainScreen - Chứa BottomNavigationBar, khởi tạo HomeScreen với level được truyền
+// -------------------------------------------------------------------------
 class MainScreen extends StatefulWidget {
   final int level;
 
@@ -104,6 +110,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _screens = [
+      // Màn hình Trang Chủ
       HomeScreen(level: widget.level),
       // Màn hình "Khóa Học"
       LessonListScreen(
@@ -150,11 +157,10 @@ class _MainScreenState extends State<MainScreen> {
 }
 
 // --------------------------------------------------------
-// CHUYỂN HomeScreen SANG StatefulWidget ĐỂ GỌI API KHÓA HỌC & TIN TỨC
+// HomeScreen: Gọi API khóa học & tin tức, hiển thị Trang Chủ
 // --------------------------------------------------------
 class HomeScreen extends StatefulWidget {
   final int level;
-
   // Thông tin user có thể giữ ở đây hoặc chuyển vào State
   final String username = "dangkhoa";
   final String email = "khoa@gmail.com";
@@ -176,12 +182,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchCourses();
   }
 
-  // Gọi API giống trong CourseListScreen
+  // Gọi API lấy danh sách khóa học, giải mã UTF-8
   Future<void> _fetchCourses() async {
     try {
       final response = await http.get(Uri.parse(Wordval().api + 'classroom'));
       if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
+        // Giải mã UTF-8 để tránh lỗi khi có ký tự tiếng Nhật
+        List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           _courses = data.map((json) => Classroom.fromJson(json)).toList();
           _isLoadingCourses = false;
@@ -204,8 +211,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trang Chủ'),
+        automaticallyImplyLeading: false, // Tắt nút lùi
+        title: Text('Trang Chủ - N${widget.level}'),
         backgroundColor: primaryColor,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.list_alt),
+            tooltip: 'Chọn Level',
+            onPressed: () async {
+              // Mở LevelSelectionScreen
+              final selectedLevel = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LevelSelectionScreen(),
+                ),
+              );
+              // Nếu chọn xong level (có trả về)
+              if (selectedLevel != null) {
+                // Quay lại MainScreen với level = selectedLevel
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainScreen(level: selectedLevel),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -233,9 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // --------------------------------------------------
   // Widget hiển thị thông tin người dùng (trên cùng)
-  // --------------------------------------------------
   Widget _buildUserInfoCard({
     required String username,
     required String email,
@@ -272,9 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ------------------------------------------
   // Widget hiển thị "Các chức năng" (grid icon)
-  // ------------------------------------------
   Widget _buildFeatureGrid(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -343,7 +372,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Widget con để tạo 1 ô chức năng (icon + text)
   Widget _buildFeatureButton(
-      BuildContext context, IconData icon, String label, VoidCallback onTap) {
+    BuildContext context,
+    IconData icon,
+    String label,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -364,9 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // -------------------------------------------------
   // Widget hiển thị mục "Mua khóa học" (lấy từ API)
-  // -------------------------------------------------
   Widget _buildMuaKhoaHocSection(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -485,9 +516,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // -------------------------------------------------
   // Widget hiển thị mục "Bảng tin mới" (lấy dữ liệu từ web)
-  // -------------------------------------------------
   Widget _buildTinMoiSection(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -557,7 +586,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               news.imageUrl.isNotEmpty
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(12)),
+                                        top: Radius.circular(12),
+                                      ),
                                       child: Image.network(
                                         news.imageUrl,
                                         height: 100,

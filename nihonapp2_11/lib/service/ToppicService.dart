@@ -60,4 +60,14 @@ class TopicService {
       print('Error occurred: $e');
     }
   }
+  Future<List<dynamic>> getTopicsByLevel(int level) async {
+  final url = Uri.parse('$baseUrl/getByLevel/$level');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    return json.decode(utf8.decode(response.bodyBytes));
+  } else {
+    throw Exception('Failed to load topics by level');
+  }
+}
+
 }
