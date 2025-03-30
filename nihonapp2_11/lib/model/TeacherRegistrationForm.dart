@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class TeacherRegistrationForm {
+  final int id;
   final String name;
   final String email;
   final String phone;
@@ -12,6 +13,7 @@ class TeacherRegistrationForm {
   final int workingTime_id;
 
   TeacherRegistrationForm({
+    required this.id,
     required this.name,
     required this.email,
     required this.phone,
@@ -26,6 +28,7 @@ class TeacherRegistrationForm {
   // Convert JSON to Object
   factory TeacherRegistrationForm.fromJson(Map<String, dynamic> json) {
     return TeacherRegistrationForm(
+      id: json['id'] ?? 'Unknown',
       name: json['teacherName']?.toString() ?? 'Unknown',
       email: json['email']?.toString() ?? 'No email',
       phone: json['phone']?.toString() ?? 'No phone',

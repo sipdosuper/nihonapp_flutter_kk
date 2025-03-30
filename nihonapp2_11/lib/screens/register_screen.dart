@@ -24,6 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         id: id,
         email: email,
         username: username,
+        lv: 0,
         sex: sex,
         password: password,
         rePassword: rePassword,

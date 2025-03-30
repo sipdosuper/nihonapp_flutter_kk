@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +21,11 @@ public class LevelController {
     @GetMapping
     public List<Levels> getAllLevel(){
         return levelService.getAllLevel();
+    }
+
+    @GetMapping("/countUser")
+    public Map<Long,Long> countUserByLevel(){
+        return levelService.coutUserByLevel();
     }
 
     @GetMapping("/{id}")

@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
 import 'package:duandemo/main(chinh).dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LevelSelectionScreen extends StatefulWidget {
   @override
@@ -7,11 +12,69 @@ class LevelSelectionScreen extends StatefulWidget {
 }
 
 class _LevelSelectionScreenState extends State<LevelSelectionScreen> {
-  void _navigateToMainScreen(int level) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainScreen(level: level)),
-    );
+  void _navigateToMainScreen(int level) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Lưu giá trị level vào SharedPreferences với key 'vl'
+    await prefs.setInt('vl', level);
+    // Gọi API để cập nhật level
+    bool updateSuccess = await updateUserLevel(level);
+    if (updateSuccess) {
+      // Chuyển sang MainScreen nếu API thành công
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen(level: level)),
+      );
+    } else {
+      // Hiển thị thông báo lỗi nếu API thất bại
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Không thể cập nhật cấp độ. Vui lòng thử lại.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<bool> updateUserLevel(int level) async {
+    try {
+      // Lấy email từ SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? email = prefs.getString('email');
+
+      if (email == null || email.isEmpty) {
+        print('Không tìm thấy email trong SharedPreferences');
+        return false;
+      }
+
+      // URL API
+      String updateUrl = Wordval().api + 'user/update';
+
+      // Tạo JSON body
+      final Map<String, String> body = {
+        'email': email,
+        'level_id': level.toString(),
+      };
+
+      // Gửi yêu cầu POST
+      final response = await http.post(
+        Uri.parse(updateUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      // Kiểm tra phản hồi
+      if (response.statusCode == 200) {
+        print('Cập nhật level thành công: ${response.body}');
+        return true;
+      } else {
+        print(
+            'Cập nhật level thất bại: ${response.statusCode} - ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Lỗi khi gọi API update: $e');
+      return false;
+    }
   }
 
   @override

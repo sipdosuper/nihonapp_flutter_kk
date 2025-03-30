@@ -35,4 +35,8 @@ public class Levels {
     @JsonBackReference("level-regisForm")
     @JsonIgnore
     private Set<TeacherRegistrationForm> teacherRegistrationForms= new HashSet<>();
+
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference("level-user")
+    private Set<Users> users;
 }

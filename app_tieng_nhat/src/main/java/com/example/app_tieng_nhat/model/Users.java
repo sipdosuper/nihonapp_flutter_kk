@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,8 @@ public class Users {
     private String email;
 
     private String password;
+    @Column(name = "signupDate")
+    private LocalDate signupDate;
     @JsonIgnore
     private Boolean sex;
 
@@ -38,6 +41,11 @@ public class Users {
     @JsonBackReference("role-user")
     @JoinColumn(name = "role_id", nullable = false)
     private Roles role;
+
+    @ManyToOne
+    @JsonManagedReference("level-user")
+    @JoinColumn(name = "level_id", nullable = false)
+    private Levels level;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

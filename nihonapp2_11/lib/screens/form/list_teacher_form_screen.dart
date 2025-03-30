@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class TeacherRegistrationFormListScreen extends StatefulWidget {
+  final VoidCallback? onDataChanged; // Callback để thông báo thay đổi dữ liệu
+
+  TeacherRegistrationFormListScreen({this.onDataChanged});
   @override
   _TeacherRegistrationFormListScreenState createState() =>
       _TeacherRegistrationFormListScreenState();
@@ -14,8 +17,32 @@ class _TeacherRegistrationFormListScreenState
     extends State<TeacherRegistrationFormListScreen> {
   late Future<List<TeacherRegistrationForm>> _teacherRegistrationForms;
 
+  @override
+  void initState() {
+    super.initState();
+    _teacherRegistrationForms = fetchTeacherRegistrationForms();
+  }
+
+  void _navigateToDetail(
+      BuildContext context, TeacherRegistrationForm form) async {
+    final bool? isDeleted = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TeacherFormDetailScreen(form: form),
+      ),
+    );
+
+    if (isDeleted == true) {
+      setState(() {
+        _teacherRegistrationForms =
+            fetchTeacherRegistrationForms(); // Làm mới Future
+      });
+    }
+  }
+
   Future<List<TeacherRegistrationForm>> fetchTeacherRegistrationForms() async {
-    final response = await http.get(Uri.parse('http://localhost:8080/api/teacherRegistration'));
+    final response = await http
+        .get(Uri.parse('http://localhost:8080/api/teacherRegistration'));
 
     if (response.statusCode == 200) {
       try {
@@ -26,6 +53,7 @@ class _TeacherRegistrationFormListScreenState
             return TeacherRegistrationForm.fromJson(json);
           } catch (e) {
             return TeacherRegistrationForm(
+              id: 0,
               name: 'Unknown',
               email: 'Unknown',
               phone: 'Unknown',
@@ -47,16 +75,11 @@ class _TeacherRegistrationFormListScreenState
   }
 
   @override
-  void initState() {
-    super.initState();
-    _teacherRegistrationForms = fetchTeacherRegistrationForms();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách giáo viên', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Danh sách giáo viên',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFFE57373), // Màu chủ đạo
       ),
@@ -98,7 +121,8 @@ class _TeacherRegistrationFormListScreenState
                         children: [
                           Text(
                             form.name,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           SizedBox(height: 5),
                           Text('Cấp độ: N${form.level_id}'),
@@ -118,7 +142,8 @@ class _TeacherRegistrationFormListScreenState
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => TeacherFormDetailScreen(form: form),
+                              builder: (context) =>
+                                  TeacherFormDetailScreen(form: form),
                             ),
                           );
                         },

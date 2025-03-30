@@ -42,7 +42,7 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
           setState(() {
             _imageBytes = reader.result as Uint8List;
             _imageFile = null;
-            _isImageSelected = true;  // Đánh dấu ảnh đã được chọn
+            _isImageSelected = true; // Đánh dấu ảnh đã được chọn
           });
         });
       });
@@ -53,7 +53,7 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
         setState(() {
           _imageFile = File(pickedFile.path);
           _imageBytes = null;
-          _isImageSelected = true;  // Đánh dấu ảnh đã được chọn
+          _isImageSelected = true; // Đánh dấu ảnh đã được chọn
         });
       }
     }
@@ -72,7 +72,7 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
     setState(() {
       proofUrl = url;
       _isUploading = false;
-      _isImageUploaded = true;  // Đánh dấu ảnh đã được upload thành công
+      _isImageUploaded = true; // Đánh dấu ảnh đã được upload thành công
     });
 
     if (url == null) {
@@ -103,62 +103,62 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
   }
 
   Future<void> _submitForm() async {
-  // Kiểm tra nếu các trường thông tin không hợp lệ
-  if (!_formKey.currentState!.validate()) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Vui lòng điền đầy đủ thông tin!")),
+    // Kiểm tra nếu các trường thông tin không hợp lệ
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng điền đầy đủ thông tin!")),
+      );
+      return;
+    }
+
+    // Kiểm tra nếu chưa chọn ảnh và upload ảnh
+    if (_imageFile == null && _imageBytes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng chọn ảnh và upload ảnh!")),
+      );
+      return;
+    }
+
+    // Kiểm tra nếu ảnh đã chọn nhưng chưa upload
+    if (proofUrl == null && (_imageFile != null || _imageBytes != null)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng upload ảnh!")),
+      );
+      return;
+    }
+
+    final newTeacher = TeacherRegistrationForm(
+      id: 0,
+      name: name,
+      email: email,
+      phone: phone,
+      birthDay: birthDay,
+      proof: proofUrl!,
+      introduce: introduce,
+      regisDay: regisDay,
+      level_id: level_id,
+      workingTime_id: workingTime_id,
     );
-    return;
+
+    final response = await http.post(
+        Uri.parse(Wordval().api + "teacherRegistration"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(newTeacher.toJson()));
+
+    // Kiểm tra phản hồi từ API
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Thêm giáo viên thành công
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Thêm giáo viên thành công!")),
+      );
+      Navigator.pop(context); // Quay lại màn hình trước
+    } else {
+      // Hiển thị lỗi nếu thêm thất bại
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Lỗi: ${response.body}")),
+      );
+    }
   }
-
-  // Kiểm tra nếu chưa chọn ảnh và upload ảnh
-  if (_imageFile == null && _imageBytes == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Vui lòng chọn ảnh và upload ảnh!")),
-    );
-    return;
-  }
-
-  // Kiểm tra nếu ảnh đã chọn nhưng chưa upload
-  if (proofUrl == null && (_imageFile != null || _imageBytes != null)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Vui lòng upload ảnh!")),
-    );
-    return;
-  }
-
-  final newTeacher = TeacherRegistrationForm(
-    name: name,
-    email: email,
-    phone: phone,
-    birthDay: birthDay,
-    proof: proofUrl!,
-    introduce: introduce,
-    regisDay: regisDay,
-    level_id: level_id,
-    workingTime_id: workingTime_id,
-  );
-
-  final response = await http.post(
-      Uri.parse(Wordval().api + "teacherRegistration"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(newTeacher.toJson()));
-
-  // Kiểm tra phản hồi từ API
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    // Thêm giáo viên thành công
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Thêm giáo viên thành công!")),
-    );
-    Navigator.pop(context);  // Quay lại màn hình trước
-  } else {
-    // Hiển thị lỗi nếu thêm thất bại
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Lỗi: ${response.body}")),
-    );
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -239,8 +239,9 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                             borderSide: BorderSide(color: Colors.redAccent),
                           ),
                         ),
-                        validator: (value) =>
-                            value!.isEmpty ? "Vui lòng nhập số điện thoại" : null,
+                        validator: (value) => value!.isEmpty
+                            ? "Vui lòng nhập số điện thoại"
+                            : null,
                         onChanged: (value) => phone = value,
                       ),
                       SizedBox(height: 12),
@@ -271,8 +272,8 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
                           ),
                         ),
                         items: List.generate(5, (index) => index + 1)
-                            .map((e) => DropdownMenuItem(
-                                value: e, child: Text("N$e")))
+                            .map((e) =>
+                                DropdownMenuItem(value: e, child: Text("N$e")))
                             .toList(),
                         onChanged: (value) => setState(() => level_id = value!),
                       ),

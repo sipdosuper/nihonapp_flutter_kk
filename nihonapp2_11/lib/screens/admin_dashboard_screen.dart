@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:duandemo/screens/bieudo/user_level_pear_chart.dart';
+import 'package:duandemo/screens/bieudo/user_stats_bar_chart_screen.dart';
 import 'package:duandemo/screens/cousers/CourseListScreen.dart';
 import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
 import 'package:duandemo/screens/form/student_registration_form_item.dart';
@@ -253,6 +255,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
   Widget _buildForm() {
     switch (_selectedCategory) {
+      case 'USBarChart':
+        return UserStatsBarChartScreen();
+      case 'ULPearChart':
+        return UserLevelPieChartScreen();
       case 'Time':
         return TimeManagementScreen();
       case 'ClassRoom':
@@ -262,7 +268,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       case 'Student Form':
         return StudentRegistrationFormListScreen();
       case 'Teacher Form':
-        return TeacherRegistrationFormListScreen();
+        return TeacherRegistrationFormListScreen(
+          onDataChanged: () {
+            setState(() {}); // Làm mới giao diện nếu cần
+          },
+        );
 
       case 'Lesson':
         return Column(
@@ -420,6 +430,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             color: Colors.grey[200],
             child: Column(
               children: [
+                ListTile(
+                    title: Text('User Stats BarChart'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'USBarChart')),
+                ListTile(
+                    title: Text('User Level PearChart'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'ULPearChart')),
                 ListTile(
                     title: Text('Time'),
                     onTap: () => setState(() => _selectedCategory = 'Time')),

@@ -15,4 +15,9 @@ public interface ClassRepository extends JpaRepository<ClassRoom, Long> {
     // Sử dụng JPQL
     @Query("SELECT c FROM ClassRoom c JOIN c.students u WHERE u.Id = :userId")
     List<ClassRoom> findClassroomsByUserId(@Param("userId") Long userId);
+    @Query("SELECT c FROM ClassRoom c " +
+            "WHERE SIZE(c.students) < c.sl_max " +
+            "AND c.start > CURRENT_DATE " +
+            "AND c.level.id = :levelId")
+    List<ClassRoom> findClassroomsByLevelId(@Param("levelId") Long levelId);
 }

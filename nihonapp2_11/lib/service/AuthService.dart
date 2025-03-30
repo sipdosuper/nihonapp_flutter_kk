@@ -14,7 +14,6 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
-
     if (response.statusCode == 200) {
       print(response.body);
 
@@ -38,8 +37,9 @@ class AuthService {
           await prefs.setString('token', token ?? '');
           await prefs.setString('email', userJson['email']);
           await prefs.setString('username', userJson['username']);
+          await prefs.setInt("vl", userJson['lv']);
 
-          return int.parse(userJson['role']);
+          return userJson['role'];
         } else {
           print('Không thể lấy thông tin user.');
         }
@@ -56,6 +56,7 @@ class AuthService {
     required int id,
     required String email,
     required String username,
+    required int lv,
     required bool sex,
     required String password,
     required String rePassword,
@@ -68,6 +69,7 @@ class AuthService {
         'id': id,
         'email': email,
         'username': username,
+        'lv': lv,
         'sex': sex,
         'password': password,
         'rePassword': rePassword,
@@ -90,17 +92,49 @@ class AuthService {
   Map<String, dynamic>? getUserFromJsonPayload(
       Map<String, dynamic> jsonPayload) {
     try {
-      String userJsonString = jsonPayload['sub'];
-      userJsonString = userJsonString.replaceAll('=', ':');
-      userJsonString = userJsonString.replaceAllMapped(
-          RegExp(r'(\w+):'), (match) => '"${match.group(1)}":');
-      userJsonString = userJsonString.replaceAllMapped(
-          RegExp(r'(:)([^{},\s]+)([,\}])'),
-          (match) => '${match.group(1)}"${match.group(2)}"${match.group(3)}');
+      // Lấy chuỗi 'sub' từ jsonPayload
+      final String? userJsonString = jsonPayload['sub']?.toString();
+      if (userJsonString == null || userJsonString.isEmpty) {
+        print('Chuỗi sub rỗng hoặc không tồn tại');
+        return null;
+      }
 
-      print("Chuỗi JSON đã chuẩn hóa: $userJsonString");
+      print("Chuỗi gốc: $userJsonString");
 
-      final Map<String, dynamic> userJson = json.decode(userJsonString);
+      // Chuẩn hóa chuỗi thành JSON hợp lệ
+      String normalizedJson = userJsonString;
+
+      // Thay thế '=' thành ':' để giống cú pháp JSON
+      normalizedJson = normalizedJson.replaceAll('=', ':');
+
+      // Thêm dấu ngoặc nhọn nếu chưa có
+      if (!normalizedJson.startsWith('{')) {
+        normalizedJson = '{' + normalizedJson + '}';
+      }
+
+      // Thêm dấu nháy kép quanh key
+      normalizedJson = normalizedJson.replaceAllMapped(RegExp(r'([^{,\s]+)(:)'),
+          (match) => '"${match.group(1)}"${match.group(2)}');
+
+      // Thêm dấu nháy kép quanh value, trừ số, boolean, null
+      normalizedJson = normalizedJson
+          .replaceAllMapped(RegExp(r'(:)\s*([^,{}]+)([,\}])'), (match) {
+        String value = match.group(2)!.trim();
+        // Nếu giá trị là số, boolean hoặc null, giữ nguyên
+        if (RegExp(r'^-?\d+(\.\d+)?$').hasMatch(value) ||
+            value == 'true' ||
+            value == 'false' ||
+            value == 'null') {
+          return '${match.group(1)}$value${match.group(3)}';
+        }
+        // Nếu không, thêm dấu nháy kép (bao gồm cả chuỗi có khoảng trắng)
+        return '${match.group(1)}"$value"${match.group(3)}';
+      });
+
+      print("Chuỗi JSON đã chuẩn hóa: $normalizedJson");
+
+      // Decode chuỗi thành Map<String, dynamic>
+      final Map<String, dynamic> userJson = json.decode(normalizedJson);
       print("userJson: ${userJson.toString()}");
 
       return userJson;

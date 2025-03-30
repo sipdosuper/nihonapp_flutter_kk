@@ -63,15 +63,15 @@ class _MyAppState extends State<MyApp> {
           // Thêm font mặc định hỗ trợ tiếng Nhật cho toàn bộ dự án
           fontFamily: 'NotoSansJP',
         ),
-       //  home: LoginScreen()); // Khởi động với màn hình đăng nhập
+        // home: LoginScreen()); // Khởi động với màn hình đăng nhập
         // home: ChatHomescreen(),
         // home: WordChainGame(),
-         home: LevelSelectionScreen());
+        //  home: LevelSelectionScreen());
         // home: TimeManagementScreen());
         // home: CreateClassroomScreen());
 
         // home: AddHomeWorkScreen(classRoomId: 2996));
-      //   home: ShowHomeworkByClass(classId: 2996));
+        //   home: ShowHomeworkByClass(classId: 2996));
         // home: HomeworkScreen());
 
         //  home: CourseListScreen());
@@ -87,6 +87,6 @@ class _MyAppState extends State<MyApp> {
         // home: TopicScreen2(
         //   level: 1,
         // ),
-       // home: AdminDashboardScreen());
+        home: AdminDashboardScreen());
   }
 }

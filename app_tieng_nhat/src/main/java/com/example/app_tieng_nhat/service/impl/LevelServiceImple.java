@@ -8,7 +8,9 @@ import com.example.app_tieng_nhat.service.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,6 +21,19 @@ public class LevelServiceImple implements LevelService {
     @Override
     public List<Levels> getAllLevel() {
         return levelRepository.findAll();
+    }
+
+    @Override
+    public Map<Long, Long> coutUserByLevel() {
+        List<Object[]> results = levelRepository.countUsersByLevel();
+        Map<Long, Long> levelUserMap = new HashMap<>();
+
+        for (Object[] row : results) {
+            Long levelId = (Long) row[0]; // Lấy ID level
+            Long userCount = (Long) row[1];     // Lấy số lượng User
+            levelUserMap.put(levelId, userCount);
+        }
+        return levelUserMap;
     }
 
     @Override
