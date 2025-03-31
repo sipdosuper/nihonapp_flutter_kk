@@ -7,5 +7,6 @@ public record CreateTeacherRequest(
                                     String password,
                                     String rePassword,
                                     Long role_id,
+                                    Long level_id,
                                     Long type_id) {
 }

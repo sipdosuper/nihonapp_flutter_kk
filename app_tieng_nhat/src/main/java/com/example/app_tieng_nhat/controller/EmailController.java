@@ -14,8 +14,9 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    public EmailController(EmailService mailService) {
-        this.emailService = mailService;
+
+    public EmailController (EmailService emailService) {
+        this.emailService = emailService;
     }
 
     @PostMapping("/update")
