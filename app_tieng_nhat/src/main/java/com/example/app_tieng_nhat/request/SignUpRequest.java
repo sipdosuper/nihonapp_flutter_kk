@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public record SignUpRequest(
                             String email,
                             String username,
+                            Long level_id,
                             Boolean sex,
                             String password,
                             String rePassword,

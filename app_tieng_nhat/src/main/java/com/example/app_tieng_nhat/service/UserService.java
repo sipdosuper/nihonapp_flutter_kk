@@ -15,7 +15,7 @@ public interface UserService {
     List<UserDTO> getAllUser();
     Users getUserByID(Long id);
     Map<Integer,Long> getUserSignUpStats(int year);
-    Users createUser(SignUpRequest user);
+    String createUser(SignUpRequest user);
     String updateUserLevel(UpdateUserLevelRequest request);
     void deleteUser(Long id);
     Users forGotPassword(ForgotPasswordRequest forgotPasswordRequest);

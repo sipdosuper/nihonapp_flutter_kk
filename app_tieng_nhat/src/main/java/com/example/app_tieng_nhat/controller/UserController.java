@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Users createUser(@RequestBody SignUpRequest user){
+    public String createUser(@RequestBody SignUpRequest user){
         return userService.createUser(user);
     }
 

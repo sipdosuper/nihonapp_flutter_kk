@@ -73,28 +73,27 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
-    public Users createUser(SignUpRequest signUpUser) {
+    public String createUser(SignUpRequest signUpUser) {
+        Optional<Roles> checkRole =roleRepository.findById(signUpUser.role_id());
+        if (checkRole.isEmpty())return "Role khong ton tai";
+        Users checkUser= userRepository.findUserByEmail(signUpUser.email());
+        if(checkUser!=null)return "tai khoan da ton tai";
+        Optional<Levels> checkLevel= levelRepository.findById(signUpUser.level_id());
+        if (checkLevel.isEmpty())return "Khong ton tai level";
         try{
-            Optional<Roles> checkRole =roleRepository.findById(signUpUser.role_id());
-            if (checkRole.isEmpty())return null;
-            Users checkUser= userRepository.findUserByEmail(signUpUser.email());
-            if(checkUser==null){
-                Users user= new Users();
-                user.setUsername(signUpUser.username());
-                user.setEmail(signUpUser.email());
-                user.setSignupDate(signUpUser.signupDate());
-                user.setSex(signUpUser.sex());
-                String password= hashingService.hashWithSHA256(signUpUser.password());
-                user.setPassword(password);
-                user.setRole(checkRole.get());
-                return  userRepository.save(user);
-            }
-            else {
-                return null;
-            }
+            Users user= new Users();
+            user.setUsername(signUpUser.username());
+            user.setEmail(signUpUser.email());
+            user.setSignupDate(signUpUser.signupDate());
+            user.setLevel(checkLevel.get());
+            user.setSex(signUpUser.sex());
+            String password= hashingService.hashWithSHA256(signUpUser.password());
+            user.setPassword(password);
+            user.setRole(checkRole.get());
+            userRepository.save(user);
+            return "Dang ky thanh cong";
         }catch (Exception e){
-
-            return null;
+            return "co bien roi:  "+e.getMessage();
         }
 
     }
