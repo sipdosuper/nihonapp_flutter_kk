@@ -4,8 +4,8 @@ import 'package:duandemo/screens/Roles/AddRoleScreen.dart';
 import 'package:duandemo/screens/bieudo/user_level_pear_chart.dart';
 import 'package:duandemo/screens/bieudo/user_stats_bar_chart_screen.dart';
 import 'package:duandemo/screens/cousers/CourseListScreen.dart';
+import 'package:duandemo/screens/form/list_student_form_screen.dart';
 import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
-import 'package:duandemo/screens/form/student_registration_form_item.dart';
 import 'package:duandemo/screens/time/time_screen.dart';
 import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
@@ -35,20 +35,26 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   // Controllers cho Lesson
   final TextEditingController _lessonIdController = TextEditingController();
   final TextEditingController _lessonTitleController = TextEditingController();
-  final TextEditingController _lessonTopicIdController = TextEditingController();
+  final TextEditingController _lessonTopicIdController =
+      TextEditingController();
 
   // Controllers cho Sentence
   final TextEditingController _sentenceWordController = TextEditingController();
-  final TextEditingController _sentenceMeaningController = TextEditingController();
-  final TextEditingController _sentenceTranscriptionController = TextEditingController();
-  final TextEditingController _sentenceAnswerController = TextEditingController();
-  final TextEditingController _sentenceLessonIdController = TextEditingController();
+  final TextEditingController _sentenceMeaningController =
+      TextEditingController();
+  final TextEditingController _sentenceTranscriptionController =
+      TextEditingController();
+  final TextEditingController _sentenceAnswerController =
+      TextEditingController();
+  final TextEditingController _sentenceLessonIdController =
+      TextEditingController();
 
   // Controllers cho Vocabulary
   final TextEditingController _vocabIdController = TextEditingController();
   final TextEditingController _vocabWordController = TextEditingController();
   final TextEditingController _vocabMeaningController = TextEditingController();
-  final TextEditingController _vocabTranscriptionController = TextEditingController();
+  final TextEditingController _vocabTranscriptionController =
+      TextEditingController();
   final TextEditingController _vocabExampleController = TextEditingController();
 
   // Các biến lưu danh sách dữ liệu lấy từ API
@@ -159,11 +165,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         }),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Đã thêm Sentence thành công')));
-      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Thêm Sentence thất bại: ${response.body}')));
+            SnackBar(content: Text('Đã thêm Sentence thành công')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Thêm Sentence thất bại: ${response.body}')));
       }
     } catch (error) {
       ScaffoldMessenger.of(context)
@@ -188,8 +194,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Đã thêm Vocabulary thành công')));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Thêm Vocabulary thất bại: ${response.body}')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Thêm Vocabulary thất bại: ${response.body}')));
       }
     } catch (error) {
       ScaffoldMessenger.of(context)
@@ -219,12 +225,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     if (confirm == true) {
       final response = await http.delete(Uri.parse(api_topic + '/$id'));
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Đã xóa Topic thành công')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Đã xóa Topic thành công')));
         _fetchTopics();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Xóa Topic thất bại: ${response.statusCode}')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Xóa Topic thất bại: ${response.statusCode}')));
       }
     }
   }
@@ -246,12 +252,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   Future<void> _deleteSentence(int id) async {
     final response = await http.delete(Uri.parse(api_sentence + '/$id'));
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đã xóa Sentence thành công')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Đã xóa Sentence thành công')));
       _fetchLessons();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Xóa Sentence thất bại')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Xóa Sentence thất bại')));
     }
   }
 
@@ -276,7 +282,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       case 'ClassRoom':
         return CourseListScreen(email: "");
       case 'Student Form':
-        return StudentRegistrationFormListScreen();
+        return StudentRegistrationListScreen();
       case 'Teacher Form':
         return TeacherRegistrationFormListScreen(
           onDataChanged: () {
@@ -329,7 +335,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             ),
                           ),
                         ListTile(
-                          title: Text('Xóa Topic', style: TextStyle(color: Colors.red)),
+                          title: Text('Xóa Topic',
+                              style: TextStyle(color: Colors.red)),
                           trailing: IconButton(
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () => _deleteTopic(topic['id']),
@@ -354,7 +361,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         backgroundColor: Color(0xFFE57373),
         // Nút toggle sidebar ở leading
         leading: IconButton(
-          icon: Icon(_isSidebarOpen ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
+          icon: Icon(
+              _isSidebarOpen ? Icons.arrow_back_ios : Icons.arrow_forward_ios),
           onPressed: () {
             setState(() {
               _isSidebarOpen = !_isSidebarOpen;
@@ -383,14 +391,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     title: _isSidebarOpen ? Text('User Stats BarChart') : null,
                     selected: _selectedCategory == 'USBarChart',
                     selectedTileColor: Color(0xFFE57373).withOpacity(0.3),
-                    onTap: () => setState(() => _selectedCategory = 'USBarChart'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'USBarChart'),
                   ),
                   ListTile(
                     leading: Icon(Icons.pie_chart),
                     title: _isSidebarOpen ? Text('User Level PearChart') : null,
                     selected: _selectedCategory == 'ULPearChart',
                     selectedTileColor: Color(0xFFE57373).withOpacity(0.3),
-                    onTap: () => setState(() => _selectedCategory = 'ULPearChart'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'ULPearChart'),
                   ),
                   ListTile(
                     leading: Icon(Icons.access_time),
@@ -404,28 +414,32 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     title: _isSidebarOpen ? Text('ClassRoom') : null,
                     selected: _selectedCategory == 'ClassRoom',
                     selectedTileColor: Color(0xFFE57373).withOpacity(0.3),
-                    onTap: () => setState(() => _selectedCategory = 'ClassRoom'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'ClassRoom'),
                   ),
                   ListTile(
                     leading: Icon(Icons.people_alt),
                     title: _isSidebarOpen ? Text('Student Form') : null,
                     selected: _selectedCategory == 'Student Form',
                     selectedTileColor: Color(0xFFE57373).withOpacity(0.3),
-                    onTap: () => setState(() => _selectedCategory = 'Student Form'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'Student Form'),
                   ),
                   ListTile(
                     leading: Icon(Icons.person_outline),
                     title: _isSidebarOpen ? Text('Teacher Form') : null,
                     selected: _selectedCategory == 'Teacher Form',
                     selectedTileColor: Color(0xFFE57373).withOpacity(0.3),
-                    onTap: () => setState(() => _selectedCategory = 'Teacher Form'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'Teacher Form'),
                   ),
                   ListTile(
                     leading: Icon(Icons.book),
                     title: _isSidebarOpen ? Text('Phần Bài Học') : null,
                     selected: _selectedCategory == 'LessonSection',
                     selectedTileColor: Color(0xFFE57373).withOpacity(0.3),
-                    onTap: () => setState(() => _selectedCategory = 'LessonSection'),
+                    onTap: () =>
+                        setState(() => _selectedCategory = 'LessonSection'),
                   ),
                   ListTile(
                     leading: Icon(Icons.admin_panel_settings),
@@ -474,19 +488,25 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
   // Controllers cho Lesson
   final TextEditingController _lessonIdController = TextEditingController();
   final TextEditingController _lessonTitleController = TextEditingController();
-  final TextEditingController _lessonTopicIdController = TextEditingController();
+  final TextEditingController _lessonTopicIdController =
+      TextEditingController();
 
   // Controllers cho Sentence
   final TextEditingController _sentenceWordController = TextEditingController();
-  final TextEditingController _sentenceMeaningController = TextEditingController();
-  final TextEditingController _sentenceTranscriptionController = TextEditingController();
-  final TextEditingController _sentenceAnswerController = TextEditingController();
-  final TextEditingController _sentenceLessonIdController = TextEditingController();
+  final TextEditingController _sentenceMeaningController =
+      TextEditingController();
+  final TextEditingController _sentenceTranscriptionController =
+      TextEditingController();
+  final TextEditingController _sentenceAnswerController =
+      TextEditingController();
+  final TextEditingController _sentenceLessonIdController =
+      TextEditingController();
 
   // Controllers cho Vocabulary
   final TextEditingController _vocabWordController = TextEditingController();
   final TextEditingController _vocabMeaningController = TextEditingController();
-  final TextEditingController _vocabTranscriptionController = TextEditingController();
+  final TextEditingController _vocabTranscriptionController =
+      TextEditingController();
   final TextEditingController _vocabExampleController = TextEditingController();
 
   // Dữ liệu từ API
@@ -592,11 +612,11 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
         }),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Đã thêm Sentence thành công')));
-      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Thêm Sentence thất bại: ${response.body}')));
+            SnackBar(content: Text('Đã thêm Sentence thành công')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Thêm Sentence thất bại: ${response.body}')));
       }
     } catch (error) {
       ScaffoldMessenger.of(context)
@@ -617,11 +637,11 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
         }),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Đã thêm Vocabulary thành công')));
-      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Thêm Vocabulary thất bại: ${response.body}')));
+            SnackBar(content: Text('Đã thêm Vocabulary thành công')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Thêm Vocabulary thất bại: ${response.body}')));
       }
     } catch (error) {
       ScaffoldMessenger.of(context)
@@ -680,7 +700,8 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
                                 title: Text(lesson['title']),
                               ),
                             ListTile(
-                              title: Text('Xóa Topic', style: TextStyle(color: Colors.red)),
+                              title: Text('Xóa Topic',
+                                  style: TextStyle(color: Colors.red)),
                               trailing: IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
@@ -711,7 +732,8 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
                   controller: _lessonTopicIdController,
                   decoration: InputDecoration(labelText: 'Topic ID'),
                 ),
-                ElevatedButton(onPressed: _addLesson, child: Text('Thêm Lesson')),
+                ElevatedButton(
+                    onPressed: _addLesson, child: Text('Thêm Lesson')),
                 SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
@@ -734,7 +756,8 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
                                 ),
                               ),
                             ListTile(
-                              title: Text('Xóa Lesson', style: TextStyle(color: Colors.red)),
+                              title: Text('Xóa Lesson',
+                                  style: TextStyle(color: Colors.red)),
                               trailing: IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
@@ -774,7 +797,8 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
                     controller: _sentenceLessonIdController,
                     decoration: InputDecoration(labelText: 'Lesson ID'),
                   ),
-                  ElevatedButton(onPressed: _addSentence, child: Text('Thêm Sentence')),
+                  ElevatedButton(
+                      onPressed: _addSentence, child: Text('Thêm Sentence')),
                 ],
               ),
             ),
@@ -798,7 +822,9 @@ class _LessonSectionScreenState extends State<LessonSectionScreen> {
                     controller: _vocabExampleController,
                     decoration: InputDecoration(labelText: 'Ví dụ'),
                   ),
-                  ElevatedButton(onPressed: _addVocabulary, child: Text('Thêm Vocabulary')),
+                  ElevatedButton(
+                      onPressed: _addVocabulary,
+                      child: Text('Thêm Vocabulary')),
                 ],
               ),
             ),
@@ -831,7 +857,8 @@ class _RoleScreenState extends State<RoleScreen> {
 
   // Hàm lấy danh sách Role từ backend
   Future<List<Role>> fetchRoles() async {
-    final response = await http.get(Uri.parse('http://localhost:8080/api/role'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8080/api/role'));
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(response.body);
       return jsonResponse.map((json) => Role.fromJson(json)).toList();
@@ -849,6 +876,7 @@ class _RoleScreenState extends State<RoleScreen> {
 
   // Hàm xóa Role theo id
   Future<void> _deleteRole(int roleId) async {
+    print(roleId);
     final url = Uri.parse('http://localhost:8080/api/role/delete/$roleId');
     try {
       final response = await http.delete(url);
@@ -859,7 +887,9 @@ class _RoleScreenState extends State<RoleScreen> {
         refreshRoles();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Xóa Role thất bại, mã lỗi: ${response.statusCode}')),
+          SnackBar(
+              content:
+                  Text('Xóa Role thất bại, mã lỗi: ${response.statusCode}')),
         );
       }
     } catch (e) {
@@ -924,7 +954,8 @@ class _RoleScreenState extends State<RoleScreen> {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: Text('Xác nhận'),
-                              content: Text('Bạn có chắc muốn xóa Role "${role.name}" không?'),
+                              content: Text(
+                                  'Bạn có chắc muốn xóa Role "${role.name}" không?'),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.of(context).pop(),
@@ -935,7 +966,9 @@ class _RoleScreenState extends State<RoleScreen> {
                                     Navigator.of(context).pop();
                                     _deleteRole(role.id);
                                   },
-                                  child: Text('Xóa', style: TextStyle(color: Colors.redAccent)),
+                                  child: Text('Xóa',
+                                      style:
+                                          TextStyle(color: Colors.redAccent)),
                                 ),
                               ],
                             ),

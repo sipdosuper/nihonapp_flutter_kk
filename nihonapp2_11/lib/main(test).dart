@@ -22,8 +22,7 @@ import 'package:duandemo/screens/time/time_screen.dart';
 import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart'; // Màn hình đăng nhập
-import 'package:duandemo/screens/form/student_registration_form_item.dart'; // Màn hình hiển thị thông tin học viên
+import 'screens/login_screen.dart'; // Màn hình đăng nhập // Màn hình hiển thị thông tin học viên
 import 'package:duandemo/screens/form/list_student_form_screen.dart'; // Màn hình danh sách học viên
 import 'package:duandemo/screens/form/teacher_registration_form_delta_screen.dart'; // Chi tiết giáo viên
 import 'package:duandemo/screens/form/teacher_form_item.dart'; // Màn hình danh sách giáo viên
@@ -31,6 +30,7 @@ import 'package:duandemo/screens/form/teacher_form_detail_screen.dart'; // Màn 
 import 'package:duandemo/screens/form/list_student_form_screen.dart'; // Ví dụ màn hình học viên, nếu cần
 import 'package:duandemo/screens/email/sendMail_screen.dart';
 import 'package:duandemo/screens/Roles/RoleScreen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
         // home: WordChainGame(),
         //  home: LevelSelectionScreen());
         // home: TimeManagementScreen());
-       //  home: CreateClassroomScreen());
+        //  home: CreateClassroomScreen());
 
         // home: AddHomeWorkScreen(classRoomId: 2996));
         //   home: ShowHomeworkByClass(classId: 2996));
@@ -77,18 +77,18 @@ class _MyAppState extends State<MyApp> {
 
         //  home: CourseListScreen());
 
-         // home: SendMailScreen());
+        // home: SendMailScreen());
         // home: UploadImageScreen());
         //  home: AddTeacherFormScreen());
         //   home: TeacherRegistrationFormListScreen());
         // home: AddStudentFormScreen());
         //  home: AddStudentFormScreen(classRoomId: 2996, className: ""));
-        //  home: StudentRegistrationListScreen());
+        // home: StudentRegistrationListScreen());
         // home: OnionTopicScreen(level: 5));
         // home: TopicScreen2(
         //   level: 1,
         // ),
         home: AdminDashboardScreen());
-        //home:RoleScreen());
+    //home:RoleScreen());
   }
 }

@@ -34,7 +34,7 @@ public class RoleController {
 
 
     @DeleteMapping("/delete/{id}")
-    public void deleteRole(Long id){
+    public void deleteRole(@PathVariable Long id){
         roleService.deleteRole(id);
     }
 
