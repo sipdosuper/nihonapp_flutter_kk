@@ -1,12 +1,14 @@
+import 'package:duandemo/screens/flashcard/home_page.dart';
+import 'package:duandemo/screens/onion_ai/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:duandemo/screens/chat_homescreen.dart';
-import 'package:duandemo/screens/profile_screen.dart';
+import 'package:duandemo/screens/Chat/chat_homescreen.dart';
+import 'package:duandemo/screens/profile_user/profile_screen.dart';
 import 'package:duandemo/screens/lesson_list_screen.dart';
 import 'package:duandemo/screens/onion_topic_screen.dart';
 import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:duandemo/screens/level_selection_screen.dart';
-import 'package:duandemo/screens/login_screen.dart';
-import 'package:duandemo/screens/WordChainGame.dart';
+import 'package:duandemo/screens/authentication/login_screen.dart';
+import 'package:duandemo/screens/WordChainGame/WordChainGame.dart';
 import 'package:duandemo/model/Topic.dart';
 import 'package:duandemo/screens/cousers/couser_decription_screen.dart';
 import 'package:duandemo/screens/news_screen.dart'; // Màn hình NewsScreen
@@ -17,6 +19,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(MyApp());
+}
 
 // -------------------------------------------------------------------------
 // Định nghĩa model NewsItem để chứa dữ liệu tin tức
@@ -84,10 +91,6 @@ Future<List<NewsItem>> fetchNewsItems() async {
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -138,6 +141,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       // Màn hình "Chat"
+
       ChatHomescreen(),
       // Màn hình "Profile"
       ProfileScreen(),
@@ -200,7 +204,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // Gọi API lấy danh sách khóa học, giải mã UTF-8
   Future<void> _fetchCourses() async {
     try {
-      final response = await http.get(Uri.parse(Wordval().api + 'classroom'));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String email = prefs.getString('email').toString();
+      final response = await http
+          .get(Uri.parse(Wordval().api + 'user/recommented?email=${email}'));
       if (response.statusCode == 200) {
         // Giải mã UTF-8 để tránh lỗi khi có ký tự tiếng Nhật
         List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
@@ -254,16 +261,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           // Nút điều hướng đến màn hình quản lý Role (Admin)
-          IconButton(
-            icon: Icon(Icons.admin_panel_settings),
-            tooltip: 'Quản lý Role',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminRoleScreen()),
-              );
-            },
-          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -387,6 +384,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => WordChainGame(),
+                ),
+              );
+            },
+          ),
+          _buildFeatureButton(
+            context,
+            Icons.videogame_asset,
+            'Flash Card',
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FlashCardHomePage(),
+                ),
+              );
+            },
+          ),
+          _buildFeatureButton(
+            context,
+            Icons.videogame_asset,
+            'Hội thoại tình huống',
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OnionHomeScreen(),
                 ),
               );
             },
@@ -624,7 +647,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   : Container(
                                       height: 100,
                                       color: Colors.grey[300],
-                                      child: Icon(Icons.image, color: Colors.grey),
+                                      child:
+                                          Icon(Icons.image, color: Colors.grey),
                                     ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
@@ -672,132 +696,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// --------------------------------------------------------
-// Widget quản lý Role (AdminRoleScreen)
-// --------------------------------------------------------
-class AdminRoleScreen extends StatefulWidget {
-  @override
-  _AdminRoleScreenState createState() => _AdminRoleScreenState();
-}
-
-class _AdminRoleScreenState extends State<AdminRoleScreen> {
-  // Sử dụng endpoint role từ Wordval
-  final String api_role = Wordval().api + 'role';
-  final TextEditingController _roleNameController = TextEditingController();
-  List<Role> _roles = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchRoles();
-  }
-
-  Future<void> _fetchRoles() async {
-    final response = await http.get(Uri.parse(api_role));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
-      setState(() {
-        _roles = data.map((json) => Role.fromJson(json)).toList();
-      });
-    } else {
-      // Xử lý lỗi nếu cần
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Lỗi tải Role')));
-    }
-  }
-
- Future<void> _addRole() async {
-  try {
-    final response = await http.post(
-      Uri.parse(api_role),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'id': 5, // Hoặc giá trị nào bạn muốn
-        'name': _roleNameController.text,
-        'properties': null, // Gửi thêm trường này như Postman
-      }),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đã thêm Role thành công')),
-      );
-      _fetchRoles();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Thêm Role thất bại: ${response.body}')),
-      );
-    }
-  } catch (error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Lỗi: $error')),
-    );
-  }
-}
-
-
-
-
-
-  Future<void> _deleteRole(int id) async {
-    final response = await http.delete(Uri.parse(api_role + '/delete/$id'));
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Đã xóa Role thành công')));
-      _fetchRoles();
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Xóa Role thất bại')));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Quản lý Role"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _roleNameController,
-              decoration: InputDecoration(labelText: 'Tên Role'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _addRole,
-              child: Text("Thêm Role"),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: _roles.isEmpty
-                  ? Center(child: Text("Không có Role nào"))
-                  : ListView.builder(
-                      itemCount: _roles.length,
-                      itemBuilder: (context, index) {
-                        final role = _roles[index];
-                        return Card(
-                          margin: EdgeInsets.symmetric(vertical: 4.0),
-                          child: ListTile(
-                            title: Text(role.name),
-                            trailing: IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deleteRole(role.id),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
       ),
     );
   }

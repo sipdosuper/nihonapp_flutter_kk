@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dashboard_screen.dart';
+import 'admin/dashboard_screen.dart';
 
 class HocScreen extends StatefulWidget {
   final String level;
@@ -18,23 +18,14 @@ class _HocScreenState extends State<HocScreen> {
       {
         'title': 'Chủ đề 1',
         'lessons': [
-          {
-            'title': 'Bài học 1',
-            'sentences': _getSentencesForLesson1()
-          },
-          {
-            'title': 'Bài học 2',
-            'sentences': _getSentencesForLesson2()
-          },
+          {'title': 'Bài học 1', 'sentences': _getSentencesForLesson1()},
+          {'title': 'Bài học 2', 'sentences': _getSentencesForLesson2()},
         ],
       },
       {
         'title': 'Chủ đề 2',
         'lessons': [
-          {
-            'title': 'Bài học 1',
-            'sentences': _getSentencesForLesson1()
-          },
+          {'title': 'Bài học 1', 'sentences': _getSentencesForLesson1()},
         ],
       },
     ];

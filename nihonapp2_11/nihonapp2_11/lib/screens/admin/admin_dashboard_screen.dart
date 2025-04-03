@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:duandemo/model/Role.dart';
 import 'package:duandemo/screens/Roles/AddRoleScreen.dart';
-import 'package:duandemo/screens/bieudo/user_level_pear_chart.dart';
-import 'package:duandemo/screens/bieudo/user_stats_bar_chart_screen.dart';
+import 'package:duandemo/screens/Fl_Chart/user_level_pear_chart.dart';
+import 'package:duandemo/screens/Fl_Chart/user_stats_bar_chart_screen.dart';
 import 'package:duandemo/screens/cousers/CourseListScreen.dart';
 import 'package:duandemo/screens/form/list_student_form_screen.dart';
 import 'package:duandemo/screens/form/list_teacher_form_screen.dart';
@@ -10,7 +10,7 @@ import 'package:duandemo/screens/time/time_screen.dart';
 import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'login_screen.dart';
+import '../authentication/login_screen.dart';
 
 //-----------------------------------------------------
 // AdminDashboardScreen
