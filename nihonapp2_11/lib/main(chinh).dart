@@ -1,15 +1,26 @@
+import 'package:duandemo/screens/flashcard/home_page.dart';
+import 'package:duandemo/screens/onion_ai/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:duandemo/screens/chat_homescreen.dart';
-import 'package:duandemo/screens/profile_screen.dart';
+import 'package:duandemo/screens/Chat/chat_homescreen.dart';
+import 'package:duandemo/screens/profile_user/profile_screen.dart';
 import 'package:duandemo/screens/lesson_list_screen.dart';
 import 'package:duandemo/screens/onion_topic_screen.dart';
 import 'package:duandemo/screens/topic_screen_like_duolingo.dart';
 import 'package:duandemo/screens/level_selection_screen.dart';
-import 'package:duandemo/screens/login_screen.dart';
-import 'package:duandemo/screens/WordChainGame.dart';
+import 'package:duandemo/screens/authentication/login_screen.dart';
+import 'package:duandemo/screens/WordChainGame/WordChainGame.dart';
 import 'package:duandemo/model/Topic.dart';
 import 'package:duandemo/screens/cousers/couser_decription_screen.dart';
 import 'package:duandemo/screens/news_screen.dart'; // Màn hình NewsScreen
+import 'package:provider/provider.dart';
+import 'package:duandemo/model/card_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:duandemo/model/collection_model.dart';
+import 'package:duandemo/model/flashcard_model.dart';
+import 'package:duandemo/screens/flashcard/allcards_page.dart';
+import 'package:duandemo/screens/flashcard/bookmarked_page.dart';
+import 'package:duandemo/screens/flashcard/setting_page.dart';
+
 // ----- Thêm các import cần thiết cho việc gọi API và model Classroom -----
 import 'package:duandemo/model/ClassRoom.dart';
 import 'package:duandemo/word_val.dart';
@@ -17,6 +28,25 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Khởi tạo Hive
+  await Hive.initFlutter();
+  Hive.registerAdapter(FlashCardDataAdapter());
+  Hive.registerAdapter(CardCollectionAdapter());
+  await Hive.openBox<FlashCardData>("flashcard_data");
+  await Hive.openBox<CardCollection>("card_collection");
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CardProvider(),
+      child: MyApp(),
+    ),
+  );
+}
 
 // -------------------------------------------------------------------------
 // Định nghĩa model NewsItem để chứa dữ liệu tin tức
@@ -32,6 +62,21 @@ class NewsItem {
     required this.description,
     required this.imageUrl,
   });
+}
+
+// ----- Thêm Model Role để parse dữ liệu JSON từ API Role -----
+class Role {
+  final int id;
+  final String name;
+
+  Role({required this.id, required this.name});
+
+  factory Role.fromJson(Map<String, dynamic> json) {
+    return Role(
+      id: json['id'] as int,
+      name: json['name'] as String,
+    );
+  }
 }
 
 // Hàm gọi API lấy danh sách tin tức từ web
@@ -69,10 +114,6 @@ Future<List<NewsItem>> fetchNewsItems() async {
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -86,13 +127,19 @@ class MyApp extends StatelessWidget {
       ),
       // Chạy ứng dụng bắt đầu từ màn hình đăng nhập
       home: LoginScreen(),
+      routes: {
+        '/flashcard': (context) => const HomePage(),
+        '/allCards': (context) => AllCardsPage(),
+        '/bookmarks': (context) => BookmarksPage(),
+        '/settings': (context) => SettingPage(),
+      },
     );
   }
 }
 
-// -------------------------------------------------------------------------
+// --------------------------------------------------------
 // MainScreen - Chứa BottomNavigationBar, khởi tạo HomeScreen với level được truyền
-// -------------------------------------------------------------------------
+// --------------------------------------------------------
 class MainScreen extends StatefulWidget {
   final int level;
 
@@ -123,6 +170,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       // Màn hình "Chat"
+
       ChatHomescreen(),
       // Màn hình "Profile"
       ProfileScreen(),
@@ -185,7 +233,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // Gọi API lấy danh sách khóa học, giải mã UTF-8
   Future<void> _fetchCourses() async {
     try {
-      final response = await http.get(Uri.parse(Wordval().api + 'classroom'));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String email = prefs.getString('email').toString();
+      final response = await http
+          .get(Uri.parse(Wordval().api + 'user/recommented?email=${email}'));
       if (response.statusCode == 200) {
         // Giải mã UTF-8 để tránh lỗi khi có ký tự tiếng Nhật
         List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
@@ -238,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             },
           ),
+          // Nút điều hướng đến màn hình quản lý Role (Admin)
         ],
       ),
       body: SingleChildScrollView(
@@ -361,6 +413,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => WordChainGame(),
+                ),
+              );
+            },
+          ),
+          _buildFeatureButton(
+            context,
+            Icons.videogame_asset,
+            'Flash Card',
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(), // Đã có Provider từ main
+                ),
+              );
+            },
+          ),
+          _buildFeatureButton(
+            context,
+            Icons.videogame_asset,
+            'Hội thoại tình huống',
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OnionHomeScreen(),
                 ),
               );
             },
@@ -598,7 +676,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   : Container(
                                       height: 100,
                                       color: Colors.grey[300],
-                                      child: Icon(Icons.image, color: Colors.grey),
+                                      child:
+                                          Icon(Icons.image, color: Colors.grey),
                                     ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),

@@ -1,11 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:duandemo/model/StudentRegistration.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class StudentFormDetailScreen extends StatelessWidget {
   final StudentRegistration student;
 
   StudentFormDetailScreen({required this.student});
+
+  Future<void> acceptForm(BuildContext context) async {
+    final apiUrl = 'http://localhost:8080/api/studentRegistration/addStudent';
+    final body = jsonEncode({
+      "email": student.email,
+      "classRoom_id": student.classRoomId,
+      "regisForm_id": student.id
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(response.body)));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Gửi email thất bại: ${response.body}')));
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Lỗi: $error')));
+    }
+  }
+
+  Future<void> deleteForm(BuildContext context) async {
+    final apiUrl =
+        'http://localhost:8080/api/studentRegistration/${student.id}';
+    try {
+      final response = await http.delete(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Xóa yêu cầu thành công')));
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Xóa yêu cầu thất bại')));
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Lỗi: $error')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,22 +120,39 @@ class StudentFormDetailScreen extends StatelessWidget {
                   ),
                 SizedBox(height: 20),
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Chức năng gửi sẽ có sau")),
-                      );
-                    },
-                    child: Text("Gửi"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE57373),
-                      foregroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      minimumSize: Size(200, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => acceptForm(context),
+                        child: Text("Gửi Email"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Color(0xFFE57373), // Màu nền nút nổi bật
+                          foregroundColor: Colors.black, // Màu chữ đen đậm
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: Size(200, 50), // Kích thước nút
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 20), // Khoảng cách giữa hai nút
+                      ElevatedButton(
+                        onPressed: () => deleteForm(context),
+                        child: Text("Xóa Yêu cầu"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Color(0xFFE57373), // Màu nền nút nổi bật
+                          foregroundColor: Colors.black, // Màu chữ đen đậm
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: Size(200, 50), // Kích thước nút
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
