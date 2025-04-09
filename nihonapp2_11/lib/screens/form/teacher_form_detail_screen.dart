@@ -1,17 +1,58 @@
 import 'dart:convert';
+import 'package:duandemo/model/Teacher.dart';
 import 'package:duandemo/model/TeacherRegistrationForm.dart';
 import 'package:duandemo/screens/email/logIn_to_send_mail.dart';
+import 'package:duandemo/service/AuthService.dart';
 import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class TeacherFormDetailScreen extends StatelessWidget {
   final TeacherRegistrationForm form;
+  final AuthService _authService = AuthService();
 
   TeacherFormDetailScreen({required this.form});
 
+  Future<void> _regist(BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse(Wordval().api + 'teacher'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'id': 0,
+          'email': form.email,
+          'username': form.name,
+          'level_id': form.level_id,
+          'sex': true,
+          'password': 'giaovienmoi',
+          'rePassword': 'giaovienmoi',
+          'role_id': 3,
+          'type_id': 1,
+        }),
+      );
+      if (response.body == 'Tao thanh cong teacher') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Tạo tài khoản giáo viên mới thành công!"),
+              backgroundColor: Colors.green),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.body), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Không thể kết nối tới máy chủ!"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> _deleteTeacherRequest(BuildContext context, int id) async {
-    final String apiUrl = 'http://localhost:8080/api/teacherRegistration/${id}';
+    final String apiUrl = Wordval().api + 'teacherRegistration/${id}';
 
     try {
       final response = await http.delete(Uri.parse(apiUrl));
@@ -104,6 +145,23 @@ class TeacherFormDetailScreen extends StatelessWidget {
                           showLoginToSendMailDialog(context);
                         },
                         child: Text("Gửi Email"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Color(0xFFE57373), // Màu nền nút nổi bật
+                          foregroundColor: Colors.black, // Màu chữ đen đậm
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          minimumSize: Size(200, 50), // Kích thước nút
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          _regist(context);
+                        },
+                        child: Text("Tạo tài khoản giáo viên"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               Color(0xFFE57373), // Màu nền nút nổi bật

@@ -37,7 +37,7 @@ public class StudentRegistrationController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
+    public void deleteForm(@PathVariable Long id){
         studentRegistrationService.deleteStudentRegis(id);
     }
 

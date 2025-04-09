@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:duandemo/model/StudentRegistration.dart';
@@ -17,7 +18,7 @@ class _StudentRegistrationListScreenState
 
   Future<List<StudentRegistration>> fetchStudentRegistrations() async {
     final response =
-        await http.get(Uri.parse('http://localhost:8080/api/studentRegistration'));
+        await http.get(Uri.parse(Wordval().api + 'studentRegistration'));
 
     if (response.statusCode == 200) {
       try {
@@ -68,7 +69,8 @@ class _StudentRegistrationListScreenState
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16.0), // Tăng padding để giao diện thoáng hơn
+            padding:
+                EdgeInsets.all(16.0), // Tăng padding để giao diện thoáng hơn
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

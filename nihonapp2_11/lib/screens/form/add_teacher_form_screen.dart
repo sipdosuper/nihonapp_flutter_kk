@@ -144,12 +144,12 @@ class _AddTeacherFormScreenState extends State<AddTeacherFormScreen> {
         Uri.parse(Wordval().api + "teacherRegistration"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(newTeacher.toJson()));
-
+    print(newTeacher.toString());
     // Kiểm tra phản hồi từ API
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.body == 'Da tao don thanh cong') {
       // Thêm giáo viên thành công
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Thêm giáo viên thành công!")),
+        SnackBar(content: Text("Tạo đơn đăng ký giáo viên thành công!")),
       );
       Navigator.pop(context); // Quay lại màn hình trước
     } else {

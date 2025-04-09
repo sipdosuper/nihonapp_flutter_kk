@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:duandemo/model/TeacherRegistrationForm.dart';
 import 'package:duandemo/screens/form/teacher_form_detail_screen.dart';
+import 'package:duandemo/word_val.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,8 +42,8 @@ class _TeacherRegistrationFormListScreenState
   }
 
   Future<List<TeacherRegistrationForm>> fetchTeacherRegistrationForms() async {
-    final response = await http
-        .get(Uri.parse('http://localhost:8080/api/teacherRegistration'));
+    final response =
+        await http.get(Uri.parse(Wordval().api + 'teacherRegistration'));
 
     if (response.statusCode == 200) {
       try {

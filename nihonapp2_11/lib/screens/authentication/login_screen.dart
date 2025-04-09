@@ -1,3 +1,4 @@
+import 'package:duandemo/screens/form/add_teacher_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:duandemo/service/AuthService.dart';
 import '../level_selection_screen.dart';
@@ -170,6 +171,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text(
                     'Đăng ký tài khoản',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddTeacherFormScreen()),
+                    );
+                  },
+                  child: Text(
+                    'Đăng ký làm giáo viên',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),

@@ -69,7 +69,7 @@ class AuthService {
         'id': id,
         'email': email,
         'username': username,
-        'lv': lv,
+        'level_id': lv,
         'sex': sex,
         'password': password,
         'rePassword': rePassword,
