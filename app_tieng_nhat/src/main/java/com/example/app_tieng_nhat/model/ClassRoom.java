@@ -25,33 +25,18 @@ import java.util.Set;
 public class ClassRoom {
     @Id
     private Long id;
-    @PrePersist
-    public void generateId() {
-        if (this.id == null) {
-            this.id = generateCustomId();
-        }
-    }
-
-    private Long generateCustomId() {
-        return (long) (Math.random() * (9999 - 1000 + 1)) + 1000;
-    }
-
     private String name;
+    private String description;
+    private Long sl_max;
+    private String link_giaotrinh;
+    private LocalDate start;
+    private LocalDate end;
+    private Long price;
 
     @ManyToOne
     @JsonManagedReference("level-class")
     @JoinColumn(name = "level_id")
     private Levels level;
-
-    private String description;
-
-    private Long sl_max;
-
-    private String link_giaotrinh;
-
-    private LocalDate start;
-    private LocalDate end;
-    private Long price;
 
     @ManyToOne
     @JsonManagedReference("class-time")

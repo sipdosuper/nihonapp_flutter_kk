@@ -176,22 +176,22 @@ public class UserServiceImple implements UserService {
     @Override
     public List<ClassRoomDTO> recommentedCouse(String email) {
         Users user= userRepository.findUserByEmail(email);
-        if (user== null)return null;
-        if (user.getLevel()==null) return null;
-        try {
-            List<ClassRoom> classRoomListInUserLevel= classRepository.findClassroomsByLevelId(user.getLevel().getId());
-            List<ClassRoom> higherLevelClassRoom = classRepository.findClassroomsByLevelId(user.getLevel().getId()+1);
-            List<ClassRoom> lowerLevelClassRoom = classRepository.findClassroomsByLevelId(user.getLevel().getId()-1);
-            classRoomListInUserLevel.addAll(higherLevelClassRoom);
-            classRoomListInUserLevel.addAll(lowerLevelClassRoom);
-            List<ClassRoomDTO> classRoomDTOS= new ArrayList<>();
-            for(ClassRoom classRoom : classRoomListInUserLevel){
-                classRoomDTOS.add(classRoomToDTO(classRoom));
-            }
-            return classRoomDTOS;
-        }catch (Exception e){
-            return null;
+        if (user== null){
+            throw new RuntimeException("khong co user "+email);
         }
+        if (user.getLevel()==null) {
+            throw new RuntimeException("khong co level ");
+        }
+        List<ClassRoom> classRoomListInUserLevel= classRepository.findClassroomsByLevelId(user.getLevel().getId());
+        List<ClassRoom> higherLevelClassRoom = classRepository.findClassroomsByLevelId(user.getLevel().getId()+1);
+        List<ClassRoom> lowerLevelClassRoom = classRepository.findClassroomsByLevelId(user.getLevel().getId()-1);
+        classRoomListInUserLevel.addAll(higherLevelClassRoom);
+        classRoomListInUserLevel.addAll(lowerLevelClassRoom);
+        List<ClassRoomDTO> classRoomDTOS= new ArrayList<>();
+        for(ClassRoom classRoom : classRoomListInUserLevel){
+            classRoomDTOS.add(classRoomToDTO(classRoom));
+        }
+        return classRoomDTOS;
 
     }
 

@@ -27,8 +27,6 @@ public class Sentence {
     private String transcription;
     private String answer;
 
-
-
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
     @JsonBackReference("lesson-sentence")

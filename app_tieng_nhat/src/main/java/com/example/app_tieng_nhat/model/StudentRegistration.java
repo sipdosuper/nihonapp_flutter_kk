@@ -42,18 +42,6 @@ public class StudentRegistration {
     @JoinColumn(name = "classroom_id", nullable = false)
     private ClassRoom classRoom;
 
-    public StudentRegistrationDTO toDTO() {
-        StudentRegistrationDTO dto = new StudentRegistrationDTO();
-        dto.setId(this.id);
-        dto.setNameAndSdt(this.nameAndSdt);
-        dto.setEmail(this.email);
-        dto.setBankCheck(this.bankCheck);
-        dto.setRegisDay(this.regisDay);
-        dto.setBill(this.bill);
-        dto.setStatus(this.status);
-        dto.setStudentId(this.student != null ? this.student.getId() : null);
-        dto.setClassRoomId(this.classRoom != null ? this.classRoom.getId() : null);
-        return dto;
-    }
+
 
 }
