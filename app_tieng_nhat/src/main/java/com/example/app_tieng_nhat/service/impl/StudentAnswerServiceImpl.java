@@ -39,14 +39,14 @@ public class StudentAnswerServiceImpl implements StudentAnswerService {
         if (homeWork==null) return "Khong ton tai home work";
 //        boolean checkStudent= classRepository.existsUserInClass(homeWork.getClassroom().getId(), studentAnswerRequest.student_id());
 //        if(!checkStudent)return "Sinh vien nay khong co trong lop";
-        Optional<Users> checkStudent=userRepository.findById(studentAnswerRequest.student_id());
-        if(checkStudent.isEmpty()) return "Khong ton tai hs nay roi";
+        Users checkStudent=userRepository.findUserByEmail(studentAnswerRequest.email());
+        if(checkStudent==null) return "Khong ton tai hs nay roi";
         try{
             User_HomeWork newAnswer= new User_HomeWork();
             newAnswer.setStudent_answer(studentAnswerRequest.student_answer());
             newAnswer.setAudio(studentAnswerRequest.audio());
             newAnswer.setHomeWork(homeWork);
-            newAnswer.setStudent(checkStudent.get());
+            newAnswer.setStudent(checkStudent);
             newAnswer.setTeacher_note(studentAnswerRequest.teacher_note());
             userHomeWorkRepository.save(newAnswer);
             return "Nop bai thanh cong";

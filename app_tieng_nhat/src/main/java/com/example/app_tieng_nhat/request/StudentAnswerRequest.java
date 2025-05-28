@@ -5,5 +5,5 @@ public record StudentAnswerRequest(String student_answer,
                                    String teacher_note,
                                    Float point,
                                    Long homeWork_id,
-                                   Long student_id) {
+                                   String email) {
 }
